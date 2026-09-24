@@ -17,3 +17,9 @@ dist/
 
 # Local duplicate Xcode project
 /FiSiTrainer 2.xcodeproj/
+
+# Packaging artifacts and Python build-tool caches
+*.dmg
+__pycache__/
+*.pyc
+.venv/

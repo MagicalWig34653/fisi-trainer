@@ -3,3 +3,5 @@
 *.icns binary
 *.jpg binary
 *.jpeg binary
+*.tiff binary
+*.tif binary

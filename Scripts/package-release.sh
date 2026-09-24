@@ -20,8 +20,8 @@ output_dir=$(cd "$output_dir" && pwd)
 derived_data="$output_dir/DerivedData"
 built_app="$derived_data/Build/Products/Release/FiSiTrainer.app"
 app="$output_dir/Stage/FiSiTrainer.app"
-zip="$output_dir/FiSiTrainer-$version_tag-macOS-universal.zip"
-checksum="$zip.sha256"
+dmg="$output_dir/FiSiTrainer-$version_tag-macOS-universal.dmg"
+checksum="$dmg.sha256"
 
 xcodebuild build \
   -project "$project_dir/FiSiTrainer.xcodeproj" \
@@ -62,12 +62,11 @@ codesign --force --sign - \
   "$app"
 codesign --verify --deep --strict "$app"
 
-rm -f "$zip" "$checksum"
-ditto -c -k --keepParent --sequesterRsrc "$app" "$zip"
+bash "$script_dir/create-dmg.sh" "$app" "$dmg"
 (
   cd "$output_dir"
-  shasum -a 256 "$(basename "$zip")" > "$(basename "$checksum")"
+  shasum -a 256 "$(basename "$dmg")" > "$(basename "$checksum")"
 )
 
-echo "Release package: $zip"
+echo "Release package: $dmg"
 echo "SHA-256: $checksum"

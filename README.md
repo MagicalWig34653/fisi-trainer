@@ -21,11 +21,11 @@ FiSi Trainer ist eine native macOS-App zur eigenständigen Vorbereitung auf Fach
 
 ## Herunterladen und starten
 
-1. Auf der Seite [**Neueste Version herunterladen**](https://github.com/MagicalWig34653/fisi-trainer/releases/latest) das ZIP laden, zum Beispiel `FiSiTrainer-v1.0.0-macOS-universal.zip`.
-2. ZIP entpacken und `FiSiTrainer.app` nach **Programme** ziehen oder direkt starten. Benötigt **macOS 14 oder neuer**.
-3. Die gleichnamige `.sha256`-Datei im Release enthält die Prüfsumme des ZIPs.
+1. Auf der Seite [**Neueste Version herunterladen**](https://github.com/MagicalWig34653/fisi-trainer/releases/latest) die DMG laden, zum Beispiel `FiSiTrainer-v1.0.1-macOS-universal.dmg`.
+2. DMG öffnen und im Finder-Fenster **FiSiTrainer** auf die Verknüpfung **Programme** ziehen. Danach die DMG auswerfen und die App aus Programme starten. Benötigt **macOS 14 oder neuer**.
+3. Die gleichnamige `.sha256`-Datei im Release enthält die Prüfsumme der DMG.
 
-Die CI führt bei Pushes und Pull Requests die macOS-Tests aus. Beim Veröffentlichen eines GitHub Releases baut der Release-Workflow automatisch die Universal-App und hängt ZIP und SHA-256-Datei an die Version an.
+Die CI führt bei Pushes und Pull Requests die macOS-Tests aus. Beim Veröffentlichen eines GitHub Releases baut der Release-Workflow automatisch die Universal-App und hängt DMG und SHA-256-Datei an die Version an.
 
 Die Release-App ist ad hoc signiert, **nicht** mit einer Developer ID signiert und **nicht** von Apple notarisiert. macOS kann deshalb beim ersten Öffnen warnen. Wer die Datei aus diesem Repository geladen hat und ihr vertraut, kann nach dem ersten Öffnungsversuch unter **Systemeinstellungen → Datenschutz & Sicherheit → Dennoch öffnen** fortfahren. [Apple erklärt diesen Schritt](https://support.apple.com/de-de/102445).
 

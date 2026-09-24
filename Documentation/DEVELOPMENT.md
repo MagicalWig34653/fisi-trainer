@@ -17,9 +17,17 @@ xcodebuild test -project FiSiTrainer.xcodeproj -scheme FiSiTrainer \
 
 `project.yml` ist die XcodeGen-Quelle. Nach einer Änderung daran `xcodegen generate` ausführen und das erzeugte Projekt mit einreichen. `.github/workflows/build.yml` testet auf Pushes und Pull Requests gegen `main`.
 
-Wenn ein GitHub Release mit einem Tag wie `v1.0.0` veröffentlicht wird, baut `.github/workflows/release.yml` automatisch eine App mit `arm64`- und `x86_64`-Architektur. `Scripts/package-release.sh` erstellt `FiSiTrainer-v1.0.0-macOS-universal.zip` und die dazugehörige `.zip.sha256`-Datei. Release-Tags müssen das Format `vMAJOR.MINOR.PATCH` haben. Ein lokaler Probelauf ist mit `bash Scripts/package-release.sh /tmp/fisi-release v1.0.0` möglich.
+Wenn ein GitHub Release mit einem Tag wie `v1.0.0` veröffentlicht wird, baut `.github/workflows/release.yml` automatisch eine App mit `arm64`- und `x86_64`-Architektur. `Scripts/package-release.sh` erstellt `FiSiTrainer-v1.0.0-macOS-universal.dmg` und die dazugehörige `.dmg.sha256`-Datei. Release-Tags müssen das Format `vMAJOR.MINOR.PATCH` haben. Ein lokaler Probelauf ist mit `bash Scripts/package-release.sh /tmp/fisi-release v1.0.0` möglich.
 
 Der Build erhält nur eine ad-hoc-Signatur; eine Developer-ID-Signatur und Apple-Notarisierung sind derzeit nicht Teil des Release-Prozesses.
+
+## DMG gestalten
+
+`Packaging/dmg-settings.py` legt Fenstergröße, Symbolpositionen und die Programme-Verknüpfung fest. Das Hintergrundbild liegt in `Packaging/`; die bearbeitbare Zeichnung wird mit `Scripts/render-dmg-background.swift` erzeugt. Das DMG-Fenster zeigt die App und eine Verknüpfung auf `/Applications`, damit die Installation per Ziehen funktioniert.
+
+`Scripts/create-dmg.sh APP_PATH OUTPUT_DMG` verpackt eine bereits signierte App ohne erneuten Build. Die Python-Werkzeuge für die DMG werden mit festen Versionen aus `Packaging/requirements-dmg.txt` in einer isolierten Umgebung installiert. Sie sind ausschließlich Build-Werkzeuge und werden nicht mit der App ausgeliefert. Die Erstellung benötigt macOS und Python 3.10 oder neuer; Finder-Automation ist dafür nicht erforderlich.
+
+Bei Änderungen das erzeugte Image mit `hdiutil verify` prüfen, einhängen und kontrollieren, dass Signatur, Hintergrund, Symbolpositionen und die Programme-Verknüpfung erhalten bleiben. Finder-Metadaten und Hintergrund werden in der DMG mitgeliefert, sodass GitHub Actions dasselbe Fenster erzeugt.
 
 ## Trainingslogik
 

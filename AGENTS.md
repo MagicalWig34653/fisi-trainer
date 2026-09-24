@@ -68,10 +68,11 @@ bash Scripts/package-release.sh /tmp/fisi-release v1.0.0
 
 - Repository: https://github.com/MagicalWig34653/fisi-trainer
 - `build.yml` runs tests for pushes to `main` and pull requests. Untrusted PR jobs use read-only permissions and no credentials.
-- `release.yml` packages a published release's tag and attaches the app ZIP and SHA-256 checksum to that release.
-- Release tags use `vMAJOR.MINOR.PATCH`. The packaging script sets the app marketing version, verifies both `arm64` and `x86_64`, creates a clean staging copy, signs locally and packages the `.app` with `ditto`.
+- `release.yml` packages a published release's tag and attaches the app DMG and SHA-256 checksum to that release.
+- Release tags use `vMAJOR.MINOR.PATCH`. The packaging script sets the app marketing version, verifies both `arm64` and `x86_64`, creates a clean staging copy, signs locally and packages the `.app` as a DMG with `Scripts/create-dmg.sh`. DMG tooling is version-pinned in `Packaging/requirements-dmg.txt` and isolated from app dependencies.
 - Release apps currently have an ad-hoc signature. They are not Developer-ID-signed or notarized. Do not imply otherwise or add Gatekeeper-disabling instructions.
 - Keep GitHub tokens in the step that requires them. Pass event-derived strings through quoted environment variables rather than interpolating them into shell code. Pin external actions to reviewed commit SHAs.
+- For DMG changes, verify the image, mount it and check the app signature, Applications link, background and Finder layout. Keep the background artwork and icon coordinates in sync; no GUI automation should be required on CI.
 - Before publishing, review staged files for personal paths, credentials, user-specific Xcode files and build output. Preserve the user's authorization scope; do not publish a release or push changes unless requested or already authorized for the task.
 
 ## License
