@@ -1,0 +1,40 @@
+name: Release macOS app
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    runs-on: macos-26
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+      RELEASE_TAG: ${{ github.event.release.tag_name }}
+    steps:
+      - name: Check out release tag
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          persist-credentials: false
+      - name: Verify Xcode
+        run: xcodebuild -version
+      - name: Build and package universal app
+        run: bash Scripts/package-release.sh "$RUNNER_TEMP/FiSiTrainer-Release" "$RELEASE_TAG"
+      - name: Upload ZIP and checksum to this release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "$RELEASE_TAG" \
+            "$RUNNER_TEMP/FiSiTrainer-Release/FiSiTrainer-$RELEASE_TAG-macOS-universal.zip" \
+            "$RUNNER_TEMP/FiSiTrainer-Release/FiSiTrainer-$RELEASE_TAG-macOS-universal.zip.sha256" \
+            --repo "$GITHUB_REPOSITORY" --clobber

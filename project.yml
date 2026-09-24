@@ -1,0 +1,42 @@
+name: FiSiTrainer
+options:
+  bundleIdPrefix: de.fisitrainer
+  deploymentTarget:
+    macOS: "14.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    DEVELOPMENT_TEAM: ""
+targets:
+  FiSiTrainer:
+    type: application
+    platform: macOS
+    sources:
+      - FiSiTrainer
+      - path: LICENSE
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: de.fisitrainer.mac
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: FiSi Trainer
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.education
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        ENABLE_APP_SANDBOX: YES
+        CODE_SIGN_ENTITLEMENTS: FiSiTrainer/FiSiTrainer.entitlements
+        CODE_SIGN_STYLE: Automatic
+    scheme:
+      testTargets:
+        - FiSiTrainerTests
+  FiSiTrainerTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - FiSiTrainerTests
+    dependencies:
+      - target: FiSiTrainer
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES

@@ -1,0 +1,19 @@
+.DS_Store
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+
+# Local archives, build output and credentials
+dist/
+*.xcarchive
+*.dSYM/
+*.xcresult/
+*.p12
+*.mobileprovision
+.env
+.env.*
+!.env.example
+
+# Local duplicate Xcode project
+/FiSiTrainer 2.xcodeproj/

@@ -1,0 +1,531 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		003DB5A1ACB63AF12ACAC320 /* PetAccessoryGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAFA4FA46CAB600162446D4 /* PetAccessoryGeometry.swift */; };
+		0453454568B7D916CFE6CA51 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = AC05DFF76625A40E977A1487 /* LICENSE */; };
+		0485711B0D81A616CF2F2B83 /* RewardStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C2893476263E71D93F4C63 /* RewardStoreTests.swift */; };
+		0660430E433E4435883DAF96 /* SubnetTrainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030E2B318A7211A592421A48 /* SubnetTrainer.swift */; };
+		079C57C71ED4A74A275127B0 /* TrainingPetContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E1C352939372750DFA3178 /* TrainingPetContext.swift */; };
+		12B63F18A6079896127E01D4 /* PetCompanionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51DE3E546F1C38789A2CB58 /* PetCompanionView.swift */; };
+		15DFFB84BA2E9F4B2DD2D549 /* PetCompanionMessagesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8207D38A08636C571AA3C08 /* PetCompanionMessagesTests.swift */; };
+		20A13BE07244F98D0BD2333E /* PetCompanionMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6CFF33DAB4657D1C55DA6A /* PetCompanionMessages.swift */; };
+		227A86562953F3305F4E4CA0 /* PetAccessories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E6D5C4A86FDA3A3E35549 /* PetAccessories.swift */; };
+		2A0A4EE98D95DE69A46DAB4C /* AdaptiveLearning.swift in Sources */ = {isa = PBXBuildFile; fileRef = B807428B3BE04C9C9AE8431F /* AdaptiveLearning.swift */; };
+		2EA2B31C4D9CA25B9D8B0E01 /* PetDetailGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19B0C99745E0B1566BDE713 /* PetDetailGeometry.swift */; };
+		47EC1CBB6CB31615D609428C /* AdaptiveLearningTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5575563E57A8B68CA5DE8D25 /* AdaptiveLearningTests.swift */; };
+		566DBBCE8D452184A23FABE0 /* PetIntelligenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2DB5C738374805032902B5 /* PetIntelligenceTests.swift */; };
+		58A0BE590AB51EADD0755798 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48ABCD202D6A9C01B366A3EE /* ContentView.swift */; };
+		5CAB61F430AD37FA7035A2D3 /* PetWardrobeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B6C2E9266F92B742E304DA /* PetWardrobeView.swift */; };
+		61A802BB5B2AE2A45856896E /* PetDetailGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774EEBFBB07BF58E8D352666 /* PetDetailGeometryTests.swift */; };
+		6F7DACCF207A76E5D6B32A20 /* PetChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15D91C120EC824FF414649C /* PetChatView.swift */; };
+		79D416C6268A289C634AA2F9 /* FiSiTrainerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A827392610E061E94D25713 /* FiSiTrainerApp.swift */; };
+		A07E8979EA00FFA045C6574F /* GameStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED2FF0D608FEE792B7DB3F1 /* GameStore.swift */; };
+		A7D907B53A7E631B80AA24F2 /* PetSceneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C586DD8BC0778F23D2EBA50 /* PetSceneTests.swift */; };
+		AB22D25F2637725DA2994A45 /* TrainingPetContextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6EAED1754C98BBD21789EA /* TrainingPetContextTests.swift */; };
+		ABE89170D2B4F83B0C16A358 /* PetIntelligence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 942C611FF61B7E8D50DD8ACB /* PetIntelligence.swift */; };
+		ACA577D65F6F7B5530A83004 /* QuestionTimingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB222C1BBD3C4136526E1CF5 /* QuestionTimingTests.swift */; };
+		AE668D69E4992F90ABCA2180 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27C8D57108533DC26A86DD29 /* Models.swift */; };
+		C25519674B70CA8A489E0076 /* Rewards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F5B7C2CFC0C172B48DF841C /* Rewards.swift */; };
+		CD0B6E14E171B5860C1B9F63 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 5F0690CA446A9243AB2A442F /* AppIcon.icon */; };
+		CE4534C6FE7374DA7D4225C5 /* QuestionTiming.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFCA4150B50E2B3B5C71100 /* QuestionTiming.swift */; };
+		CE86A2955412957262996226 /* GameStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6DD79D6B25E22E9C0A9602 /* GameStoreTests.swift */; };
+		EB08CBF747E04918905DBEF3 /* PetScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304B49A7047013E014B78BE3 /* PetScene.swift */; };
+		F28070EACAE82002E4B4C252 /* PetAccessoryGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93295978ED0A3B3854CC290 /* PetAccessoryGeometryTests.swift */; };
+		FAB2AE2B80CF9F11560484FB /* SubnetStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CB3BAD7768B31B1A559D656 /* SubnetStoreTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C4230FA43D487173DE882339 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C59D4887B71533EC1D2486B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D1CD95415059BEB71D869290;
+			remoteInfo = FiSiTrainer;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		030E2B318A7211A592421A48 /* SubnetTrainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubnetTrainer.swift; sourceTree = "<group>"; };
+		13C2893476263E71D93F4C63 /* RewardStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardStoreTests.swift; sourceTree = "<group>"; };
+		1A6DD79D6B25E22E9C0A9602 /* GameStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStoreTests.swift; sourceTree = "<group>"; };
+		1C586DD8BC0778F23D2EBA50 /* PetSceneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetSceneTests.swift; sourceTree = "<group>"; };
+		1DFCA4150B50E2B3B5C71100 /* QuestionTiming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionTiming.swift; sourceTree = "<group>"; };
+		2425D282BE54BF9238E53EE0 /* FiSiTrainer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FiSiTrainer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		27C8D57108533DC26A86DD29 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		2CB3BAD7768B31B1A559D656 /* SubnetStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubnetStoreTests.swift; sourceTree = "<group>"; };
+		2EAFA4FA46CAB600162446D4 /* PetAccessoryGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetAccessoryGeometry.swift; sourceTree = "<group>"; };
+		2F5B7C2CFC0C172B48DF841C /* Rewards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rewards.swift; sourceTree = "<group>"; };
+		304B49A7047013E014B78BE3 /* PetScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetScene.swift; sourceTree = "<group>"; };
+		35E1C352939372750DFA3178 /* TrainingPetContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingPetContext.swift; sourceTree = "<group>"; };
+		38D97AF2724EC91791AED10D /* FiSiTrainer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FiSiTrainer.entitlements; sourceTree = "<group>"; };
+		3ED2FF0D608FEE792B7DB3F1 /* GameStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStore.swift; sourceTree = "<group>"; };
+		48ABCD202D6A9C01B366A3EE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		5575563E57A8B68CA5DE8D25 /* AdaptiveLearningTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveLearningTests.swift; sourceTree = "<group>"; };
+		5F0690CA446A9243AB2A442F /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		774EEBFBB07BF58E8D352666 /* PetDetailGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetDetailGeometryTests.swift; sourceTree = "<group>"; };
+		7E2DB5C738374805032902B5 /* PetIntelligenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetIntelligenceTests.swift; sourceTree = "<group>"; };
+		859E6D5C4A86FDA3A3E35549 /* PetAccessories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetAccessories.swift; sourceTree = "<group>"; };
+		8A827392610E061E94D25713 /* FiSiTrainerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiSiTrainerApp.swift; sourceTree = "<group>"; };
+		942C611FF61B7E8D50DD8ACB /* PetIntelligence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetIntelligence.swift; sourceTree = "<group>"; };
+		9E54B53AFA2289E248B9C876 /* FiSiTrainerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FiSiTrainerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AC05DFF76625A40E977A1487 /* LICENSE */ = {isa = PBXFileReference; path = LICENSE; sourceTree = "<group>"; };
+		B5B6C2E9266F92B742E304DA /* PetWardrobeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetWardrobeView.swift; sourceTree = "<group>"; };
+		B807428B3BE04C9C9AE8431F /* AdaptiveLearning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveLearning.swift; sourceTree = "<group>"; };
+		B93295978ED0A3B3854CC290 /* PetAccessoryGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetAccessoryGeometryTests.swift; sourceTree = "<group>"; };
+		C19B0C99745E0B1566BDE713 /* PetDetailGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetDetailGeometry.swift; sourceTree = "<group>"; };
+		C51DE3E546F1C38789A2CB58 /* PetCompanionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetCompanionView.swift; sourceTree = "<group>"; };
+		D15D91C120EC824FF414649C /* PetChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetChatView.swift; sourceTree = "<group>"; };
+		DE6EAED1754C98BBD21789EA /* TrainingPetContextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingPetContextTests.swift; sourceTree = "<group>"; };
+		EB222C1BBD3C4136526E1CF5 /* QuestionTimingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionTimingTests.swift; sourceTree = "<group>"; };
+		F8207D38A08636C571AA3C08 /* PetCompanionMessagesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetCompanionMessagesTests.swift; sourceTree = "<group>"; };
+		FF6CFF33DAB4657D1C55DA6A /* PetCompanionMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetCompanionMessages.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		083A64B0DF40ED31E914C692 /* FiSiTrainer */ = {
+			isa = PBXGroup;
+			children = (
+				B807428B3BE04C9C9AE8431F /* AdaptiveLearning.swift */,
+				5F0690CA446A9243AB2A442F /* AppIcon.icon */,
+				48ABCD202D6A9C01B366A3EE /* ContentView.swift */,
+				38D97AF2724EC91791AED10D /* FiSiTrainer.entitlements */,
+				8A827392610E061E94D25713 /* FiSiTrainerApp.swift */,
+				3ED2FF0D608FEE792B7DB3F1 /* GameStore.swift */,
+				27C8D57108533DC26A86DD29 /* Models.swift */,
+				859E6D5C4A86FDA3A3E35549 /* PetAccessories.swift */,
+				2EAFA4FA46CAB600162446D4 /* PetAccessoryGeometry.swift */,
+				D15D91C120EC824FF414649C /* PetChatView.swift */,
+				FF6CFF33DAB4657D1C55DA6A /* PetCompanionMessages.swift */,
+				C51DE3E546F1C38789A2CB58 /* PetCompanionView.swift */,
+				C19B0C99745E0B1566BDE713 /* PetDetailGeometry.swift */,
+				942C611FF61B7E8D50DD8ACB /* PetIntelligence.swift */,
+				304B49A7047013E014B78BE3 /* PetScene.swift */,
+				B5B6C2E9266F92B742E304DA /* PetWardrobeView.swift */,
+				1DFCA4150B50E2B3B5C71100 /* QuestionTiming.swift */,
+				2F5B7C2CFC0C172B48DF841C /* Rewards.swift */,
+				030E2B318A7211A592421A48 /* SubnetTrainer.swift */,
+				35E1C352939372750DFA3178 /* TrainingPetContext.swift */,
+			);
+			path = FiSiTrainer;
+			sourceTree = "<group>";
+		};
+		46EBFCE9697599C029A8BBCD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2425D282BE54BF9238E53EE0 /* FiSiTrainer.app */,
+				9E54B53AFA2289E248B9C876 /* FiSiTrainerTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8E8D21AF0E1BE20A2D3AA8AC = {
+			isa = PBXGroup;
+			children = (
+				AC05DFF76625A40E977A1487 /* LICENSE */,
+				083A64B0DF40ED31E914C692 /* FiSiTrainer */,
+				99E73596A22529617B16D808 /* FiSiTrainerTests */,
+				46EBFCE9697599C029A8BBCD /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		99E73596A22529617B16D808 /* FiSiTrainerTests */ = {
+			isa = PBXGroup;
+			children = (
+				5575563E57A8B68CA5DE8D25 /* AdaptiveLearningTests.swift */,
+				1A6DD79D6B25E22E9C0A9602 /* GameStoreTests.swift */,
+				B93295978ED0A3B3854CC290 /* PetAccessoryGeometryTests.swift */,
+				F8207D38A08636C571AA3C08 /* PetCompanionMessagesTests.swift */,
+				774EEBFBB07BF58E8D352666 /* PetDetailGeometryTests.swift */,
+				7E2DB5C738374805032902B5 /* PetIntelligenceTests.swift */,
+				1C586DD8BC0778F23D2EBA50 /* PetSceneTests.swift */,
+				EB222C1BBD3C4136526E1CF5 /* QuestionTimingTests.swift */,
+				13C2893476263E71D93F4C63 /* RewardStoreTests.swift */,
+				2CB3BAD7768B31B1A559D656 /* SubnetStoreTests.swift */,
+				DE6EAED1754C98BBD21789EA /* TrainingPetContextTests.swift */,
+			);
+			path = FiSiTrainerTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		698C634E5B4C6BA240F3B8C4 /* FiSiTrainerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5FA13C3AA9A99C592FDCEE43 /* Build configuration list for PBXNativeTarget "FiSiTrainerTests" */;
+			buildPhases = (
+				6FB965ABCAD84B11CCD452BE /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AD81942F2A8E864F403E4151 /* PBXTargetDependency */,
+			);
+			name = FiSiTrainerTests;
+			packageProductDependencies = (
+			);
+			productName = FiSiTrainerTests;
+			productReference = 9E54B53AFA2289E248B9C876 /* FiSiTrainerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		D1CD95415059BEB71D869290 /* FiSiTrainer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B28882FD84656C9BCF306B42 /* Build configuration list for PBXNativeTarget "FiSiTrainer" */;
+			buildPhases = (
+				FFB7763BC770EF6144F69B9F /* Sources */,
+				944D2713D18ACFB58CE31506 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FiSiTrainer;
+			packageProductDependencies = (
+			);
+			productName = FiSiTrainer;
+			productReference = 2425D282BE54BF9238E53EE0 /* FiSiTrainer.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1C59D4887B71533EC1D2486B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					698C634E5B4C6BA240F3B8C4 = {
+						DevelopmentTeam = "";
+					};
+					D1CD95415059BEB71D869290 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 8C292767417C6B6B9CAADCD8 /* Build configuration list for PBXProject "FiSiTrainer" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 8E8D21AF0E1BE20A2D3AA8AC;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 46EBFCE9697599C029A8BBCD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D1CD95415059BEB71D869290 /* FiSiTrainer */,
+				698C634E5B4C6BA240F3B8C4 /* FiSiTrainerTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		944D2713D18ACFB58CE31506 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD0B6E14E171B5860C1B9F63 /* AppIcon.icon in Resources */,
+				0453454568B7D916CFE6CA51 /* LICENSE in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6FB965ABCAD84B11CCD452BE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				47EC1CBB6CB31615D609428C /* AdaptiveLearningTests.swift in Sources */,
+				CE86A2955412957262996226 /* GameStoreTests.swift in Sources */,
+				F28070EACAE82002E4B4C252 /* PetAccessoryGeometryTests.swift in Sources */,
+				15DFFB84BA2E9F4B2DD2D549 /* PetCompanionMessagesTests.swift in Sources */,
+				61A802BB5B2AE2A45856896E /* PetDetailGeometryTests.swift in Sources */,
+				566DBBCE8D452184A23FABE0 /* PetIntelligenceTests.swift in Sources */,
+				A7D907B53A7E631B80AA24F2 /* PetSceneTests.swift in Sources */,
+				ACA577D65F6F7B5530A83004 /* QuestionTimingTests.swift in Sources */,
+				0485711B0D81A616CF2F2B83 /* RewardStoreTests.swift in Sources */,
+				FAB2AE2B80CF9F11560484FB /* SubnetStoreTests.swift in Sources */,
+				AB22D25F2637725DA2994A45 /* TrainingPetContextTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FFB7763BC770EF6144F69B9F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A0A4EE98D95DE69A46DAB4C /* AdaptiveLearning.swift in Sources */,
+				58A0BE590AB51EADD0755798 /* ContentView.swift in Sources */,
+				79D416C6268A289C634AA2F9 /* FiSiTrainerApp.swift in Sources */,
+				A07E8979EA00FFA045C6574F /* GameStore.swift in Sources */,
+				AE668D69E4992F90ABCA2180 /* Models.swift in Sources */,
+				227A86562953F3305F4E4CA0 /* PetAccessories.swift in Sources */,
+				003DB5A1ACB63AF12ACAC320 /* PetAccessoryGeometry.swift in Sources */,
+				6F7DACCF207A76E5D6B32A20 /* PetChatView.swift in Sources */,
+				20A13BE07244F98D0BD2333E /* PetCompanionMessages.swift in Sources */,
+				12B63F18A6079896127E01D4 /* PetCompanionView.swift in Sources */,
+				2EA2B31C4D9CA25B9D8B0E01 /* PetDetailGeometry.swift in Sources */,
+				ABE89170D2B4F83B0C16A358 /* PetIntelligence.swift in Sources */,
+				EB08CBF747E04918905DBEF3 /* PetScene.swift in Sources */,
+				5CAB61F430AD37FA7035A2D3 /* PetWardrobeView.swift in Sources */,
+				CE4534C6FE7374DA7D4225C5 /* QuestionTiming.swift in Sources */,
+				C25519674B70CA8A489E0076 /* Rewards.swift in Sources */,
+				0660430E433E4435883DAF96 /* SubnetTrainer.swift in Sources */,
+				079C57C71ED4A74A275127B0 /* TrainingPetContext.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AD81942F2A8E864F403E4151 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D1CD95415059BEB71D869290 /* FiSiTrainer */;
+			targetProxy = C4230FA43D487173DE882339 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0B2208FEA99E69F80ADDC618 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = de.fisitrainer.FiSiTrainerTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FiSiTrainer.app/Contents/MacOS/FiSiTrainer";
+			};
+			name = Release;
+		};
+		3922DDDBFDDA57C416553EAA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		8843C584DC66D282D9511E01 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = de.fisitrainer.FiSiTrainerTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FiSiTrainer.app/Contents/MacOS/FiSiTrainer";
+			};
+			name = Debug;
+		};
+		8AA71C2BBF37D1F7D60FD86C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = FiSiTrainer/FiSiTrainer.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "FiSi Trainer";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.fisitrainer.mac;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		C05A8435A89F6B0C16D95B56 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F70457FA865E6D53535AAA98 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = FiSiTrainer/FiSiTrainer.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "FiSi Trainer";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.fisitrainer.mac;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5FA13C3AA9A99C592FDCEE43 /* Build configuration list for PBXNativeTarget "FiSiTrainerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8843C584DC66D282D9511E01 /* Debug */,
+				0B2208FEA99E69F80ADDC618 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8C292767417C6B6B9CAADCD8 /* Build configuration list for PBXProject "FiSiTrainer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C05A8435A89F6B0C16D95B56 /* Debug */,
+				3922DDDBFDDA57C416553EAA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B28882FD84656C9BCF306B42 /* Build configuration list for PBXNativeTarget "FiSiTrainer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8AA71C2BBF37D1F7D60FD86C /* Debug */,
+				F70457FA865E6D53535AAA98 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1C59D4887B71533EC1D2486B /* Project object */;
+}

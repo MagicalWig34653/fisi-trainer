@@ -1,0 +1,12 @@
+FiSi Trainer
+Copyright (C) 2026 Lino Laske
+
+SPDX-License-Identifier: AGPL-3.0-only
+
+This project, including its original artwork and documentation, is licensed
+under the GNU Affero General Public License, version 3 only. See LICENSE.
+
+The application uses Apple system frameworks and SF Symbols provided by
+macOS. Those components are not relicensed by this project.
+
+Source: https://github.com/MagicalWig34653/fisi-trainer

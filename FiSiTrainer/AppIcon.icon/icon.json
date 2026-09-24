@@ -1,0 +1,38 @@
+{
+  "fill" : {
+    "automatic-gradient" : "extended-srgb:0.05500,0.09500,0.16000,1.00000"
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "image-name" : "03-prompt.svg",
+          "name" : "Prompt und Kontakte"
+        },
+        {
+          "image-name" : "02-terminal.svg",
+          "name" : "Terminal und Ohren"
+        },
+        {
+          "glass" : true,
+          "image-name" : "01-mascot.svg",
+          "name" : "Maskottchen"
+        }
+      ],
+      "name" : "Terminal-Katze",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.3
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : [
+      "macOS"
+    ]
+  }
+}
