@@ -117,7 +117,8 @@ final class PetIntelligence: ObservableObject {
             let response = try await session.respond(
                 to: Self.prompt(for: text, context: context) + followup,
                 options: GenerationOptions(
-                    samplingMode: .random(probabilityThreshold: 0.9),
+                    // Keep the Xcode 26 label; Xcode 27 also supports it.
+                    sampling: .random(probabilityThreshold: 0.9),
                     temperature: 0.5,
                     maximumResponseTokens: 300
                 )
