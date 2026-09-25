@@ -58,6 +58,50 @@ extension PetLearningContext {
                      wasCorrect: session.selectedAnswer.map { $0 == question.correctAnswer })
     }
 
+    /// Companion context for the exam arena. Before an answer is submitted, only a method
+    /// hint is given – never the solution. In exam-simulation mode there is no resolution
+    /// step until the whole round finishes, so no solution is ever shown mid-round.
+    static func exam(_ session: ExamSession?, mode: ExamMode) -> PetLearningContext {
+        guard let session else {
+            return .init(id: "exam-hub", title: "Prüfungswissen",
+                         hint: "Wähle ein Fach, ein Thema und ein Spiel. Vor der Abgabe bekommst du nur einen Hinweis, nie die Lösung.",
+                         explanation: nil, wasCorrect: nil)
+        }
+        guard !session.isComplete else {
+            let grade = ExamGrade.grade(forPercent: session.percent)
+            return .init(id: "exam-finished-\(mode.rawValue)-\(session.tasks.count)-\(session.correctCount)-\(Int(session.percent.rounded()))",
+                         title: "\(mode.title) abgeschlossen",
+                         hint: "Schau dir die Auflösung an und wiederhole die Themen, bei denen es eng war.",
+                         explanation: mode == .exam
+                            ? "Ergebnis: \(Int(session.percent.rounded())) % · Note \(grade.note) (\(grade.title))."
+                            : "\(session.correctCount) von \(session.tasks.count) Aufgaben waren richtig.",
+                         wasCorrect: nil)
+        }
+        guard let task = session.currentTask else {
+            return .init(id: "exam-empty", title: "Prüfungswissen",
+                         hint: "Für diese Auswahl ist gerade keine Aufgabe verfügbar.",
+                         explanation: nil, wasCorrect: nil)
+        }
+        let hint = "\(task.topic.studyHint) \(examKindHint(task.kind))"
+        let identity = session.tasks.map(\.id).joined(separator: ",")
+        let baseID = "exam:\(mode.rawValue):\(identity):\(session.index)"
+        guard session.showsResolution, let answer = session.currentAnswer else {
+            return .init(id: baseID, title: task.prompt, hint: hint, explanation: nil, wasCorrect: nil)
+        }
+        return .init(id: baseID, title: task.prompt, hint: hint,
+                     explanation: "Lösung: \(task.solutionText). \(task.explanation)",
+                     wasCorrect: task.isCorrect(answer))
+    }
+
+    private static func examKindHint(_ kind: ExamTask.Kind) -> String {
+        switch kind {
+        case .single: return "Es ist genau eine Antwort richtig."
+        case .multiple: return "Mehrere Antworten sind richtig – wähle alle aus, die zutreffen."
+        case .match: return "Ordne jedem Begriff die passende Kategorie zu."
+        case .order: return "Bringe die Schritte in die richtige Reihenfolge."
+        }
+    }
+
     private static func serviceClue(_ service: PortService) -> String {
         switch service.id {
         case "mysql", "postgresql", "mssql":

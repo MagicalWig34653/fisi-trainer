@@ -1,6 +1,8 @@
 # Entwicklung und Spielregeln
 
-[Zurück zur Projektübersicht](../README.md)
+[Zurück zur Projektübersicht](../README.md) · [Architektur und Wartung](ARCHITECTURE.md)
+
+Eine detaillierte technische Referenz (Dateikarte, Datenfluss, Prüfungswissen im Detail, Persistenzformate, Rezepte für Änderungen) findest du in [ARCHITECTURE.md](ARCHITECTURE.md).
 
 FiSi Trainer ist eine SwiftUI-App für macOS 14 oder neuer. SceneKit zeichnet die Haustiere und ihre Ausstattung aus nativen Geometrien. Es gibt keine zusätzlichen Swift-Pakete und keinen eigenen Netzwerkdienst.
 
@@ -48,9 +50,17 @@ Eine falsche Antwort gibt 5 XP ohne Tempo-Bonus. Es gibt kein Zeitlimit. Die lau
 
 `AdaptiveLearning.swift` speichert Treffer und Fehler pro Dienst/Präfix und Fragetyp. Fehler erhöhen die Auswahlwahrscheinlichkeit in neuen Runden; die letzten fünf Antworten beeinflussen die Gewichtung. Neue und sichere Themen bleiben enthalten, innerhalb einer Runde werden Dienste beziehungsweise Präfixe nicht wiederholt. Ein Reset des jeweiligen Spiels setzt dessen Lernhistorie zurück.
 
+### Prüfungswissen
+
+Die Arena **Prüfungswissen** nutzt einen gemeinsamen Katalog (`ExamCatalog*.swift`) mit Karten für Einfachauswahl, Aussagen, Mehrfachauswahl, Zuordnung, Reihenfolge, Lückentext und Fakten. `ExamTaskFactory` erzeugt daraus Runden; `ExamCalculation` generiert Rechenaufgaben mit zufälligen Werten. Richtige Antworten stehen im Katalog an erster Stelle und werden beim Erzeugen gemischt. Karten-IDs sind Speicherschlüssel und dürfen nicht geändert werden.
+
+Die Aufgaben sind eigene Formulierungen zu den Themen früherer IHK-Prüfungen und geben den Rechtsstand 2026 vereinfacht wieder. Originalaufgaben der IHK/ZPA werden aus urheberrechtlichen Gründen nicht übernommen.
+
+XP und Tempo-Bonus folgen denselben Regeln wie in den anderen Spielen; eine abgeschlossene Runde bringt 50 XP, die Prüfungssimulation 100 XP. In der Simulation gibt es erst am Ende eine Auflösung mit Teilpunkten bei Mehrfach-, Zuordnungs- und Reihenfolgeaufgaben und der IHK-Note (ab 92 % sehr gut, 81 % gut, 67 % befriedigend, 50 % ausreichend, 30 % mangelhaft). Fortschritt liegt in `exam-progress.json`.
+
 ## Fortschritt, Haustiere und Daten
 
-Die XP beider Spiele zählen für die gemeinsame Roadmap. Alle 250 XP steigt das Level; die Roadmap zeigt 100 Level. Katze, Fuchs und Drache werden auf Level 2, 5 und 10 freigeschaltet. Kleidung und Spielzeug erscheinen je nach Level, kosten aber keine XP. Die Auswahl wird pro Tier gespeichert. Interaktionen mit Haustieren vergeben keine Lern-XP.
+Die XP aller Spiele (Port-Quiz, Subnetz-Sprint, Prüfungswissen) zählen für die gemeinsame Roadmap. Alle 250 XP steigt das Level; die Roadmap zeigt 100 Level. Katze, Fuchs und Drache werden auf Level 2, 5 und 10 freigeschaltet. Kleidung und Spielzeug erscheinen je nach Level, kosten aber keine XP. Die Auswahl wird pro Tier gespeichert. Interaktionen mit Haustieren vergeben keine Lern-XP.
 
 Für Belohnungen zählt der höchste erreichte gemeinsame XP-Stand. Der Reset eines einzelnen Spiels nimmt bereits verdiente Level und Haustiere nicht zurück; neue Level folgen, sobald die aktuelle Summe den bisherigen Höchststand übersteigt.
 
@@ -65,6 +75,7 @@ Die Haustiere bestehen aus SceneKit-Geometrien. Die Kamera passt sich beim Tierw
 ## Dateien und App-Icon
 
 - `Models.swift`, `GameStore.swift`, `SubnetTrainer.swift`: Fragen, Regeln und Spielstände.
+- `ExamModels.swift`, `ExamCatalog*.swift`, `ExamTaskFactory.swift`, `ExamCalculation.swift`, `ExamStore.swift`, `ExamViews.swift`: Prüfungswissen-Arena.
 - `AdaptiveLearning.swift`, `QuestionTiming.swift`: Themengewichtung und Zeitbonus.
 - `Rewards.swift`, `PetAccessories.swift`, `PetWardrobeView.swift`: Roadmap, Freischaltungen und Ausstattung.
 - `PetScene.swift`, `PetDetailGeometry.swift`, `PetAccessoryGeometry.swift`: 3D-Szene, Haustiere, Futter und Gegenstände.

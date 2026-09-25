@@ -19,6 +19,7 @@ private enum LabPage: String, CaseIterable {
     case dashboard = "Übersicht"
     case game = "Port-Quiz"
     case subnet = "Subnetz-Sprint"
+    case exam = "Prüfungswissen"
     case rewards = "Level & Haustiere"
     case reference = "Port-Referenz"
 
@@ -27,6 +28,7 @@ private enum LabPage: String, CaseIterable {
         case .dashboard: "square.grid.2x2"
         case .game: "bolt.fill"
         case .subnet: "square.split.2x2"
+        case .exam: "graduationcap.fill"
         case .rewards: "pawprint.fill"
         case .reference: "list.bullet.rectangle"
         }
@@ -37,9 +39,11 @@ struct ContentView: View {
     @EnvironmentObject private var store: GameStore
     @EnvironmentObject private var rewards: RewardStore
     @EnvironmentObject private var subnetStore: SubnetStore
+    @EnvironmentObject private var examStore: ExamStore
     @State private var page: LabPage = .dashboard
     @State private var showingResetConfirmation = false
     @State private var newLevel: Int?
+    @State private var openExamMode: ExamMode?
 
     var body: some View {
         HStack(spacing: 0) {
@@ -98,6 +102,7 @@ struct ContentView: View {
                         case .dashboard: dashboard
                         case .game: game
                         case .subnet: SubnetTrainerView()
+                        case .exam: ExamArenaView(openMode: $openExamMode)
                         case .rewards: RewardsView()
                         case .reference: reference
                         }
@@ -110,10 +115,9 @@ struct ContentView: View {
                 }
             }
             .safeAreaInset(edge: .bottom, spacing: 0) {
-                if page == .game || page == .subnet {
+                if page == .game || page == .subnet || page == .exam {
                     if let pet = rewards.selectedPet {
-                        PetCompanionView(pet: pet, context: page == .game
-                                         ? .port(store.session) : .subnet(subnetStore.session))
+                        PetCompanionView(pet: pet, context: petContext)
                             .padding(.horizontal, 20)
                             .padding(.vertical, 10)
                             .background(LabStyle.sidebar)
@@ -196,6 +200,11 @@ struct ContentView: View {
                                 .fill(LabStyle.accent)
                                 .frame(width: 6, height: 6)
                         }
+                        if item == .exam, ExamMode.allCases.contains(where: { examStore.hasActiveSession($0) }) {
+                            Circle()
+                                .fill(LabStyle.accent)
+                                .frame(width: 6, height: 6)
+                        }
                     }
                     .foregroundStyle(page == item ? LabStyle.accent : LabStyle.muted)
                     .padding(.horizontal, 14)
@@ -265,7 +274,7 @@ struct ContentView: View {
 
             Image(systemName: "terminal")
                 .foregroundStyle(LabStyle.accent)
-            Text("FiSi / NETZWERKE")
+            Text(page == .exam ? "FiSi / PRÜFUNGSWISSEN" : "FiSi / NETZWERKE")
                 .foregroundStyle(LabStyle.muted)
         }
         .font(.system(size: 10, weight: .semibold, design: .monospaced))
@@ -380,6 +389,31 @@ struct ContentView: View {
                         Text("Subnetz-Sprint")
                             .font(.system(size: 20, weight: .bold, design: .rounded))
                         Text("Trainiere IPv4-Präfixe, Subnetzmasken und nutzbare Hostadressen.")
+                            .font(.system(size: 13))
+                            .foregroundStyle(LabStyle.muted)
+                    }
+                    Spacer()
+                    Image(systemName: "arrow.right")
+                }
+                .padding(27)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(LabStyle.surface, in: RoundedRectangle(cornerRadius: 18))
+                .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(LabStyle.border))
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+
+            Button {
+                page = .exam
+            } label: {
+                HStack(spacing: 18) {
+                    Image(systemName: "graduationcap.fill")
+                        .font(.system(size: 28))
+                        .foregroundStyle(LabStyle.accent)
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Prüfungswissen: WiSo & IT")
+                            .font(.system(size: 20, weight: .bold, design: .rounded))
+                        Text("Neun Spielarten zu Wirtschafts- und Sozialkunde sowie IT-Fachwissen, plus Prüfungssimulation.")
                             .font(.system(size: 13))
                             .foregroundStyle(LabStyle.muted)
                     }
@@ -678,6 +712,16 @@ struct ContentView: View {
             }
             .background(LabStyle.surface, in: RoundedRectangle(cornerRadius: 15))
             .overlay(RoundedRectangle(cornerRadius: 15).strokeBorder(LabStyle.border))
+        }
+    }
+
+    private var petContext: PetLearningContext {
+        switch page {
+        case .game: .port(store.session)
+        case .subnet: .subnet(subnetStore.session)
+        case .exam:
+            .exam(openExamMode.flatMap { examStore.session(for: $0) }, mode: openExamMode ?? .quiz)
+        default: .port(store.session)
         }
     }
 

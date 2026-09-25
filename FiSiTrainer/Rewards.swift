@@ -421,6 +421,7 @@ struct RewardsView: View {
     @EnvironmentObject private var rewards: RewardStore
     @EnvironmentObject private var game: GameStore
     @EnvironmentObject private var subnet: SubnetStore
+    @EnvironmentObject private var exam: ExamStore
     @State private var interaction: PetInteraction?
     @State private var interactionID = 0
     @State private var showingRecovery = false
@@ -491,9 +492,11 @@ struct RewardsView: View {
             Button("Datei sichern und neu beginnen", role: .destructive) {
                 rewards.resetCorruptSave()
                 if !rewards.needsRecovery {
-                    let (combined, overflow) = game.progress.totalXP
+                    let (portAndSubnet, overflowedFirst) = game.progress.totalXP
                         .addingReportingOverflow(subnet.progress.totalXP)
-                    rewards.updateXP(overflow ? Int.max : combined)
+                    let (combined, overflowedSecond) = portAndSubnet
+                        .addingReportingOverflow(exam.progress.totalXP)
+                    rewards.updateXP((overflowedFirst || overflowedSecond) ? Int.max : combined)
                 }
             }
         } message: {

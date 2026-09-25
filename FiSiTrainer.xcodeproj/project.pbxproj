@@ -11,32 +11,46 @@
 		0453454568B7D916CFE6CA51 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = AC05DFF76625A40E977A1487 /* LICENSE */; };
 		0485711B0D81A616CF2F2B83 /* RewardStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C2893476263E71D93F4C63 /* RewardStoreTests.swift */; };
 		0660430E433E4435883DAF96 /* SubnetTrainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030E2B318A7211A592421A48 /* SubnetTrainer.swift */; };
+		0718E2C5FF28C7A2C7E2BFC7 /* ExamCatalogArbeit.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACAA2F169DCB3209DBA3E7AC /* ExamCatalogArbeit.swift */; };
 		079C57C71ED4A74A275127B0 /* TrainingPetContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E1C352939372750DFA3178 /* TrainingPetContext.swift */; };
 		12B63F18A6079896127E01D4 /* PetCompanionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51DE3E546F1C38789A2CB58 /* PetCompanionView.swift */; };
 		15DFFB84BA2E9F4B2DD2D549 /* PetCompanionMessagesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8207D38A08636C571AA3C08 /* PetCompanionMessagesTests.swift */; };
+		1AB36E428D33217BB7BFA4D7 /* ExamCalculationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09152EC070BE0BB141D83F85 /* ExamCalculationTests.swift */; };
+		1B3B8FF1E13E8F9852C94D92 /* ExamViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC7ED01401BFCB7186BB3D1 /* ExamViews.swift */; };
+		1E15750429941F7AC88E9557 /* ExamTaskFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0136BB21B3F15D774B3FA2D /* ExamTaskFactory.swift */; };
 		20A13BE07244F98D0BD2333E /* PetCompanionMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6CFF33DAB4657D1C55DA6A /* PetCompanionMessages.swift */; };
 		227A86562953F3305F4E4CA0 /* PetAccessories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859E6D5C4A86FDA3A3E35549 /* PetAccessories.swift */; };
 		2A0A4EE98D95DE69A46DAB4C /* AdaptiveLearning.swift in Sources */ = {isa = PBXBuildFile; fileRef = B807428B3BE04C9C9AE8431F /* AdaptiveLearning.swift */; };
 		2EA2B31C4D9CA25B9D8B0E01 /* PetDetailGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19B0C99745E0B1566BDE713 /* PetDetailGeometry.swift */; };
+		326A35FD7571BE79508EAD27 /* ExamModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAC35B5831FB7BFA00200EE /* ExamModels.swift */; };
 		47EC1CBB6CB31615D609428C /* AdaptiveLearningTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5575563E57A8B68CA5DE8D25 /* AdaptiveLearningTests.swift */; };
 		566DBBCE8D452184A23FABE0 /* PetIntelligenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2DB5C738374805032902B5 /* PetIntelligenceTests.swift */; };
 		58A0BE590AB51EADD0755798 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48ABCD202D6A9C01B366A3EE /* ContentView.swift */; };
+		5B760F437435D6D2D34800E8 /* ExamCatalogWirtschaft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0515098DBB6A62E16526353B /* ExamCatalogWirtschaft.swift */; };
 		5CAB61F430AD37FA7035A2D3 /* PetWardrobeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B6C2E9266F92B742E304DA /* PetWardrobeView.swift */; };
 		61A802BB5B2AE2A45856896E /* PetDetailGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774EEBFBB07BF58E8D352666 /* PetDetailGeometryTests.swift */; };
 		6F7DACCF207A76E5D6B32A20 /* PetChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15D91C120EC824FF414649C /* PetChatView.swift */; };
 		79D416C6268A289C634AA2F9 /* FiSiTrainerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A827392610E061E94D25713 /* FiSiTrainerApp.swift */; };
+		9E226071B8ACA31C76B73867 /* ExamStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92027BFCD3161E9D326B6BE4 /* ExamStoreTests.swift */; };
 		A07E8979EA00FFA045C6574F /* GameStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED2FF0D608FEE792B7DB3F1 /* GameStore.swift */; };
+		A4366DF804AD2DE2992846AD /* ExamCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF965F7699A6C17FB66C131 /* ExamCatalogTests.swift */; };
+		A6FF5A6277B21F30E1BDA273 /* ExamCalculation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCC1C724DDD94D24F5F6D78 /* ExamCalculation.swift */; };
 		A7D907B53A7E631B80AA24F2 /* PetSceneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C586DD8BC0778F23D2EBA50 /* PetSceneTests.swift */; };
+		AAAFB90FAFC8211B7A855A29 /* ExamStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF36667EFA1288072A729FB4 /* ExamStore.swift */; };
 		AB22D25F2637725DA2994A45 /* TrainingPetContextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6EAED1754C98BBD21789EA /* TrainingPetContextTests.swift */; };
 		ABE89170D2B4F83B0C16A358 /* PetIntelligence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 942C611FF61B7E8D50DD8ACB /* PetIntelligence.swift */; };
 		ACA577D65F6F7B5530A83004 /* QuestionTimingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB222C1BBD3C4136526E1CF5 /* QuestionTimingTests.swift */; };
 		AE668D69E4992F90ABCA2180 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27C8D57108533DC26A86DD29 /* Models.swift */; };
 		C25519674B70CA8A489E0076 /* Rewards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F5B7C2CFC0C172B48DF841C /* Rewards.swift */; };
+		C4F544A9E5C2B7AE82D60F04 /* ExamCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8DFF8766FFF467168AD2B /* ExamCatalog.swift */; };
 		CD0B6E14E171B5860C1B9F63 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 5F0690CA446A9243AB2A442F /* AppIcon.icon */; };
 		CE4534C6FE7374DA7D4225C5 /* QuestionTiming.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DFCA4150B50E2B3B5C71100 /* QuestionTiming.swift */; };
+		CE7C03BC093039DCDC810457 /* ExamCatalogIT.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5782464CC2B76E179567271 /* ExamCatalogIT.swift */; };
 		CE86A2955412957262996226 /* GameStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6DD79D6B25E22E9C0A9602 /* GameStoreTests.swift */; };
+		DDF6A0D5F937D34DFFAB5DA9 /* ExamCatalogUnternehmen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46CFFE7C5E38C316195D0E0A /* ExamCatalogUnternehmen.swift */; };
 		EB08CBF747E04918905DBEF3 /* PetScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304B49A7047013E014B78BE3 /* PetScene.swift */; };
 		F28070EACAE82002E4B4C252 /* PetAccessoryGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93295978ED0A3B3854CC290 /* PetAccessoryGeometryTests.swift */; };
+		F7DAFEE2CE70B535EF87F2E2 /* ExamCatalogSozial.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0B598FDEC0D55BBF2324C5 /* ExamCatalogSozial.swift */; };
 		FAB2AE2B80CF9F11560484FB /* SubnetStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CB3BAD7768B31B1A559D656 /* SubnetStoreTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -52,6 +66,9 @@
 
 /* Begin PBXFileReference section */
 		030E2B318A7211A592421A48 /* SubnetTrainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubnetTrainer.swift; sourceTree = "<group>"; };
+		0515098DBB6A62E16526353B /* ExamCatalogWirtschaft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogWirtschaft.swift; sourceTree = "<group>"; };
+		09152EC070BE0BB141D83F85 /* ExamCalculationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCalculationTests.swift; sourceTree = "<group>"; };
+		0CCC1C724DDD94D24F5F6D78 /* ExamCalculation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCalculation.swift; sourceTree = "<group>"; };
 		13C2893476263E71D93F4C63 /* RewardStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardStoreTests.swift; sourceTree = "<group>"; };
 		1A6DD79D6B25E22E9C0A9602 /* GameStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStoreTests.swift; sourceTree = "<group>"; };
 		1C586DD8BC0778F23D2EBA50 /* PetSceneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetSceneTests.swift; sourceTree = "<group>"; };
@@ -59,30 +76,41 @@
 		2425D282BE54BF9238E53EE0 /* FiSiTrainer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FiSiTrainer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		27C8D57108533DC26A86DD29 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		2CB3BAD7768B31B1A559D656 /* SubnetStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubnetStoreTests.swift; sourceTree = "<group>"; };
+		2EAC35B5831FB7BFA00200EE /* ExamModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamModels.swift; sourceTree = "<group>"; };
 		2EAFA4FA46CAB600162446D4 /* PetAccessoryGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetAccessoryGeometry.swift; sourceTree = "<group>"; };
 		2F5B7C2CFC0C172B48DF841C /* Rewards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rewards.swift; sourceTree = "<group>"; };
 		304B49A7047013E014B78BE3 /* PetScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetScene.swift; sourceTree = "<group>"; };
 		35E1C352939372750DFA3178 /* TrainingPetContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingPetContext.swift; sourceTree = "<group>"; };
 		38D97AF2724EC91791AED10D /* FiSiTrainer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FiSiTrainer.entitlements; sourceTree = "<group>"; };
 		3ED2FF0D608FEE792B7DB3F1 /* GameStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStore.swift; sourceTree = "<group>"; };
+		44D8DFF8766FFF467168AD2B /* ExamCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalog.swift; sourceTree = "<group>"; };
+		46CFFE7C5E38C316195D0E0A /* ExamCatalogUnternehmen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogUnternehmen.swift; sourceTree = "<group>"; };
 		48ABCD202D6A9C01B366A3EE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		5575563E57A8B68CA5DE8D25 /* AdaptiveLearningTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveLearningTests.swift; sourceTree = "<group>"; };
 		5F0690CA446A9243AB2A442F /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		6EF965F7699A6C17FB66C131 /* ExamCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogTests.swift; sourceTree = "<group>"; };
 		774EEBFBB07BF58E8D352666 /* PetDetailGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetDetailGeometryTests.swift; sourceTree = "<group>"; };
 		7E2DB5C738374805032902B5 /* PetIntelligenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetIntelligenceTests.swift; sourceTree = "<group>"; };
 		859E6D5C4A86FDA3A3E35549 /* PetAccessories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetAccessories.swift; sourceTree = "<group>"; };
 		8A827392610E061E94D25713 /* FiSiTrainerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiSiTrainerApp.swift; sourceTree = "<group>"; };
+		8EC7ED01401BFCB7186BB3D1 /* ExamViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamViews.swift; sourceTree = "<group>"; };
+		92027BFCD3161E9D326B6BE4 /* ExamStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamStoreTests.swift; sourceTree = "<group>"; };
 		942C611FF61B7E8D50DD8ACB /* PetIntelligence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetIntelligence.swift; sourceTree = "<group>"; };
 		9E54B53AFA2289E248B9C876 /* FiSiTrainerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FiSiTrainerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A5782464CC2B76E179567271 /* ExamCatalogIT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogIT.swift; sourceTree = "<group>"; };
 		AC05DFF76625A40E977A1487 /* LICENSE */ = {isa = PBXFileReference; path = LICENSE; sourceTree = "<group>"; };
+		ACAA2F169DCB3209DBA3E7AC /* ExamCatalogArbeit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogArbeit.swift; sourceTree = "<group>"; };
+		AF36667EFA1288072A729FB4 /* ExamStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamStore.swift; sourceTree = "<group>"; };
 		B5B6C2E9266F92B742E304DA /* PetWardrobeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetWardrobeView.swift; sourceTree = "<group>"; };
 		B807428B3BE04C9C9AE8431F /* AdaptiveLearning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveLearning.swift; sourceTree = "<group>"; };
 		B93295978ED0A3B3854CC290 /* PetAccessoryGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetAccessoryGeometryTests.swift; sourceTree = "<group>"; };
+		BF0B598FDEC0D55BBF2324C5 /* ExamCatalogSozial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogSozial.swift; sourceTree = "<group>"; };
 		C19B0C99745E0B1566BDE713 /* PetDetailGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetDetailGeometry.swift; sourceTree = "<group>"; };
 		C51DE3E546F1C38789A2CB58 /* PetCompanionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetCompanionView.swift; sourceTree = "<group>"; };
 		D15D91C120EC824FF414649C /* PetChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetChatView.swift; sourceTree = "<group>"; };
 		DE6EAED1754C98BBD21789EA /* TrainingPetContextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingPetContextTests.swift; sourceTree = "<group>"; };
 		EB222C1BBD3C4136526E1CF5 /* QuestionTimingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionTimingTests.swift; sourceTree = "<group>"; };
+		F0136BB21B3F15D774B3FA2D /* ExamTaskFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamTaskFactory.swift; sourceTree = "<group>"; };
 		F8207D38A08636C571AA3C08 /* PetCompanionMessagesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetCompanionMessagesTests.swift; sourceTree = "<group>"; };
 		FF6CFF33DAB4657D1C55DA6A /* PetCompanionMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetCompanionMessages.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -94,6 +122,17 @@
 				B807428B3BE04C9C9AE8431F /* AdaptiveLearning.swift */,
 				5F0690CA446A9243AB2A442F /* AppIcon.icon */,
 				48ABCD202D6A9C01B366A3EE /* ContentView.swift */,
+				0CCC1C724DDD94D24F5F6D78 /* ExamCalculation.swift */,
+				44D8DFF8766FFF467168AD2B /* ExamCatalog.swift */,
+				ACAA2F169DCB3209DBA3E7AC /* ExamCatalogArbeit.swift */,
+				A5782464CC2B76E179567271 /* ExamCatalogIT.swift */,
+				BF0B598FDEC0D55BBF2324C5 /* ExamCatalogSozial.swift */,
+				46CFFE7C5E38C316195D0E0A /* ExamCatalogUnternehmen.swift */,
+				0515098DBB6A62E16526353B /* ExamCatalogWirtschaft.swift */,
+				2EAC35B5831FB7BFA00200EE /* ExamModels.swift */,
+				AF36667EFA1288072A729FB4 /* ExamStore.swift */,
+				F0136BB21B3F15D774B3FA2D /* ExamTaskFactory.swift */,
+				8EC7ED01401BFCB7186BB3D1 /* ExamViews.swift */,
 				38D97AF2724EC91791AED10D /* FiSiTrainer.entitlements */,
 				8A827392610E061E94D25713 /* FiSiTrainerApp.swift */,
 				3ED2FF0D608FEE792B7DB3F1 /* GameStore.swift */,
@@ -138,6 +177,9 @@
 			isa = PBXGroup;
 			children = (
 				5575563E57A8B68CA5DE8D25 /* AdaptiveLearningTests.swift */,
+				09152EC070BE0BB141D83F85 /* ExamCalculationTests.swift */,
+				6EF965F7699A6C17FB66C131 /* ExamCatalogTests.swift */,
+				92027BFCD3161E9D326B6BE4 /* ExamStoreTests.swift */,
 				1A6DD79D6B25E22E9C0A9602 /* GameStoreTests.swift */,
 				B93295978ED0A3B3854CC290 /* PetAccessoryGeometryTests.swift */,
 				F8207D38A08636C571AA3C08 /* PetCompanionMessagesTests.swift */,
@@ -247,6 +289,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				47EC1CBB6CB31615D609428C /* AdaptiveLearningTests.swift in Sources */,
+				1AB36E428D33217BB7BFA4D7 /* ExamCalculationTests.swift in Sources */,
+				A4366DF804AD2DE2992846AD /* ExamCatalogTests.swift in Sources */,
+				9E226071B8ACA31C76B73867 /* ExamStoreTests.swift in Sources */,
 				CE86A2955412957262996226 /* GameStoreTests.swift in Sources */,
 				F28070EACAE82002E4B4C252 /* PetAccessoryGeometryTests.swift in Sources */,
 				15DFFB84BA2E9F4B2DD2D549 /* PetCompanionMessagesTests.swift in Sources */,
@@ -266,6 +311,17 @@
 			files = (
 				2A0A4EE98D95DE69A46DAB4C /* AdaptiveLearning.swift in Sources */,
 				58A0BE590AB51EADD0755798 /* ContentView.swift in Sources */,
+				A6FF5A6277B21F30E1BDA273 /* ExamCalculation.swift in Sources */,
+				C4F544A9E5C2B7AE82D60F04 /* ExamCatalog.swift in Sources */,
+				0718E2C5FF28C7A2C7E2BFC7 /* ExamCatalogArbeit.swift in Sources */,
+				CE7C03BC093039DCDC810457 /* ExamCatalogIT.swift in Sources */,
+				F7DAFEE2CE70B535EF87F2E2 /* ExamCatalogSozial.swift in Sources */,
+				DDF6A0D5F937D34DFFAB5DA9 /* ExamCatalogUnternehmen.swift in Sources */,
+				5B760F437435D6D2D34800E8 /* ExamCatalogWirtschaft.swift in Sources */,
+				326A35FD7571BE79508EAD27 /* ExamModels.swift in Sources */,
+				AAAFB90FAFC8211B7A855A29 /* ExamStore.swift in Sources */,
+				1E15750429941F7AC88E9557 /* ExamTaskFactory.swift in Sources */,
+				1B3B8FF1E13E8F9852C94D92 /* ExamViews.swift in Sources */,
 				79D416C6268A289C634AA2F9 /* FiSiTrainerApp.swift in Sources */,
 				A07E8979EA00FFA045C6574F /* GameStore.swift in Sources */,
 				AE668D69E4992F90ABCA2180 /* Models.swift in Sources */,

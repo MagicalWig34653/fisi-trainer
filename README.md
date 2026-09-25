@@ -35,11 +35,12 @@ Alternativ lässt sich die App [aus dem Quellcode bauen](Documentation/DEVELOPME
 
 - **Port-Quiz:** 40 Dienste, Fragen von Dienst zu Port und umgekehrt sowie TCP/UDP. Zehn Fragen pro Runde, Erklärung nach jeder Antwort.
 - **Subnetz-Sprint:** IPv4-Präfixe von `/16` bis `/30`, Subnetzmasken und nutzbare Hostadressen. Ebenfalls zehn Fragen pro Runde.
+- **Prüfungswissen (WiSo & IT):** Über 700 eigene Übungsaufgaben plus 21 Rechenaufgaben-Typen mit wechselnden Zahlen zu Wirtschafts- und Sozialkunde (Ausbildung, Arbeitsrecht, Arbeitsschutz, Betriebsrat und Tarif, Sozialversicherung, Rechtsformen, Rechtsgeschäfte, Markt und Wirtschaftspolitik, Nachhaltigkeit) sowie IT-Fachwissen (Netzwerke, IT-Sicherheit und Datenschutz, Speicher und Betrieb). Neun Spielarten: Prüfungsquiz, Richtig oder falsch, Alle finden, Zuordnen, Reihenfolge, Lückentext, Zahlen & Fristen, Rechentraining mit immer neuen Zahlen und eine Prüfungssimulation mit 30 Aufgaben und IHK-Note. Die Aufgaben orientieren sich an den Themen früherer IHK-Prüfungen, sind aber selbst formuliert.
 - **Adaptives Training:** Fehler und die letzten Antworten beeinflussen die Themenauswahl neuer Runden. Sichere und neue Themen bleiben im Mix.
 - **Tempo-XP ohne Zeitdruck:** Beide Spiele messen die Antwortzeit für einen Bonus. Es gibt kein Zeitlimit.
 - **Tastatursteuerung:** **1–4** wählt Antworten, **Return** führt weiter.
 
-Beide Spiele speichern ihre Runden und XP lokal. Die gemeinsame Belohnungs-Roadmap zeigt **100 Level** mit Titeln, Abzeichen, drei freischaltbaren Haustieren und acht Ausstattungsstücken.
+Alle Spiele speichern ihre Runden und XP lokal. Die gemeinsame Belohnungs-Roadmap zeigt **100 Level** mit Titeln, Abzeichen, drei freischaltbaren Haustieren und acht Ausstattungsstücken.
 
 ![Katze, Fuchs und Drache im Haustierbereich](Documentation/Screenshots/pets.png)
 
@@ -53,6 +54,6 @@ KI-Anfragen starten nur nach einem Klick und werden nicht an einen Cloud-Dienst 
 
 ## Mitmachen und Lizenz
 
-Fehlerberichte und Beiträge sind willkommen. Der [Beitragsleitfaden](CONTRIBUTING.md) erklärt den lokalen Build und die Tests; [Entwicklungsdetails](Documentation/DEVELOPMENT.md) beschreiben Aufbau und Spielregeln.
+Fehlerberichte und Beiträge sind willkommen. Der [Beitragsleitfaden](CONTRIBUTING.md) erklärt den lokalen Build und die Tests; [Entwicklungsdetails](Documentation/DEVELOPMENT.md) beschreiben Aufbau und Spielregeln, [Architektur und Wartung](Documentation/ARCHITECTURE.md) beschreibt Code-Struktur und Datenmodelle im Detail.
 
 Der Quellcode steht unter [**AGPL-3.0-only**](LICENSE). FiSi Trainer ist ein unabhängiges Lernprojekt und kein offizielles Angebot der IHK oder einer Prüfungseinrichtung.
