@@ -4,7 +4,7 @@
 
 <h1 align="center">FiSi Trainer</h1>
 
-<p align="center">Ports und IPv4-Subnetze üben – mit kurzen Runden, sichtbarem Fortschritt und einem 3D-Begleiter.</p>
+<p align="center">Ports, IPv4-Subnetze und Prüfungswissen üben – mit kurzen Runden, sichtbarem Fortschritt und einem 3D-Begleiter.</p>
 
 <p align="center">
   <a href="https://github.com/MagicalWig34653/fisi-trainer/blob/main/LICENSE"><img src="https://img.shields.io/badge/Lizenz-AGPL--3.0--only-blue" alt="Lizenz: AGPL-3.0-only"></a>
@@ -21,7 +21,7 @@ FiSi Trainer ist eine native macOS-App zur eigenständigen Vorbereitung auf Fach
 
 ## Herunterladen und starten
 
-1. Auf der Seite [**Neueste Version herunterladen**](https://github.com/MagicalWig34653/fisi-trainer/releases/latest) die DMG laden, zum Beispiel `FiSiTrainer-v1.0.1-macOS-universal.dmg`.
+1. Auf der Seite [**Neueste Version herunterladen**](https://github.com/MagicalWig34653/fisi-trainer/releases/latest) die DMG laden, zum Beispiel `FiSiTrainer-v1.1.0-macOS-universal.dmg`.
 2. DMG öffnen und im Finder-Fenster **FiSiTrainer** auf die Verknüpfung **Programme** ziehen. Danach die DMG auswerfen und die App aus Programme starten. Benötigt **macOS 14 oder neuer**.
 3. Die gleichnamige `.sha256`-Datei im Release enthält die Prüfsumme der DMG.
 
@@ -37,8 +37,8 @@ Alternativ lässt sich die App [aus dem Quellcode bauen](Documentation/DEVELOPME
 - **Subnetz-Sprint:** IPv4-Präfixe von `/16` bis `/30`, Subnetzmasken und nutzbare Hostadressen. Ebenfalls zehn Fragen pro Runde.
 - **Prüfungswissen (WiSo & IT):** Über 700 eigene Übungsaufgaben plus 21 Rechenaufgaben-Typen mit wechselnden Zahlen zu Wirtschafts- und Sozialkunde (Ausbildung, Arbeitsrecht, Arbeitsschutz, Betriebsrat und Tarif, Sozialversicherung, Rechtsformen, Rechtsgeschäfte, Markt und Wirtschaftspolitik, Nachhaltigkeit) sowie IT-Fachwissen (Netzwerke, IT-Sicherheit und Datenschutz, Speicher und Betrieb). Neun Spielarten: Prüfungsquiz, Richtig oder falsch, Alle finden, Zuordnen, Reihenfolge, Lückentext, Zahlen & Fristen, Rechentraining mit immer neuen Zahlen und eine Prüfungssimulation mit 30 Aufgaben und IHK-Note. Die Aufgaben orientieren sich an den Themen früherer IHK-Prüfungen, sind aber selbst formuliert.
 - **Adaptives Training:** Fehler und die letzten Antworten beeinflussen die Themenauswahl neuer Runden. Sichere und neue Themen bleiben im Mix.
-- **Tempo-XP ohne Zeitdruck:** Beide Spiele messen die Antwortzeit für einen Bonus. Es gibt kein Zeitlimit.
-- **Tastatursteuerung:** **1–4** wählt Antworten, **Return** führt weiter.
+- **Tempo-XP ohne Zeitdruck:** Alle Spiele messen die Antwortzeit für einen Bonus. Es gibt kein Zeitlimit.
+- **Tastatursteuerung:** Zifferntasten wählen Antworten (**1–4** in Port-Quiz und Subnetz-Sprint, bis **9** im Prüfungswissen), **Return** führt weiter.
 
 Alle Spiele speichern ihre Runden und XP lokal. Die gemeinsame Belohnungs-Roadmap zeigt **100 Level** mit Titeln, Abzeichen, drei freischaltbaren Haustieren und acht Ausstattungsstücken.
 
