@@ -6,7 +6,7 @@ Für agentengestützte Änderungen gelten zusätzlich die Hinweise in [AGENTS.md
 
 ## Lokal entwickeln
 
-Du brauchst einen Mac mit **Xcode 26 oder neuer** (die CI nutzt Xcode 26.6) und für Änderungen an `project.yml` zusätzlich [XcodeGen](https://github.com/yonaskolb/XcodeGen). Das eingecheckte `FiSiTrainer.xcodeproj` lässt sich direkt in Xcode öffnen; Scheme **FiSiTrainer**, Ziel **My Mac**. **⌘R** startet die App, **⌘U** die Tests.
+Du brauchst einen Mac mit **Xcode 26 oder neuer** (die CI nutzt Xcode 26.6) und für Änderungen an `project.yml` zusätzlich [XcodeGen](https://github.com/yonaskolb/XcodeGen). Das eingecheckte `FiSiTrainer.xcodeproj` lässt sich direkt in Xcode öffnen; Scheme **FiSiTrainer**, Ziel **My Mac** (oder ein iPhone-/iPad-Simulator). **⌘R** startet die App, **⌘U** die Tests (nur macOS).
 
 Nach Änderungen an `project.yml` das Projekt neu erzeugen und die Änderung am Xcode-Projekt mit einreichen:
 
@@ -26,7 +26,7 @@ xcodebuild test \
   CODE_SIGNING_ALLOWED=NO
 ```
 
-Der CI-Workflow in `.github/workflows/build.yml` führt die macOS-Tests für Pushes und Pull Requests auf `main` aus. [Entwicklungsdetails](Documentation/DEVELOPMENT.md) erklären Speicherung, Spielregeln und Dateiaufbau.
+Der CI-Workflow in `.github/workflows/build.yml` führt die macOS-Tests für Pushes und Pull Requests auf `main` aus und baut die App zusätzlich für den iOS Simulator (`xcodebuild build -destination 'generic/platform=iOS Simulator'`). [Entwicklungsdetails](Documentation/DEVELOPMENT.md) erklären Speicherung, Spielregeln und Dateiaufbau.
 
 ## Beiträge vorbereiten
 
