@@ -67,7 +67,7 @@ struct PetWardrobeView: View {
                 .padding(20)
             }
         }
-        .frame(minWidth: 520, idealWidth: 650, minHeight: 440, idealHeight: 510)
+        .macSheetSize(minWidth: 520, idealWidth: 650, minHeight: 440, idealHeight: 510)
         .background(surface)
         .foregroundStyle(.white)
     }

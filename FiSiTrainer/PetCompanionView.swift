@@ -24,6 +24,9 @@ struct PetCompanionView: View {
     @State private var motivationTurn = 0
     @State private var recentHistory: [PetChatMessage] = []
 
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    private var compact: Bool { horizontalSizeClass == .compact }
+
     private let background = Color(red: 0.078, green: 0.113, blue: 0.151)
     private let raised = Color(red: 0.103, green: 0.145, blue: 0.183)
     private let muted = Color(red: 0.53, green: 0.61, blue: 0.64)
@@ -33,7 +36,7 @@ struct PetCompanionView: View {
         HStack(alignment: .center, spacing: 16) {
             PetHabitatView(pet: pet, interaction: interaction, interactionID: interactionID,
                            outfit: rewards.outfit(for: pet), toy: rewards.toy(for: pet))
-                .frame(width: 140, height: 128)
+                .frame(width: compact ? 92 : 140, height: compact ? 92 : 128)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .accessibilityLabel("\(pet.name), dein 3D-Begleiter")
 
@@ -84,14 +87,9 @@ struct PetCompanionView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
-                HStack(spacing: 8) {
-                    actionButton(context.wasCorrect == nil ? "Tipp" : "Erklärung", symbol: "lightbulb") { showPreparedTip() }
-                    actionButton("Mut machen", symbol: "heart.fill") { requestMotivation() }
-                    actionButton(context.wasCorrect == nil ? "KI-Tipp" : "KI-Erklärung", symbol: "sparkles") { requestAIHint() }
-                    actionButton("Plaudern", symbol: "bubble.left.and.bubble.right") {
-                        showingChat = true
-                    }
-                    Spacer(minLength: 0)
+                ViewThatFits(in: .horizontal) {
+                    actionButtons
+                    ScrollView(.horizontal, showsIndicators: false) { actionButtons }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -117,6 +115,18 @@ struct PetCompanionView: View {
             interactionID += 1
         }
         .onDisappear { cancelResponse() }
+    }
+
+    private var actionButtons: some View {
+        HStack(spacing: 8) {
+            actionButton(context.wasCorrect == nil ? "Tipp" : "Erklärung", symbol: "lightbulb") { showPreparedTip() }
+            actionButton("Mut machen", symbol: "heart.fill") { requestMotivation() }
+            actionButton(context.wasCorrect == nil ? "KI-Tipp" : "KI-Erklärung", symbol: "sparkles") { requestAIHint() }
+            actionButton("Plaudern", symbol: "bubble.left.and.bubble.right") {
+                showingChat = true
+            }
+            Spacer(minLength: 0)
+        }
     }
 
     private var greeting: String {

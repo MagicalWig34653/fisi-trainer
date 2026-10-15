@@ -3,6 +3,7 @@ options:
   bundleIdPrefix: de.fisitrainer
   deploymentTarget:
     macOS: "14.0"
+    iOS: "17.0"
 settings:
   base:
     SWIFT_VERSION: "5.0"
@@ -10,7 +11,8 @@ settings:
 targets:
   FiSiTrainer:
     type: application
-    platform: macOS
+    platform: auto
+    supportedDestinations: [macOS, iOS]
     sources:
       - FiSiTrainer
       - path: LICENSE
@@ -25,7 +27,14 @@ targets:
         MARKETING_VERSION: "1.0"
         CURRENT_PROJECT_VERSION: "1"
         ENABLE_APP_SANDBOX: YES
-        CODE_SIGN_ENTITLEMENTS: FiSiTrainer/FiSiTrainer.entitlements
+        "CODE_SIGN_ENTITLEMENTS[sdk=macosx*]": FiSiTrainer/FiSiTrainer.entitlements
+        SUPPORTS_MACCATALYST: NO
+        TARGETED_DEVICE_FAMILY: "1,2"
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        "INFOPLIST_KEY_UISupportedInterfaceOrientations[sdk=iphone*]": "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
         CODE_SIGN_STYLE: Automatic
     scheme:
       testTargets:

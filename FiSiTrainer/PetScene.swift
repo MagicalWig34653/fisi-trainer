@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright (C) 2026 Lino Laske
 
-import AppKit
 import SceneKit
 import SwiftUI
+#if canImport(AppKit)
+import AppKit
+#else
+import UIKit
+#endif
 
 final class FramedPetView: SCNView {
     var reframe: (() -> Void)?
@@ -11,12 +15,32 @@ final class FramedPetView: SCNView {
     var framingDistance: CGFloat = 1
     private var lastLayoutSize = CGSize.zero
 
-    override func layout() {
-        super.layout()
+    private func layoutChanged() {
         if bounds.size != lastLayoutSize {
             lastLayoutSize = bounds.size
             reframe?()
         }
+    }
+
+    #if os(macOS)
+    /// Moves the camera along its line of sight, bounded around the framed distance.
+    private func zoom(by factor: CGFloat) {
+        guard let camera = pointOfView else { return }
+        let offsetX = camera.position.cgX - framingCenter.cgX
+        let offsetY = camera.position.cgY - framingCenter.cgY
+        let offsetZ = camera.position.cgZ - framingCenter.cgZ
+        let distance = sqrt(offsetX * offsetX + offsetY * offsetY + offsetZ * offsetZ)
+        guard distance > 0 else { return }
+        let next = min(max(distance * factor, framingDistance * 0.55), framingDistance * 2.5)
+        let ratio = next / distance
+        camera.position = SCNVector3(cg: framingCenter.cgX + offsetX * ratio,
+                                     framingCenter.cgY + offsetY * ratio,
+                                     framingCenter.cgZ + offsetZ * ratio)
+    }
+
+    override func layout() {
+        super.layout()
+        layoutChanged()
     }
 
     override func mouseDown(with event: NSEvent) {
@@ -28,23 +52,38 @@ final class FramedPetView: SCNView {
     }
 
     override func scrollWheel(with event: NSEvent) {
-        guard let camera = pointOfView else { return }
-        let offset = SCNVector3(camera.position.x - framingCenter.x,
-                                camera.position.y - framingCenter.y,
-                                camera.position.z - framingCenter.z)
-        let distance = sqrt(offset.x * offset.x + offset.y * offset.y + offset.z * offset.z)
-        guard distance > 0 else { return }
-        let next = min(max(distance * exp(event.scrollingDeltaY * 0.006),
-                           framingDistance * 0.55), framingDistance * 2.5)
-        let ratio = next / distance
-        camera.position = SCNVector3(framingCenter.x + offset.x * ratio,
-                                     framingCenter.y + offset.y * ratio,
-                                     framingCenter.z + offset.z * ratio)
+        zoom(by: exp(event.scrollingDeltaY * 0.006))
     }
+    #else
+    private var gesturesInstalled = false
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layoutChanged()
+        installGesturesIfNeeded()
+    }
+
+    private func installGesturesIfNeeded() {
+        guard !gesturesInstalled else { return }
+        gesturesInstalled = true
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTap))
+        doubleTap.numberOfTapsRequired = 2
+        doubleTap.cancelsTouchesInView = false
+        addGestureRecognizer(doubleTap)
+    }
+
+    @objc private func handleDoubleTap() { reframe?() }
+    #endif
 }
 
+#if os(macOS)
+typealias PlatformViewRepresentable = NSViewRepresentable
+#else
+typealias PlatformViewRepresentable = UIViewRepresentable
+#endif
+
 /// A real, orbitable SceneKit habitat. The surrounding view owns pet availability and actions.
-struct PetHabitatView: NSViewRepresentable {
+struct PetHabitatView: PlatformViewRepresentable {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let pet: PetKind
     let interaction: PetInteraction?
@@ -63,7 +102,21 @@ struct PetHabitatView: NSViewRepresentable {
 
     func makeCoordinator() -> Coordinator { Coordinator() }
 
-    func makeNSView(context: Context) -> SCNView {
+    #if os(macOS)
+    func makeNSView(context: Context) -> SCNView { makeSceneView(context: context) }
+    func updateNSView(_ view: SCNView, context: Context) { updateSceneView(view, context: context) }
+    static func dismantleNSView(_ view: SCNView, coordinator: Coordinator) {
+        dismantleSceneView(view, coordinator: coordinator)
+    }
+    #else
+    func makeUIView(context: Context) -> SCNView { makeSceneView(context: context) }
+    func updateUIView(_ view: SCNView, context: Context) { updateSceneView(view, context: context) }
+    static func dismantleUIView(_ view: SCNView, coordinator: Coordinator) {
+        dismantleSceneView(view, coordinator: coordinator)
+    }
+    #endif
+
+    private func makeSceneView(context: Context) -> SCNView {
         let view = FramedPetView()
         view.allowsCameraControl = true
         view.cameraControlConfiguration.allowsTranslation = false
@@ -72,9 +125,15 @@ struct PetHabitatView: NSViewRepresentable {
         view.defaultCameraController.automaticTarget = false
         view.autoenablesDefaultLighting = false
         view.antialiasingMode = .multisampling4X
-        view.backgroundColor = NSColor(calibratedRed: 0.08, green: 0.11, blue: 0.18, alpha: 1)
+        view.backgroundColor = PlatformColor(calibratedRed: 0.08, green: 0.11, blue: 0.18, alpha: 1)
+        #if os(macOS)
         view.setAccessibilityRole(.image)
         view.setAccessibilityHelp("Mit der Maus ziehen, um das 3D-Haustier zu drehen.")
+        #else
+        view.isAccessibilityElement = true
+        view.accessibilityTraits = .image
+        view.accessibilityHint = "Mit dem Finger ziehen, um das 3D-Haustier zu drehen."
+        #endif
         view.reframe = { [weak coordinator = context.coordinator, weak view] in
             guard let view else { return }
             coordinator?.frame(in: view)
@@ -85,7 +144,7 @@ struct PetHabitatView: NSViewRepresentable {
         return view
     }
 
-    func updateNSView(_ view: SCNView, context: Context) {
+    private func updateSceneView(_ view: SCNView, context: Context) {
         let coordinator = context.coordinator
         if coordinator.pet != pet || coordinator.outfit != outfit || coordinator.toy != toy ||
             coordinator.reduceMotion != reduceMotion {
@@ -98,7 +157,7 @@ struct PetHabitatView: NSViewRepresentable {
         }
     }
 
-    static func dismantleNSView(_ view: SCNView, coordinator: Coordinator) {
+    private static func dismantleSceneView(_ view: SCNView, coordinator: Coordinator) {
         (view as? FramedPetView)?.reframe = nil
         coordinator.clear()
         view.isPlaying = false
@@ -106,7 +165,7 @@ struct PetHabitatView: NSViewRepresentable {
     }
 
     final class Coordinator {
-        private static let backdrop = NSColor(calibratedRed: 0.08, green: 0.11, blue: 0.18, alpha: 1)
+        private static let backdrop = PlatformColor(calibratedRed: 0.08, green: 0.11, blue: 0.18, alpha: 1)
         var pet: PetKind?
         var outfit: PetOutfit?
         var toy: PetToy?
@@ -146,12 +205,12 @@ struct PetHabitatView: NSViewRepresentable {
             scene.background.contents = Self.backdrop
 
             let plinth = Self.node(SCNCylinder(radius: 1.55, height: 0.18),
-                                   color: NSColor(calibratedRed: 0.23, green: 0.30, blue: 0.43, alpha: 1),
+                                   color: PlatformColor(calibratedRed: 0.23, green: 0.30, blue: 0.43, alpha: 1),
                                    at: SCNVector3(0, -0.12, 0))
             plinth.geometry?.firstMaterial?.metalness.contents = 0.2
             scene.rootNode.addChildNode(plinth)
             let inset = Self.node(SCNCylinder(radius: 1.42, height: 0.025),
-                                 color: NSColor(calibratedRed: 0.36, green: 0.46, blue: 0.59, alpha: 1),
+                                 color: PlatformColor(calibratedRed: 0.36, green: 0.46, blue: 0.59, alpha: 1),
                                  at: SCNVector3(0, -0.012, 0))
             scene.rootNode.addChildNode(inset)
 
@@ -193,21 +252,29 @@ struct PetHabitatView: NSViewRepresentable {
             view.scene = scene
             view.pointOfView = camera
             frame(in: view)
-            view.setAccessibilityLabel("Interaktives 3D-Haustier: \(Self.name(for: kind))")
+            let accessibilityName = "Interaktives 3D-Haustier: \(Self.name(for: kind))"
+            #if os(macOS)
+            view.setAccessibilityLabel(accessibilityName)
+            #else
+            view.accessibilityLabel = accessibilityName
+            #endif
             view.isPlaying = true
         }
 
         /// Fits only the pet geometry; the plinth and temporary effects do not control camera scale.
         func frame(in view: SCNView) {
             guard let character, let camera, view.bounds.width > 0, view.bounds.height > 0 else { return }
-            var points: [SCNVector3] = []
+            // SCNVector3 holds CGFloat on macOS and Float on iOS, so all fitting math uses CGFloat.
+            struct Point { var x, y, z: CGFloat }
+            var points: [Point] = []
             character.enumerateChildNodes { node, _ in
                 guard let geometry = node.geometry else { return }
                 let box = geometry.boundingBox
                 for x in [box.min.x, box.max.x] {
                     for y in [box.min.y, box.max.y] {
                         for z in [box.min.z, box.max.z] {
-                            points.append(node.convertPosition(SCNVector3(x, y, z), to: character))
+                            let corner = node.convertPosition(SCNVector3(x: x, y: y, z: z), to: character)
+                            points.append(Point(x: corner.cgX, y: corner.cgY, z: corner.cgZ))
                         }
                     }
                 }
@@ -216,11 +283,10 @@ struct PetHabitatView: NSViewRepresentable {
             var low = first
             var high = first
             for point in points {
-                low = SCNVector3(min(low.x, point.x), min(low.y, point.y), min(low.z, point.z))
-                high = SCNVector3(max(high.x, point.x), max(high.y, point.y), max(high.z, point.z))
+                low = Point(x: min(low.x, point.x), y: min(low.y, point.y), z: min(low.z, point.z))
+                high = Point(x: max(high.x, point.x), y: max(high.y, point.y), z: max(high.z, point.z))
             }
-            var target = SCNVector3((low.x + high.x) / 2, (low.y + high.y) / 2,
-                                    (low.z + high.z) / 2)
+            var target = Point(x: (low.x + high.x) / 2, y: (low.y + high.y) / 2, z: (low.z + high.z) / 2)
             // A small elevation shows the face and paws without hiding the feet.
             let directionY: CGFloat = 0.22
             let directionZ = sqrt(1 - directionY * directionY)
@@ -228,9 +294,9 @@ struct PetHabitatView: NSViewRepresentable {
             let tanHorizontal = tanVertical * view.bounds.width / view.bounds.height
             let fill: CGFloat = 0.78
             // Reserve room for the largest jump while keeping the resting pet as the center.
-            let fitPoints = points + points.map { SCNVector3($0.x, $0.y + 0.8, $0.z) }
+            let fitPoints = points + points.map { Point(x: $0.x, y: $0.y + 0.8, z: $0.z) }
 
-            func distance(to target: SCNVector3) -> CGFloat {
+            func distance(to target: Point) -> CGFloat {
                 fitPoints.reduce(CGFloat(0.5)) { current, point in
                     let dx = point.x - target.x
                     let dy = point.y - target.y
@@ -265,12 +331,13 @@ struct PetHabitatView: NSViewRepresentable {
                 target.z -= shiftY * directionY
             }
             let fitted = distance(to: target)
-            camera.position = SCNVector3(target.x, target.y + directionY * fitted,
+            let center = SCNVector3(cg: target.x, target.y, target.z)
+            camera.position = SCNVector3(cg: target.x, target.y + directionY * fitted,
                                          target.z + directionZ * fitted)
-            camera.look(at: target)
-            view.defaultCameraController.target = target
+            camera.look(at: center)
+            view.defaultCameraController.target = center
             if let framed = view as? FramedPetView {
-                framed.framingCenter = target
+                framed.framingCenter = center
                 framed.framingDistance = fitted
             }
         }
@@ -307,11 +374,11 @@ struct PetHabitatView: NSViewRepresentable {
             if let torso = character.childNode(withName: "torso", recursively: true) {
                 let base = torso.scale
                 let inhale = SCNAction.customAction(duration: 1.55) { node, elapsed in
-                    let factor = CGFloat(1 + 0.035 * sin(Double(elapsed) / 1.55 * .pi / 2))
+                    let factor = SCNFloat(1 + 0.035 * sin(Double(elapsed) / 1.55 * .pi / 2))
                     node.scale = SCNVector3(base.x * factor, base.y * factor, base.z * factor)
                 }
                 let exhale = SCNAction.customAction(duration: 1.55) { node, elapsed in
-                    let factor = CGFloat(1 + 0.035 * cos(Double(elapsed) / 1.55 * .pi / 2))
+                    let factor = SCNFloat(1 + 0.035 * cos(Double(elapsed) / 1.55 * .pi / 2))
                     node.scale = SCNVector3(base.x * factor, base.y * factor, base.z * factor)
                 }
                 torso.runAction(.repeatForever(.sequence([inhale, exhale])), forKey: "breathing")
@@ -468,22 +535,22 @@ struct PetHabitatView: NSViewRepresentable {
         }
 
         private static func build(_ kind: PetKind, into root: SCNNode) -> SCNNode {
-            let fur: NSColor
-            let inner: NSColor
-            let belly: NSColor
+            let fur: PlatformColor
+            let inner: PlatformColor
+            let belly: PlatformColor
             switch kind {
             case .cat:
-                fur = NSColor(calibratedRed: 0.65, green: 0.57, blue: 0.88, alpha: 1)
-                inner = NSColor(calibratedRed: 0.98, green: 0.67, blue: 0.77, alpha: 1)
-                belly = NSColor(calibratedRed: 0.87, green: 0.82, blue: 0.98, alpha: 1)
+                fur = PlatformColor(calibratedRed: 0.65, green: 0.57, blue: 0.88, alpha: 1)
+                inner = PlatformColor(calibratedRed: 0.98, green: 0.67, blue: 0.77, alpha: 1)
+                belly = PlatformColor(calibratedRed: 0.87, green: 0.82, blue: 0.98, alpha: 1)
             case .fox:
-                fur = NSColor(calibratedRed: 0.97, green: 0.48, blue: 0.23, alpha: 1)
-                inner = NSColor(calibratedRed: 0.96, green: 0.69, blue: 0.75, alpha: 1)
-                belly = NSColor(calibratedRed: 1, green: 0.91, blue: 0.75, alpha: 1)
+                fur = PlatformColor(calibratedRed: 0.97, green: 0.48, blue: 0.23, alpha: 1)
+                inner = PlatformColor(calibratedRed: 0.96, green: 0.69, blue: 0.75, alpha: 1)
+                belly = PlatformColor(calibratedRed: 1, green: 0.91, blue: 0.75, alpha: 1)
             case .dragon:
-                fur = NSColor(calibratedRed: 0.40, green: 0.77, blue: 0.68, alpha: 1)
-                inner = NSColor(calibratedRed: 0.32, green: 0.63, blue: 0.85, alpha: 1)
-                belly = NSColor(calibratedRed: 0.83, green: 0.94, blue: 0.74, alpha: 1)
+                fur = PlatformColor(calibratedRed: 0.40, green: 0.77, blue: 0.68, alpha: 1)
+                inner = PlatformColor(calibratedRed: 0.32, green: 0.63, blue: 0.85, alpha: 1)
+                belly = PlatformColor(calibratedRed: 0.83, green: 0.94, blue: 0.74, alpha: 1)
             }
 
             let torso = node(SCNSphere(radius: 0.55), color: fur, at: SCNVector3(0, 0.57, 0),
@@ -513,8 +580,8 @@ struct PetHabitatView: NSViewRepresentable {
                 eye.addChildNode(node(SCNSphere(radius: kind == .dragon ? 0.12 : 0.105), color: .white,
                                       at: SCNVector3Zero, scale: SCNVector3(1, 1.15, 0.48)))
                 eye.addChildNode(node(SCNSphere(radius: 0.065), color: kind == .dragon ?
-                                      NSColor(calibratedRed: 0.18, green: 0.35, blue: 0.52, alpha: 1) :
-                                      NSColor(white: 0.09, alpha: 1),
+                                      PlatformColor(calibratedRed: 0.18, green: 0.35, blue: 0.52, alpha: 1) :
+                                      PlatformColor(white: 0.09, alpha: 1),
                                       at: SCNVector3(0, -0.008, 0.068), scale: SCNVector3(0.78, 1.15, 0.45)))
                 eye.addChildNode(node(SCNSphere(radius: 0.026), color: .white,
                                       at: SCNVector3(-0.024, 0.035, 0.094)))
@@ -555,9 +622,9 @@ struct PetHabitatView: NSViewRepresentable {
             return head
         }
 
-        private static func catDetails(root: SCNNode, head: SCNNode, fur: NSColor,
-                                       inner: NSColor, belly: NSColor) {
-            let stripe = NSColor(calibratedRed: 0.48, green: 0.39, blue: 0.73, alpha: 1)
+        private static func catDetails(root: SCNNode, head: SCNNode, fur: PlatformColor,
+                                       inner: PlatformColor, belly: PlatformColor) {
+            let stripe = PlatformColor(calibratedRed: 0.48, green: 0.39, blue: 0.73, alpha: 1)
             for x: Float in [-0.20, 0, 0.20] {
                 let mark = node(SCNSphere(radius: 0.055), color: stripe,
                                 at: SCNVector3(x, 0.34 - abs(x) * 0.22, 0.33),
@@ -618,9 +685,9 @@ struct PetHabitatView: NSViewRepresentable {
                                    scale: SCNVector3(1, 0.45, 1)))
         }
 
-        private static func foxDetails(root: SCNNode, head: SCNNode, fur: NSColor,
-                                       inner: NSColor, belly: NSColor) {
-            let dark = NSColor(calibratedRed: 0.24, green: 0.20, blue: 0.25, alpha: 1)
+        private static func foxDetails(root: SCNNode, head: SCNNode, fur: PlatformColor,
+                                       inner: PlatformColor, belly: PlatformColor) {
+            let dark = PlatformColor(calibratedRed: 0.24, green: 0.20, blue: 0.25, alpha: 1)
             for side: Float in [-1, 1] {
                 let edge = node(SCNCone(topRadius: 0, bottomRadius: 0.235, height: 0.59),
                                 color: dark, at: SCNVector3(side * 0.36, 0.49, -0.10))
@@ -664,9 +731,9 @@ struct PetHabitatView: NSViewRepresentable {
             tail.addChildNode(whiteTip)
         }
 
-        private static func dragonDetails(root: SCNNode, head: SCNNode, fur: NSColor,
-                                          inner: NSColor, belly: NSColor) {
-            let ridge = NSColor(calibratedRed: 0.22, green: 0.56, blue: 0.59, alpha: 1)
+        private static func dragonDetails(root: SCNNode, head: SCNNode, fur: PlatformColor,
+                                          inner: PlatformColor, belly: PlatformColor) {
+            let ridge = PlatformColor(calibratedRed: 0.22, green: 0.56, blue: 0.59, alpha: 1)
             for y: Float in [0.34, 0.49, 0.64, 0.79] {
                 let scale = node(SCNSphere(radius: 0.105), color: belly,
                                  at: SCNVector3(0, y, 0.54),
@@ -717,7 +784,7 @@ struct PetHabitatView: NSViewRepresentable {
         }
 
         private static func rod(from start: SCNVector3, to end: SCNVector3,
-                                radius: CGFloat, color: NSColor) -> SCNNode {
+                                radius: CGFloat, color: PlatformColor) -> SCNNode {
             let dx = end.x - start.x
             let dy = end.y - start.y
             let length = sqrt(dx * dx + dy * dy)
@@ -728,19 +795,19 @@ struct PetHabitatView: NSViewRepresentable {
             return rod
         }
 
-        private static func wingNode(color: NSColor, side: Float) -> SCNNode {
-            let path = NSBezierPath()
+        private static func wingNode(color: PlatformColor, side: Float) -> SCNNode {
+            let path = PlatformBezierPath()
             path.move(to: .zero)
-            path.line(to: NSPoint(x: CGFloat(side) * 0.75, y: 0.74))
-            path.line(to: NSPoint(x: CGFloat(side) * 0.65, y: 0.32))
-            path.line(to: NSPoint(x: CGFloat(side) * 0.52, y: 0.42))
-            path.line(to: NSPoint(x: CGFloat(side) * 0.49, y: 0.13))
-            path.line(to: NSPoint(x: CGFloat(side) * 0.32, y: 0.28))
+            path.line(to: CGPoint(x: CGFloat(side) * 0.75, y: 0.74))
+            path.line(to: CGPoint(x: CGFloat(side) * 0.65, y: 0.32))
+            path.line(to: CGPoint(x: CGFloat(side) * 0.52, y: 0.42))
+            path.line(to: CGPoint(x: CGFloat(side) * 0.49, y: 0.13))
+            path.line(to: CGPoint(x: CGFloat(side) * 0.32, y: 0.28))
             path.close()
             let wing = node(SCNShape(path: path, extrusionDepth: 0.07), color: color,
                             at: SCNVector3(side * 0.31, 0.68, -0.3))
             wing.name = "wing"
-            let ribColor = NSColor(calibratedRed: 0.20, green: 0.48, blue: 0.68, alpha: 1)
+            let ribColor = PlatformColor(calibratedRed: 0.20, green: 0.48, blue: 0.68, alpha: 1)
             for end in [SCNVector3(side * 0.75, 0.74, 0.08),
                         SCNVector3(side * 0.52, 0.42, 0.08),
                         SCNVector3(side * 0.32, 0.28, 0.08)] {
@@ -751,22 +818,22 @@ struct PetHabitatView: NSViewRepresentable {
         }
 
         private static func heart() -> SCNNode {
-            let path = NSBezierPath()
-            path.move(to: NSPoint(x: 0, y: -0.16))
-            path.curve(to: NSPoint(x: -0.2, y: 0.08), controlPoint1: NSPoint(x: -0.15, y: -0.04),
-                       controlPoint2: NSPoint(x: -0.26, y: 0.08))
-            path.curve(to: NSPoint(x: 0, y: 0.13), controlPoint1: NSPoint(x: -0.17, y: 0.23),
-                       controlPoint2: NSPoint(x: -0.05, y: 0.2))
-            path.curve(to: NSPoint(x: 0.2, y: 0.08), controlPoint1: NSPoint(x: 0.05, y: 0.2),
-                       controlPoint2: NSPoint(x: 0.17, y: 0.23))
-            path.curve(to: NSPoint(x: 0, y: -0.16), controlPoint1: NSPoint(x: 0.26, y: 0.08),
-                       controlPoint2: NSPoint(x: 0.15, y: -0.04))
+            let path = PlatformBezierPath()
+            path.move(to: CGPoint(x: 0, y: -0.16))
+            path.curve(to: CGPoint(x: -0.2, y: 0.08), controlPoint1: CGPoint(x: -0.15, y: -0.04),
+                       controlPoint2: CGPoint(x: -0.26, y: 0.08))
+            path.curve(to: CGPoint(x: 0, y: 0.13), controlPoint1: CGPoint(x: -0.17, y: 0.23),
+                       controlPoint2: CGPoint(x: -0.05, y: 0.2))
+            path.curve(to: CGPoint(x: 0.2, y: 0.08), controlPoint1: CGPoint(x: 0.05, y: 0.2),
+                       controlPoint2: CGPoint(x: 0.17, y: 0.23))
+            path.curve(to: CGPoint(x: 0, y: -0.16), controlPoint1: CGPoint(x: 0.26, y: 0.08),
+                       controlPoint2: CGPoint(x: 0.15, y: -0.04))
             path.close()
             return node(SCNShape(path: path, extrusionDepth: 0.04), color: .systemPink,
                         at: SCNVector3Zero)
         }
 
-        private static func node(_ geometry: SCNGeometry, color: NSColor, at position: SCNVector3,
+        private static func node(_ geometry: SCNGeometry, color: PlatformColor, at position: SCNVector3,
                                  scale: SCNVector3 = SCNVector3(1, 1, 1)) -> SCNNode {
             let material = SCNMaterial()
             material.diffuse.contents = color

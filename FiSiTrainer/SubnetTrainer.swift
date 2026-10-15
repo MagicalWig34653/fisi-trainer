@@ -305,7 +305,7 @@ struct SubnetTrainerView: View {
                     .foregroundStyle(SubnetStyle.muted)
             }
 
-            HStack(spacing: 12) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 120), spacing: 12)], spacing: 12) {
                 stat("SUBNETZ-XP", "\(store.progress.totalXP)")
                 stat("RUNDEN", "\(store.progress.completedRounds)")
                 stat("BESTLEISTUNG", "\(store.progress.bestScore)")
@@ -338,7 +338,7 @@ struct SubnetTrainerView: View {
                 .font(.system(size: 12)).foregroundStyle(SubnetStyle.muted)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .frame(minWidth: 650, maxWidth: 850, alignment: .leading)
+        .frame(maxWidth: 850, alignment: .leading)
         .foregroundStyle(SubnetStyle.primary)
         .confirmationDialog("Subnetz-Fortschritt zurücksetzen?",
                             isPresented: $showingResetConfirmation, titleVisibility: .visible) {
@@ -364,7 +364,7 @@ struct SubnetTrainerView: View {
             }
             Text("Beispiel: /24 bedeutet 24 Netzbits und 8 Hostbits. Die Maske ist 255.255.255.0.")
                 .foregroundStyle(SubnetStyle.muted)
-            Button("Runde starten ↵") { store.startRound() }
+            Button("Runde starten\(returnKeyHint)") { store.startRound() }
                 .keyboardShortcut(.return, modifiers: [])
                 .buttonStyle(SubnetPrimaryButtonStyle())
         }
@@ -388,8 +388,10 @@ struct SubnetTrainerView: View {
                     .foregroundStyle(SubnetStyle.accent)
             }
             Text(question.prompt).font(.system(size: 24, weight: .bold))
-            Text("Antwort mit 1–4 wählen")
-                .font(.system(size: 11)).foregroundStyle(SubnetStyle.muted)
+            if !isTouchDevice {
+                Text("Antwort mit 1–4 wählen")
+                    .font(.system(size: 11)).foregroundStyle(SubnetStyle.muted)
+            }
             VStack(spacing: 9) {
                 ForEach(Array(question.choices.enumerated()), id: \.offset) { index, choice in
                     Button { store.answer(choice) } label: {
@@ -420,7 +422,7 @@ struct SubnetTrainerView: View {
                         .foregroundStyle(selected == question.correctAnswer ? SubnetStyle.accent : SubnetStyle.red)
                     Text(question.explanation).foregroundStyle(SubnetStyle.muted)
                     Button(session.index == session.questions.count - 1
-                           ? "Ergebnis anzeigen ↵" : "Nächste Frage ↵") { store.nextQuestion() }
+                           ? "Ergebnis anzeigen\(returnKeyHint)" : "Nächste Frage\(returnKeyHint)") { store.nextQuestion() }
                         .keyboardShortcut(.return, modifiers: [])
                         .buttonStyle(SubnetPrimaryButtonStyle())
                 }
@@ -439,7 +441,7 @@ struct SubnetTrainerView: View {
                 .foregroundStyle(SubnetStyle.muted)
             Text("+\(session.speedBonusTotal ?? 0) Tempo-XP in dieser Runde")
                 .foregroundStyle(SubnetStyle.accent)
-            Button("Neue Runde starten ↵") { store.startRound() }
+            Button("Neue Runde starten\(returnKeyHint)") { store.startRound() }
                 .keyboardShortcut(.return, modifiers: [])
                 .buttonStyle(SubnetPrimaryButtonStyle())
         }

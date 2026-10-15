@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright (C) 2026 Lino Laske
 
-import AppKit
 import SceneKit
 
 /// Small anatomy and treats layered over the main pet meshes.
@@ -65,7 +64,7 @@ enum PetDetailGeometry {
                                  at: SCNVector3(side * (0.41 + Float(index) * 0.055),
                                                 -0.27 - Float(index) * 0.04, 0.34),
                                  name: "detail.fox.cheekTuft")
-                cheek.eulerAngles.z = CGFloat(side) * -0.35
+                cheek.eulerAngles.z = SCNFloat(side) * -0.35
                 head.addChildNode(cheek)
             }
             let nostril = part(SCNSphere(radius: 0.018), color: dark,
@@ -174,10 +173,8 @@ enum PetDetailGeometry {
                                    color: index == 1 ? bright : red,
                                    at: center, name: "detail.food.berry.fruit"))
             for side: Float in [-1, 1] {
-                let seedX: CGFloat = center.x + CGFloat(side) * 0.026
-                let seedY: CGFloat = center.y + 0.01
-                let seedZ: CGFloat = center.z + 0.093
-                let seedPosition = SCNVector3(seedX, seedY, seedZ)
+                let seedPosition = SCNVector3(x: center.x + SCNFloat(side) * 0.026, y: center.y + 0.01,
+                                              z: center.z + 0.093)
                 let seed = part(SCNSphere(radius: 0.009), color: color(1, 0.82, 0.55),
                                 at: seedPosition, name: "detail.food.berry.seed")
                 root.addChildNode(seed)
@@ -190,7 +187,7 @@ enum PetDetailGeometry {
             let leaf = part(SCNSphere(radius: 0.075), color: green,
                             at: SCNVector3(side * 0.08, 0.20, 0),
                             scale: SCNVector3(1.4, 0.35, 0.45), name: "detail.food.berry.leaf")
-            leaf.eulerAngles.z = CGFloat(side) * 0.25
+            leaf.eulerAngles.z = SCNFloat(side) * 0.25
             root.addChildNode(leaf)
         }
     }
@@ -226,16 +223,16 @@ enum PetDetailGeometry {
     }
 
     private static func triangle(width: CGFloat, height: CGFloat) -> SCNShape {
-        let path = NSBezierPath()
-        path.move(to: NSPoint(x: -width / 2, y: -height / 2))
-        path.line(to: NSPoint(x: width / 2, y: 0))
-        path.line(to: NSPoint(x: -width / 2, y: height / 2))
+        let path = PlatformBezierPath()
+        path.move(to: CGPoint(x: -width / 2, y: -height / 2))
+        path.line(to: CGPoint(x: width / 2, y: 0))
+        path.line(to: CGPoint(x: -width / 2, y: height / 2))
         path.close()
         return SCNShape(path: path, extrusionDepth: 0.018)
     }
 
     private static func rod(from start: SCNVector3, to end: SCNVector3, radius: CGFloat,
-                            color: NSColor, name: String) -> SCNNode {
+                            color: PlatformColor, name: String) -> SCNNode {
         let dx = end.x - start.x
         let dy = end.y - start.y
         let length = sqrt(dx * dx + dy * dy)
@@ -246,7 +243,7 @@ enum PetDetailGeometry {
         return node
     }
 
-    private static func part(_ geometry: SCNGeometry, color: NSColor, at position: SCNVector3,
+    private static func part(_ geometry: SCNGeometry, color: PlatformColor, at position: SCNVector3,
                              scale: SCNVector3 = SCNVector3(1, 1, 1), name: String) -> SCNNode {
         let material = SCNMaterial()
         material.diffuse.contents = color
@@ -261,7 +258,7 @@ enum PetDetailGeometry {
         return node
     }
 
-    private static func color(_ red: CGFloat, _ green: CGFloat, _ blue: CGFloat) -> NSColor {
-        NSColor(calibratedRed: red, green: green, blue: blue, alpha: 1)
+    private static func color(_ red: CGFloat, _ green: CGFloat, _ blue: CGFloat) -> PlatformColor {
+        PlatformColor(calibratedRed: red, green: green, blue: blue, alpha: 1)
     }
 }

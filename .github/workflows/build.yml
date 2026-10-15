@@ -31,3 +31,23 @@ jobs:
           -destination 'platform=macOS,arch=arm64'
           -derivedDataPath "$RUNNER_TEMP/FiSiTrainer-DerivedData"
           CODE_SIGNING_ALLOWED=NO
+
+  ios-build:
+    runs-on: macos-26
+    timeout-minutes: 30
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build for iOS Simulator
+        run: >-
+          xcodebuild build
+          -project FiSiTrainer.xcodeproj
+          -scheme FiSiTrainer
+          -configuration Debug
+          -destination 'generic/platform=iOS Simulator'
+          -derivedDataPath "$RUNNER_TEMP/FiSiTrainer-iOS-DerivedData"
+          CODE_SIGNING_ALLOWED=NO

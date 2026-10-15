@@ -98,7 +98,7 @@ struct ExamArenaView: View {
                 .padding(.vertical, 2)
             }
 
-            HStack(spacing: 12) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 140), spacing: 12)], spacing: 12) {
                 statCard("PRÜFUNGS-XP", value: "\(store.progress.totalXP)", symbol: "bolt.fill", accent: true)
                 statCard("RUNDEN", value: "\(store.progress.completedRounds)", symbol: "checkmark.circle")
                 statCard("TREFFERQUOTE", value: accuracy, symbol: "scope")
@@ -114,7 +114,7 @@ struct ExamArenaView: View {
             }
 
             let counts = availableCounts
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 14), count: 3), spacing: 14) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 270), spacing: 14)], spacing: 14) {
                 ForEach(ExamMode.allCases) { mode in
                     modeCard(mode, count: counts[mode, default: 0])
                 }
@@ -318,7 +318,7 @@ struct ExamArenaView: View {
                  ? "+100 XP nach der letzten Aufgabe. Jede Aufgabe zählt zur IHK-Note."
                  : "+25 XP für richtig (plus Tempo-Bonus), +5 XP für falsch, +50 XP für die abgeschlossene Runde.")
                 .foregroundStyle(ExamStyle.muted)
-            Button("Runde starten ↵") {
+            Button("Runde starten\(returnKeyHint)") {
                 store.start(mode: mode, subject: subject, topic: mode == .exam ? nil : topic)
             }
             .keyboardShortcut(.return, modifiers: [])
@@ -419,7 +419,7 @@ struct ExamArenaView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(ExamStyle.raised, in: RoundedRectangle(cornerRadius: 11))
 
-            Button(session.index + 1 == session.tasks.count ? "Ergebnis anzeigen ↵" : "Nächste Aufgabe ↵") {
+            Button(session.index + 1 == session.tasks.count ? "Ergebnis anzeigen\(returnKeyHint)" : "Nächste Aufgabe\(returnKeyHint)") {
                 store.next(mode: mode)
             }
             .buttonStyle(ExamPrimaryButtonStyle())
@@ -434,13 +434,13 @@ struct ExamArenaView: View {
                 .foregroundStyle(ExamStyle.accent)
             Text("Runde abgeschlossen")
                 .font(.system(size: 30, weight: .bold, design: .rounded))
-            HStack(spacing: 14) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 110), spacing: 14)], spacing: 14) {
                 resultValue("RICHTIG", "\(session.correctCount) / \(session.tasks.count)")
                 resultValue("PUNKTE", "\(session.score)")
                 resultValue("TEMPO-XP", "\(session.speedBonusTotal)")
             }
             HStack(spacing: 12) {
-                Button("Neue Runde ↵") {
+                Button("Neue Runde\(returnKeyHint)") {
                     store.start(mode: mode, subject: subject, topic: topic)
                 }
                 .keyboardShortcut(.return, modifiers: [])
@@ -464,7 +464,7 @@ struct ExamArenaView: View {
                 .foregroundStyle(ExamStyle.accent)
             Text("Prüfungssimulation abgeschlossen")
                 .font(.system(size: 28, weight: .bold, design: .rounded))
-            HStack(spacing: 14) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 110), spacing: 14)], spacing: 14) {
                 resultValue("ERGEBNIS", "\(Int(session.percent.rounded())) %")
                 resultValue("NOTE", "\(grade.note) · \(grade.title)")
                 resultValue("DAUER", formatDuration(duration))
@@ -507,7 +507,7 @@ struct ExamArenaView: View {
             .background(ExamStyle.raised, in: RoundedRectangle(cornerRadius: 12))
 
             HStack(spacing: 12) {
-                Button("Neue Runde ↵") {
+                Button("Neue Runde\(returnKeyHint)") {
                     store.start(mode: .exam, subject: subject, topic: nil)
                 }
                 .keyboardShortcut(.return, modifiers: [])
@@ -634,7 +634,7 @@ private struct MultipleTaskView: View {
                 }
             }
             if !answered {
-                Button("Prüfen ↵") { store.answer(chosen.sorted(), mode: mode) }
+                Button("Prüfen\(returnKeyHint)") { store.answer(chosen.sorted(), mode: mode) }
                     .buttonStyle(ExamPrimaryButtonStyle())
                     .keyboardShortcut(.return, modifiers: [])
                     .disabled(chosen.isEmpty)
@@ -710,7 +710,7 @@ private struct MatchTaskView: View {
                 row(index: index, item: item)
             }
             if !answered {
-                Button("Prüfen ↵") {
+                Button("Prüfen\(returnKeyHint)") {
                     store.answer(selections.map { $0 ?? 0 }, mode: mode)
                 }
                 .buttonStyle(ExamPrimaryButtonStyle())
@@ -784,7 +784,7 @@ private struct OrderTaskView: View {
                     Button("Zurücksetzen") { order = [] }
                         .buttonStyle(ExamSecondaryButtonStyle())
                         .disabled(order.isEmpty)
-                    Button("Prüfen ↵") { store.answer(order, mode: mode) }
+                    Button("Prüfen\(returnKeyHint)") { store.answer(order, mode: mode) }
                         .buttonStyle(ExamPrimaryButtonStyle())
                         .keyboardShortcut(.return, modifiers: [])
                         .disabled(order.count != task.items.count)
