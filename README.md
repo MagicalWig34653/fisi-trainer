@@ -21,7 +21,7 @@ FiSi Trainer ist eine native App für macOS, iPadOS und iOS zur eigenständigen 
 
 ## Herunterladen und starten
 
-1. Auf der Seite [**Neueste Version herunterladen**](https://github.com/MagicalWig34653/fisi-trainer/releases/latest) die DMG laden, zum Beispiel `FiSiTrainer-v1.1.0-macOS-universal.dmg`.
+1. Auf der Seite [**Neueste Version herunterladen**](https://github.com/MagicalWig34653/fisi-trainer/releases/latest) die DMG laden, zum Beispiel `FiSiTrainer-v1.2.0-macOS-universal.dmg`.
 2. DMG öffnen und im Finder-Fenster **FiSiTrainer** auf die Verknüpfung **Programme** ziehen. Danach die DMG auswerfen und die App aus Programme starten. Benötigt **macOS 14 oder neuer**.
 3. Die gleichnamige `.sha256`-Datei im Release enthält die Prüfsumme der DMG.
 
