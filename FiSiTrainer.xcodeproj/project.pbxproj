@@ -29,6 +29,7 @@
 		5B760F437435D6D2D34800E8 /* ExamCatalogWirtschaft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0515098DBB6A62E16526353B /* ExamCatalogWirtschaft.swift */; };
 		5CAB61F430AD37FA7035A2D3 /* PetWardrobeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B6C2E9266F92B742E304DA /* PetWardrobeView.swift */; };
 		61A802BB5B2AE2A45856896E /* PetDetailGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774EEBFBB07BF58E8D352666 /* PetDetailGeometryTests.swift */; };
+		6D1F0A3B5C7E9D2F4A6B8C01 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2A1B4C6D8F0E3A5B7C9D12 /* Platform.swift */; };
 		6F7DACCF207A76E5D6B32A20 /* PetChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15D91C120EC824FF414649C /* PetChatView.swift */; };
 		79D416C6268A289C634AA2F9 /* FiSiTrainerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A827392610E061E94D25713 /* FiSiTrainerApp.swift */; };
 		9E226071B8ACA31C76B73867 /* ExamStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92027BFCD3161E9D326B6BE4 /* ExamStoreTests.swift */; };
@@ -52,7 +53,6 @@
 		F28070EACAE82002E4B4C252 /* PetAccessoryGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93295978ED0A3B3854CC290 /* PetAccessoryGeometryTests.swift */; };
 		F7DAFEE2CE70B535EF87F2E2 /* ExamCatalogSozial.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0B598FDEC0D55BBF2324C5 /* ExamCatalogSozial.swift */; };
 		FAB2AE2B80CF9F11560484FB /* SubnetStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CB3BAD7768B31B1A559D656 /* SubnetStoreTests.swift */; };
-		6D1F0A3B5C7E9D2F4A6B8C01 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2A1B4C6D8F0E3A5B7C9D12 /* Platform.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +91,7 @@
 		5F0690CA446A9243AB2A442F /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		6EF965F7699A6C17FB66C131 /* ExamCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogTests.swift; sourceTree = "<group>"; };
 		774EEBFBB07BF58E8D352666 /* PetDetailGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetDetailGeometryTests.swift; sourceTree = "<group>"; };
+		7E2A1B4C6D8F0E3A5B7C9D12 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
 		7E2DB5C738374805032902B5 /* PetIntelligenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetIntelligenceTests.swift; sourceTree = "<group>"; };
 		859E6D5C4A86FDA3A3E35549 /* PetAccessories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetAccessories.swift; sourceTree = "<group>"; };
 		8A827392610E061E94D25713 /* FiSiTrainerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiSiTrainerApp.swift; sourceTree = "<group>"; };
@@ -99,7 +100,7 @@
 		942C611FF61B7E8D50DD8ACB /* PetIntelligence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetIntelligence.swift; sourceTree = "<group>"; };
 		9E54B53AFA2289E248B9C876 /* FiSiTrainerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FiSiTrainerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5782464CC2B76E179567271 /* ExamCatalogIT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogIT.swift; sourceTree = "<group>"; };
-		AC05DFF76625A40E977A1487 /* LICENSE */ = {isa = PBXFileReference; path = LICENSE; sourceTree = "<group>"; };
+		AC05DFF76625A40E977A1487 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		ACAA2F169DCB3209DBA3E7AC /* ExamCatalogArbeit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogArbeit.swift; sourceTree = "<group>"; };
 		AF36667EFA1288072A729FB4 /* ExamStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamStore.swift; sourceTree = "<group>"; };
 		B5B6C2E9266F92B742E304DA /* PetWardrobeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetWardrobeView.swift; sourceTree = "<group>"; };
@@ -114,7 +115,6 @@
 		F0136BB21B3F15D774B3FA2D /* ExamTaskFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamTaskFactory.swift; sourceTree = "<group>"; };
 		F8207D38A08636C571AA3C08 /* PetCompanionMessagesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetCompanionMessagesTests.swift; sourceTree = "<group>"; };
 		FF6CFF33DAB4657D1C55DA6A /* PetCompanionMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetCompanionMessages.swift; sourceTree = "<group>"; };
-		7E2A1B4C6D8F0E3A5B7C9D12 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -249,7 +249,6 @@
 						DevelopmentTeam = "";
 					};
 					D1CD95415059BEB71D869290 = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -456,7 +455,18 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J2DU2P47XW;
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "FiSi Trainer";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
@@ -464,7 +474,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				"INFOPLIST_KEY_UISupportedInterfaceOrientations[sdk=iphone*]" = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				"INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad" = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -474,7 +484,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = de.fisitrainer.mac;
+				PRODUCT_BUNDLE_IDENTIFIER = de.linolaske.fisitrainer;
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
@@ -555,7 +565,18 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J2DU2P47XW;
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "FiSi Trainer";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
@@ -563,7 +584,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				"INFOPLIST_KEY_UISupportedInterfaceOrientations[sdk=iphone*]" = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				"INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad" = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -573,7 +594,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = de.fisitrainer.mac;
+				PRODUCT_BUNDLE_IDENTIFIER = de.linolaske.fisitrainer;
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
