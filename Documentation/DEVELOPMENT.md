@@ -4,11 +4,11 @@
 
 Eine detaillierte technische Referenz (Dateikarte, Datenfluss, Prüfungswissen im Detail, Persistenzformate, Rezepte für Änderungen) findest du in [ARCHITECTURE.md](ARCHITECTURE.md).
 
-FiSi Trainer ist eine SwiftUI-App für macOS 14 oder neuer. SceneKit zeichnet die Haustiere und ihre Ausstattung aus nativen Geometrien. Es gibt keine zusätzlichen Swift-Pakete und keinen eigenen Netzwerkdienst.
+FiSi Trainer ist eine SwiftUI-App für macOS 14 sowie iOS und iPadOS 17 oder neuer (ein gemeinsames Multiplatform-Target; plattformspezifische Hilfen stehen in `Platform.swift`). SceneKit zeichnet die Haustiere und ihre Ausstattung aus nativen Geometrien. Es gibt keine zusätzlichen Swift-Pakete und keinen eigenen Netzwerkdienst.
 
 ## Build und Tests
 
-Zum Kompilieren wird **Xcode 26 oder neuer** benötigt; die CI verwendet Xcode 26.6. Die fertige App läuft ab macOS 14.
+Zum Kompilieren wird **Xcode 26 oder neuer** benötigt; die CI verwendet Xcode 26.6. Die fertige App läuft ab macOS 14 bzw. iOS/iPadOS 17. Veröffentlicht wird bislang nur die macOS-App.
 
 `FiSiTrainer.xcodeproj` ist eingecheckt. Öffne das Scheme **FiSiTrainer** in Xcode oder nutze die Kommandozeile:
 
@@ -17,7 +17,14 @@ xcodebuild test -project FiSiTrainer.xcodeproj -scheme FiSiTrainer \
   -destination 'platform=macOS' -derivedDataPath build CODE_SIGNING_ALLOWED=NO
 ```
 
-`project.yml` ist die XcodeGen-Quelle. Nach einer Änderung daran `xcodegen generate` ausführen und das erzeugte Projekt mit einreichen. `.github/workflows/build.yml` testet auf Pushes und Pull Requests gegen `main`.
+Zusätzlich lässt sich die App für den iOS Simulator bauen (das macht auch die CI). Die Unit-Tests laufen nur auf macOS:
+
+```sh
+xcodebuild build -project FiSiTrainer.xcodeproj -scheme FiSiTrainer \
+  -destination 'generic/platform=iOS Simulator' -derivedDataPath build-ios CODE_SIGNING_ALLOWED=NO
+```
+
+`project.yml` ist die XcodeGen-Quelle. Nach einer Änderung daran `xcodegen generate` ausführen und das erzeugte Projekt mit einreichen. `.github/workflows/build.yml` testet auf Pushes und Pull Requests gegen `main` unter macOS und baut die App zusätzlich für den iOS Simulator.
 
 Wenn ein GitHub Release mit einem Tag wie `v1.0.0` veröffentlicht wird, baut `.github/workflows/release.yml` automatisch eine App mit `arm64`- und `x86_64`-Architektur. `Scripts/package-release.sh` erstellt `FiSiTrainer-v1.0.0-macOS-universal.dmg` und die dazugehörige `.dmg.sha256`-Datei. Release-Tags müssen das Format `vMAJOR.MINOR.PATCH` haben. Ein lokaler Probelauf ist mit `bash Scripts/package-release.sh /tmp/fisi-release v1.0.0` möglich.
 
@@ -66,11 +73,11 @@ Für Belohnungen zählt der höchste erreichte gemeinsame XP-Stand. Der Reset ei
 
 Runden, XP, Lernhistorie und Belohnungen liegen als JSON im Application-Support-Verzeichnis der App, bei aktivierter Sandbox in ihrem Container. Beschädigte Belohnungsdaten werden nicht still überschrieben; die App bietet eine ausdrücklich bestätigte Wiederherstellung mit Sicherung der alten Datei.
 
-Die Haustiere bestehen aus SceneKit-Geometrien. Die Kamera passt sich beim Tierwechsel und bei Größenänderungen an; Ziehen dreht die Ansicht, Doppelklick setzt sie zurück. Die macOS-Einstellung **Bewegung reduzieren** vereinfacht dauerhafte Bewegungen und Spielanimationen.
+Die Haustiere bestehen aus SceneKit-Geometrien. Die Kamera passt sich beim Tierwechsel und bei Größenänderungen an; Ziehen dreht die Ansicht, Doppelklick (iOS: Doppeltipp) setzt sie zurück. Die Systemeinstellung **Bewegung reduzieren** vereinfacht dauerhafte Bewegungen und Spielanimationen.
 
 ## Lokale KI
 
-`PetIntelligence.swift` verwendet nur Apples `SystemLanguageModel.default` aus Foundation Models, wenn macOS 26 oder neuer und Apple Intelligence bereitstehen. Ohne Modell sind vorbereitete Tipps und Ermutigungen verfügbar und entsprechend gekennzeichnet. KI-Anfragen starten nur auf Knopfdruck, Chatnachrichten werden nicht dauerhaft gespeichert. Der Prompt begrenzt Verlauf und Eingabe; vor der Abgabe enthält er nur Hinweise zur Aufgabe, danach auch die hinterlegte Erklärung. Die Auswertung der Spiele verwendet kein Sprachmodell.
+`PetIntelligence.swift` verwendet nur Apples `SystemLanguageModel.default` aus Foundation Models, wenn macOS bzw. iOS/iPadOS 26 oder neuer und Apple Intelligence bereitstehen. Ohne Modell sind vorbereitete Tipps und Ermutigungen verfügbar und entsprechend gekennzeichnet. KI-Anfragen starten nur auf Knopfdruck, Chatnachrichten werden nicht dauerhaft gespeichert. Der Prompt begrenzt Verlauf und Eingabe; vor der Abgabe enthält er nur Hinweise zur Aufgabe, danach auch die hinterlegte Erklärung. Die Auswertung der Spiele verwendet kein Sprachmodell.
 
 ## Dateien und App-Icon
 
