@@ -366,7 +366,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = de.fisitrainer.FiSiTrainerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = de.linolaske.FiSiTrainerTests;
 				SDKROOT = macosx;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FiSiTrainer.app/Contents/MacOS/FiSiTrainer";
 			};
@@ -441,7 +441,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = de.fisitrainer.FiSiTrainerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = de.linolaske.FiSiTrainerTests;
 				SDKROOT = macosx;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FiSiTrainer.app/Contents/MacOS/FiSiTrainer";
 			};
