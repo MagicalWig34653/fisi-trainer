@@ -2,11 +2,11 @@
 
 Start here: [Documentation/ARCHITECTURE.md](Documentation/ARCHITECTURE.md) has the full architecture and maintenance reference (data flow, per-file map, game rules, exam-subsystem details, "how do I …" recipes, persistence, pets/SceneKit/local AI, tests, build/release, gotchas). Read it before planning a change so you don't have to read the whole codebase first.
 
-FiSi Trainer is a native macOS learning app for Fachinformatiker Systemintegration topics. Product copy and explanations are German. Keep the code simple and follow the existing SwiftUI, SceneKit and Foundation patterns.
+FiSi Trainer is a native macOS, iPadOS and iOS learning app for Fachinformatiker Systemintegration topics. Product copy and explanations are German. Keep the code simple and follow the existing SwiftUI, SceneKit and Foundation patterns.
 
 ## Architecture and scope
 
-- Minimum runtime: macOS 14. Build with Xcode 26 or newer; GitHub Actions currently uses Xcode 26.6.
+- Minimum runtime: macOS 14, iOS/iPadOS 17 (one multiplatform target; `Platform.swift` holds the AppKit/UIKit and SceneKit `CGFloat`/`Float` shims, layout adapts via `horizontalSizeClass`). Build with Xcode 26 or newer; GitHub Actions currently uses Xcode 26.6.
 - No third-party Swift packages, backend, user accounts or cloud AI. Do not add dependencies without a concrete need.
 - `FiSiTrainerApp.swift` injects `GameStore`, `SubnetStore`, `ExamStore` and `RewardStore` as shared environment objects.
 - `Models.swift` and `GameStore.swift` implement the port quiz; `SubnetTrainer.swift` contains the subnet game.

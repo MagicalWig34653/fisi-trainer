@@ -17,7 +17,7 @@
 
 *Ansichten mit Demo-Spielständen.*
 
-FiSi Trainer ist eine native macOS-App zur eigenständigen Vorbereitung auf Fachinformatik-Themen. Sie läuft ohne Konto und speichert Lernstand und Einstellungen lokal. Die Prüfungsaufgaben und Auswertungen funktionieren ohne KI.
+FiSi Trainer ist eine native App für macOS, iPadOS und iOS zur eigenständigen Vorbereitung auf Fachinformatik-Themen. Sie läuft ohne Konto und speichert Lernstand und Einstellungen lokal. Die Prüfungsaufgaben und Auswertungen funktionieren ohne KI.
 
 ## Herunterladen und starten
 
@@ -25,7 +25,7 @@ FiSi Trainer ist eine native macOS-App zur eigenständigen Vorbereitung auf Fach
 2. DMG öffnen und im Finder-Fenster **FiSiTrainer** auf die Verknüpfung **Programme** ziehen. Danach die DMG auswerfen und die App aus Programme starten. Benötigt **macOS 14 oder neuer**.
 3. Die gleichnamige `.sha256`-Datei im Release enthält die Prüfsumme der DMG.
 
-Die CI führt bei Pushes und Pull Requests die macOS-Tests aus. Beim Veröffentlichen eines GitHub Releases baut der Release-Workflow automatisch die Universal-App und hängt DMG und SHA-256-Datei an die Version an.
+Die CI führt bei Pushes und Pull Requests die macOS-Tests aus und baut zusätzlich die App für den iOS Simulator. Die iPhone- und iPad-Version (iOS/iPadOS 17 oder neuer) ist bislang nur als Xcode-Projektziel verfügbar und wird nicht als Download veröffentlicht. Beim Veröffentlichen eines GitHub Releases baut der Release-Workflow automatisch die Universal-App und hängt DMG und SHA-256-Datei an die Version an.
 
 Die Release-App ist ad hoc signiert, **nicht** mit einer Developer ID signiert und **nicht** von Apple notarisiert. macOS kann deshalb beim ersten Öffnen warnen. Wer die Datei aus diesem Repository geladen hat und ihr vertraut, kann nach dem ersten Öffnungsversuch unter **Systemeinstellungen → Datenschutz & Sicherheit → Dennoch öffnen** fortfahren. [Apple erklärt diesen Schritt](https://support.apple.com/de-de/102445).
 
@@ -48,7 +48,7 @@ Katze, Fuchs und Drache bestehen aus nativen SceneKit-Geometrien. Du kannst sie 
 
 ## Optionaler lokaler KI-Chat
 
-**Plaudern** und **KI-Tipp** verwenden ausschließlich Apples lokales Foundation-Models-Sprachmodell. Dafür sind **macOS 26 oder neuer**, ein unterstützter Mac und aktivierte, verfügbare **Apple Intelligence** nötig. Die App zeigt an, wenn das Modell nicht verfügbar ist; vorbereitete Tipps bleiben nutzbar. Einzelne Pet-Antworten lassen sich auf Wunsch mit der macOS-Sprachausgabe vorlesen.
+**Plaudern** und **KI-Tipp** verwenden ausschließlich Apples lokales Foundation-Models-Sprachmodell. Dafür sind **macOS bzw. iOS/iPadOS 26 oder neuer**, ein unterstütztes Gerät und aktivierte, verfügbare **Apple Intelligence** nötig. Die App zeigt an, wenn das Modell nicht verfügbar ist; vorbereitete Tipps bleiben nutzbar. Einzelne Pet-Antworten lassen sich auf Wunsch mit der macOS-Sprachausgabe vorlesen.
 
 KI-Anfragen starten nur nach einem Klick und werden nicht an einen Cloud-Dienst der App gesendet. Chatnachrichten werden nicht dauerhaft gespeichert. Vor Abgabe einer Aufgabe erhält das Modell nur einen Hinweis, danach auch die Erklärung. KI-Antworten können Fehler enthalten; die Spielauswertung bleibt regelbasiert.
 

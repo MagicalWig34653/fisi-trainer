@@ -115,7 +115,7 @@ struct PetChatView: View {
             }
             .padding()
         }
-        .frame(minWidth: 440, idealWidth: 520, minHeight: 420, idealHeight: 540)
+        .macSheetSize(minWidth: 440, idealWidth: 520, minHeight: 420, idealHeight: 540)
         .onAppear {
             intelligence.refreshAvailability()
             DispatchQueue.main.async { inputFocused = true }

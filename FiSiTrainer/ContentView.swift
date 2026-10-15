@@ -23,6 +23,18 @@ private enum LabPage: String, CaseIterable {
     case rewards = "Level & Haustiere"
     case reference = "Port-Referenz"
 
+    /// Short label for the compact tab bar.
+    var shortTitle: String {
+        switch self {
+        case .dashboard: "Übersicht"
+        case .game: "Ports"
+        case .subnet: "Subnetz"
+        case .exam: "Prüfung"
+        case .rewards: "Level"
+        case .reference: "Referenz"
+        }
+    }
+
     var symbol: String {
         switch self {
         case .dashboard: "square.grid.2x2"
@@ -44,14 +56,61 @@ struct ContentView: View {
     @State private var showingResetConfirmation = false
     @State private var newLevel: Int?
     @State private var openExamMode: ExamMode?
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    /// iPhone portrait and iPad split-view slots are compact; Mac and full-width iPad are not.
+    private var compact: Bool { horizontalSizeClass == .compact }
+
+    private var pagePadding: CGFloat {
+        #if os(macOS)
+        48
+        #else
+        compact ? 16 : 28
+        #endif
+    }
 
     var body: some View {
-        HStack(spacing: 0) {
-            sidebar
-            Rectangle()
-                .fill(LabStyle.border)
-                .frame(width: 1)
+        Group {
+            if compact {
+                VStack(spacing: 0) {
+                    mainColumn
+                    Rectangle()
+                        .fill(LabStyle.border)
+                        .frame(height: 1)
+                    tabBar
+                }
+            } else {
+                HStack(spacing: 0) {
+                    sidebar
+                    Rectangle()
+                        .fill(LabStyle.border)
+                        .frame(width: 1)
+                    mainColumn
+                }
+            }
+        }
+        .background(LabStyle.background.ignoresSafeArea())
+        .foregroundStyle(LabStyle.primary)
+        .macMinimumSize(width: 1000, height: 700)
+        .preferredColorScheme(.dark)
+        .onChange(of: rewards.level) { previous, current in
+            if current > previous { newLevel = current }
+        }
+        .confirmationDialog(
+            "Port-Quiz-Fortschritt zurücksetzen?",
+            isPresented: $showingResetConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Fortschritt löschen", role: .destructive) {
+                store.resetProgress()
+                page = .dashboard
+            }
+        } message: {
+            Text("Deine Port-Quiz-XP, Bestleistung und laufende Runde werden gelöscht. Der Subnetz-Sprint bleibt erhalten.")
+        }
+    }
 
+    private var mainColumn: some View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     topBar
@@ -71,7 +130,7 @@ struct ContentView: View {
                         .foregroundStyle(LabStyle.accent)
                         .padding(16)
                         .background(LabStyle.accent.opacity(0.09), in: RoundedRectangle(cornerRadius: 12))
-                        .padding(.horizontal, 48)
+                        .padding(.horizontal, pagePadding)
                         .padding(.top, 20)
                     }
 
@@ -93,7 +152,7 @@ struct ContentView: View {
                         .padding(16)
                         .background(LabStyle.red.opacity(0.09), in: RoundedRectangle(cornerRadius: 10))
                         .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(LabStyle.red.opacity(0.25)))
-                        .padding(.horizontal, 48)
+                        .padding(.horizontal, pagePadding)
                         .padding(.top, 20)
                     }
 
@@ -108,9 +167,9 @@ struct ContentView: View {
                         }
                     }
                     .frame(maxWidth: 1050, alignment: .leading)
-                    .padding(.horizontal, 48)
-                    .padding(.top, 40)
-                    .padding(.bottom, 64)
+                    .padding(.horizontal, pagePadding)
+                    .padding(.top, compact ? 24 : 40)
+                    .padding(.bottom, compact ? 32 : 64)
                     .frame(maxWidth: .infinity, alignment: .topLeading)
                 }
             }
@@ -118,7 +177,7 @@ struct ContentView: View {
                 if page == .game || page == .subnet || page == .exam {
                     if let pet = rewards.selectedPet {
                         PetCompanionView(pet: pet, context: petContext)
-                            .padding(.horizontal, 20)
+                            .padding(.horizontal, compact ? 12 : 20)
                             .padding(.vertical, 10)
                             .background(LabStyle.sidebar)
                     } else {
@@ -135,26 +194,6 @@ struct ContentView: View {
                 }
             }
             .background(LabStyle.background)
-        }
-        .background(LabStyle.background)
-        .foregroundStyle(LabStyle.primary)
-        .frame(minWidth: 1000, minHeight: 700)
-        .preferredColorScheme(.dark)
-        .onChange(of: rewards.level) { previous, current in
-            if current > previous { newLevel = current }
-        }
-        .confirmationDialog(
-            "Port-Quiz-Fortschritt zurücksetzen?",
-            isPresented: $showingResetConfirmation,
-            titleVisibility: .visible
-        ) {
-            Button("Fortschritt löschen", role: .destructive) {
-                store.resetProgress()
-                page = .dashboard
-            }
-        } message: {
-            Text("Deine Port-Quiz-XP, Bestleistung und laufende Runde werden gelöscht. Der Subnetz-Sprint bleibt erhalten.")
-        }
     }
 
     private var sidebar: some View {
@@ -260,6 +299,36 @@ struct ContentView: View {
         .background(LabStyle.sidebar)
     }
 
+    /// Bottom navigation for compact widths (iPhone); the Mac and iPad use the sidebar.
+    private var tabBar: some View {
+        HStack(spacing: 0) {
+            ForEach(LabPage.allCases, id: \.self) { item in
+                Button {
+                    page = item
+                } label: {
+                    VStack(spacing: 3) {
+                        Image(systemName: item.symbol)
+                            .font(.system(size: 18, weight: .semibold))
+                            .frame(height: 22)
+                        Text(item.shortTitle)
+                            .font(.system(size: 9, weight: .semibold))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                    }
+                    .foregroundStyle(page == item ? LabStyle.accent : LabStyle.muted)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(item.rawValue)
+                .accessibilityAddTraits(page == item ? .isSelected : [])
+            }
+        }
+        .padding(.horizontal, 4)
+        .background(LabStyle.sidebar)
+    }
+
     private var topBar: some View {
         HStack {
             HStack(spacing: 8) {
@@ -278,8 +347,8 @@ struct ContentView: View {
                 .foregroundStyle(LabStyle.muted)
         }
         .font(.system(size: 10, weight: .semibold, design: .monospaced))
-        .padding(.horizontal, 48)
-        .frame(height: 61)
+        .padding(.horizontal, pagePadding)
+        .frame(height: compact ? 48 : 61)
         .overlay(alignment: .bottom) { LabStyle.border.frame(height: 1) }
     }
 
@@ -289,7 +358,7 @@ struct ContentView: View {
                 VStack(alignment: .leading, spacing: 14) {
                     eyebrow("DEIN TRAININGSCENTER")
                     Text("Netzwerke verstehen.\nWissen festigen.")
-                        .font(.system(size: 44, weight: .bold, design: .rounded))
+                        .font(.system(size: compact ? 30 : 44, weight: .bold, design: .rounded))
                         .tracking(-1.8)
                         .fixedSize(horizontal: false, vertical: true)
                     Text("Dein Lernlabor für die FiSi-Prüfung: Ports, Protokolle und Subnetze – eine Runde nach der anderen.")
@@ -299,11 +368,13 @@ struct ContentView: View {
                         .frame(maxWidth: 530, alignment: .leading)
                 }
                 Spacer(minLength: 0)
-                Image(systemName: "point.3.connected.trianglepath.dotted")
-                    .font(.system(size: 106, weight: .ultraLight))
-                    .foregroundStyle(LabStyle.accent.opacity(0.45))
-                    .frame(width: 150, height: 150)
-                    .accessibilityHidden(true)
+                if !compact {
+                    Image(systemName: "point.3.connected.trianglepath.dotted")
+                        .font(.system(size: 106, weight: .ultraLight))
+                        .foregroundStyle(LabStyle.accent.opacity(0.45))
+                        .frame(width: 150, height: 150)
+                        .accessibilityHidden(true)
+                }
             }
 
             Button {
@@ -331,7 +402,7 @@ struct ContentView: View {
 
             eyebrow("DEIN PORT-QUIZ-FORTSCHRITT")
 
-            HStack(spacing: 12) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 140), spacing: 12)], spacing: 12) {
                 statCard("GESAMMELTE XP", value: "\(store.progress.totalXP)", symbol: "bolt.fill", accent: true)
                 statCard("RUNDEN", value: "\(store.progress.completedRounds)", symbol: "checkmark.circle")
                 statCard("BESTLEISTUNG", value: "\(store.progress.bestScore)", symbol: "trophy")
@@ -355,12 +426,14 @@ struct ContentView: View {
                     Spacer()
                 }
 
-                HStack(spacing: 13) {
+                let actions = compact ? AnyLayout(VStackLayout(alignment: .leading, spacing: 13))
+                                      : AnyLayout(HStackLayout(spacing: 13))
+                actions {
                     Button {
                         if !activeRound { store.startRound() }
                         page = .game
                     } label: {
-                        Label(activeRound ? "Runde fortsetzen ↵" : "Training starten ↵", systemImage: "arrow.right")
+                        Label(activeRound ? "Runde fortsetzen\(returnKeyHint)" : "Training starten\(returnKeyHint)", systemImage: "arrow.right")
                     }
                     .buttonStyle(LabPrimaryButtonStyle())
                     .keyboardShortcut(.return, modifiers: [])
@@ -373,7 +446,7 @@ struct ContentView: View {
                     .buttonStyle(LabSecondaryButtonStyle())
                 }
             }
-            .padding(27)
+            .padding(compact ? 18 : 27)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(LabStyle.surface, in: RoundedRectangle(cornerRadius: 18))
             .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(LabStyle.border))
@@ -448,7 +521,7 @@ struct ContentView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     eyebrow("TRAININGSMODUS / PORT-QUIZ")
                     Text("Ports, Dienste & Protokolle")
-                        .font(.system(size: 37, weight: .bold, design: .rounded))
+                        .font(.system(size: compact ? 28 : 37, weight: .bold, design: .rounded))
                         .tracking(-1.2)
                 }
                 Spacer()
@@ -480,9 +553,11 @@ struct ContentView: View {
                 .foregroundStyle(LabStyle.accent)
             Text("Starte dein Port-Training")
                 .font(.system(size: 23, weight: .bold, design: .rounded))
-            Text("Zehn Fragen zu Ports, Diensten und Transportprotokollen. Antworte mit 1–4, weiter geht es mit Return.")
+            Text(isTouchDevice
+                 ? "Zehn Fragen zu Ports, Diensten und Transportprotokollen. Tippe eine Antwort an, danach geht es mit „Weiter“."
+                 : "Zehn Fragen zu Ports, Diensten und Transportprotokollen. Antworte mit 1–4, weiter geht es mit Return.")
                 .foregroundStyle(LabStyle.muted)
-            Button("Runde starten ↵") { store.startRound() }
+            Button("Runde starten\(returnKeyHint)") { store.startRound() }
                 .buttonStyle(LabPrimaryButtonStyle())
                 .keyboardShortcut(.return, modifiers: [])
         }
@@ -525,7 +600,7 @@ struct ContentView: View {
                     .foregroundStyle(LabStyle.muted)
                 HStack(alignment: .firstTextBaseline, spacing: 12) {
                     Text(question.title)
-                        .font(.system(size: 38, weight: .bold, design: .rounded))
+                        .font(.system(size: compact ? 30 : 38, weight: .bold, design: .rounded))
                         .tracking(-1)
                         .lineLimit(2)
                         .minimumScaleFactor(0.7)
@@ -543,10 +618,11 @@ struct ContentView: View {
             }
             .padding(.vertical, 10)
 
+            let perRow = compact ? 1 : 2
             Grid(horizontalSpacing: 12, verticalSpacing: 12) {
-                ForEach(0..<((question.choices.count + 1) / 2), id: \.self) { row in
+                ForEach(0..<((question.choices.count + perRow - 1) / perRow), id: \.self) { row in
                     GridRow {
-                        ForEach(Array(question.choices.enumerated()).filter { $0.offset / 2 == row }, id: \.offset) { index, port in
+                        ForEach(Array(question.choices.enumerated()).filter { $0.offset / perRow == row }, id: \.offset) { index, port in
                             Button {
                                 store.answer(port)
                             } label: {
@@ -607,18 +683,20 @@ struct ContentView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(LabStyle.raised, in: RoundedRectangle(cornerRadius: 11))
 
-                Button(session.index + 1 == session.questions.count ? "Ergebnis ansehen ↵" : "Nächste Frage ↵") {
+                Button(session.index + 1 == session.questions.count ? "Ergebnis ansehen\(returnKeyHint)" : "Nächste Frage\(returnKeyHint)") {
                     store.nextQuestion()
                 }
                 .buttonStyle(LabPrimaryButtonStyle())
                 .keyboardShortcut(.return, modifiers: [])
             } else {
-                Text("Tasten 1–\(question.choices.count): Antwort wählen · Return: nach der Auflösung weiter")
+                Text(isTouchDevice
+                     ? "Tippe die richtige Antwort an."
+                     : "Tasten 1–\(question.choices.count): Antwort wählen · Return: nach der Auflösung weiter")
                     .font(.system(size: 12))
                     .foregroundStyle(LabStyle.muted)
             }
         }
-        .padding(30)
+        .padding(compact ? 18 : 30)
         .background(LabStyle.surface, in: RoundedRectangle(cornerRadius: 18))
         .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(LabStyle.border))
     }
@@ -635,7 +713,7 @@ struct ContentView: View {
                 .font(.system(size: 14))
                 .foregroundStyle(LabStyle.muted)
 
-            HStack(spacing: 14) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 110), spacing: 14)], spacing: 14) {
                 resultValue("PUNKTE", "\(session.score)")
                 resultValue("RICHTIG", "\(session.correctCount) / \(session.questions.count)")
                 resultValue("GESAMT-XP", "\(store.progress.totalXP)")
@@ -647,7 +725,7 @@ struct ContentView: View {
                 .foregroundStyle(LabStyle.accent)
 
             HStack(spacing: 12) {
-                Button("Neue Runde starten ↵") { store.startRound() }
+                Button("Neue Runde starten\(returnKeyHint)") { store.startRound() }
                     .buttonStyle(LabPrimaryButtonStyle())
                     .keyboardShortcut(.return, modifiers: [])
                 Button("Zur Übersicht") { page = .dashboard }
@@ -664,7 +742,7 @@ struct ContentView: View {
         VStack(alignment: .leading, spacing: 24) {
             eyebrow("SPICKZETTEL / NETZWERKE")
             Text("Port-Referenz")
-                .font(.system(size: 37, weight: .bold, design: .rounded))
+                .font(.system(size: compact ? 28 : 37, weight: .bold, design: .rounded))
                 .tracking(-1.2)
             Text("\(PortService.catalog.count) Dienste mit Standardports und gebräuchlichen Transportprotokollen. TCP / UDP bedeutet: Beide werden genutzt, je nach Variante des Dienstes.")
                 .font(.system(size: 14))
@@ -673,13 +751,13 @@ struct ContentView: View {
             VStack(spacing: 0) {
                 HStack {
                     Text("DIENST").frame(maxWidth: .infinity, alignment: .leading)
-                    Text("PROTOKOLL").frame(width: 120, alignment: .leading)
-                    Text("PORT").frame(width: 90, alignment: .trailing)
+                    Text("PROTOKOLL").frame(width: transportWidth, alignment: .leading)
+                    Text("PORT").frame(width: portWidth, alignment: .trailing)
                 }
                 .font(.system(size: 10, weight: .bold, design: .monospaced))
                 .tracking(1.2)
                 .foregroundStyle(LabStyle.muted)
-                .padding(.horizontal, 22)
+                .padding(.horizontal, compact ? 14 : 22)
                 .frame(height: 43)
 
                 ForEach(PortService.catalog) { service in
@@ -699,13 +777,13 @@ struct ContentView: View {
                             Text(service.transport)
                                 .font(.system(size: 11, weight: .medium, design: .monospaced))
                                 .foregroundStyle(LabStyle.muted)
-                                .frame(width: 120, alignment: .leading)
+                                .frame(width: transportWidth, alignment: .leading)
                             Text("\(service.port)")
                                 .font(.system(size: 15, weight: .bold, design: .monospaced))
                                 .foregroundStyle(LabStyle.accent)
-                                .frame(width: 90, alignment: .trailing)
+                                .frame(width: portWidth, alignment: .trailing)
                         }
-                        .padding(.horizontal, 22)
+                        .padding(.horizontal, compact ? 14 : 22)
                         .frame(minHeight: 63)
                     }
                 }
@@ -714,6 +792,9 @@ struct ContentView: View {
             .overlay(RoundedRectangle(cornerRadius: 15).strokeBorder(LabStyle.border))
         }
     }
+
+    private var transportWidth: CGFloat { compact ? 66 : 120 }
+    private var portWidth: CGFloat { compact ? 56 : 90 }
 
     private var petContext: PetLearningContext {
         switch page {

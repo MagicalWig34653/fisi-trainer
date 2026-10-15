@@ -568,7 +568,7 @@ struct RewardsView: View {
                     .font(.system(size: 10, weight: .bold)).tracking(1)
                     .foregroundStyle(RewardStyle.accent)
             }
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 4),
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 120), spacing: 10)],
                       spacing: 10) {
                 ForEach(RewardBadge.all) { badge in
                     let earned = rewards.level >= badge.level
@@ -645,7 +645,9 @@ struct RewardsView: View {
                     .frame(maxWidth: .infinity)
                     .background(RewardStyle.raised, in: RoundedRectangle(cornerRadius: 14))
                     .clipShape(RoundedRectangle(cornerRadius: 14))
-                Text("Ziehen zum Drehen · Scrollen zum Zoomen · Doppelklick zum Zentrieren")
+                Text(isTouchDevice
+                     ? "Ziehen zum Drehen · Zwei Finger zum Zoomen · Doppeltippen zum Zentrieren"
+                     : "Ziehen zum Drehen · Scrollen zum Zoomen · Doppelklick zum Zentrieren")
                     .font(.system(size: 11)).foregroundStyle(RewardStyle.muted)
                 Button {
                     activePetSheet = .chat(pet)

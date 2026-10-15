@@ -4,7 +4,9 @@
 
 Dieses Dokument beschreibt Aufbau, Datenfluss, Persistenz und Spielregeln von FiSi Trainer so detailliert, dass Änderungen geplant werden können, **ohne den Code lesen zu müssen**. Es richtet sich an künftige KI-Sessions (Claude Code, Codex) und Entwickler. Alle Aussagen sind aus dem Code verifiziert (Stand: Swift-Quellen in `FiSiTrainer/` und `FiSiTrainerTests/`, `AGENTS.md`, `README.md`, `Documentation/DEVELOPMENT.md`, `project.yml`, `Scripts/`, `.github/workflows/`).
 
-FiSi Trainer ist eine native macOS-App (SwiftUI, SceneKit, Foundation Models) ohne Server, ohne Konten, ohne Drittanbieter-Pakete. Sie läuft ab macOS 14; die optionale lokale KI benötigt macOS 26+ und Apple Intelligence.
+FiSi Trainer ist eine native App für macOS, iPadOS und iOS (SwiftUI, SceneKit, Foundation Models) ohne Server, ohne Konten, ohne Drittanbieter-Pakete. Sie läuft ab macOS 14 bzw. iOS/iPadOS 17; die optionale lokale KI benötigt macOS/iOS 26+ und Apple Intelligence.
+
+**Plattformschicht:** Ein einziges Multiplatform-Target. `Platform.swift` enthält `PlatformColor`/`PlatformBezierPath` (AppKit bzw. UIKit), `SCNVector3(cg:)`/`cgX…` (SceneKit nutzt auf macOS `CGFloat`, auf iOS `Float`; Rechenlogik daher in `CGFloat`, Zuweisungen über `SCNFloat`), `macMinimumSize`/`macSheetSize` und `returnKeyHint`/`isTouchDevice`. `ContentView` zeigt ab `horizontalSizeClass == .compact` (iPhone) eine untere Tab-Leiste statt der Seitenleiste; Raster nutzen `GridItem(.adaptive)`. `PetHabitatView` ist `NSViewRepresentable` (macOS) bzw. `UIViewRepresentable` (iOS); `FramedPetView` ersetzt Scrollrad/Doppelklick auf iOS durch SceneKits eigene Pinch-Geste und einen Doppeltipp. Der iOS-Build läuft in der CI (`ios-build`) gegen den Simulator; die Unit-Tests laufen weiterhin nur auf macOS.
 
 ## Inhalt
 
@@ -86,6 +88,7 @@ Alle vier sind `@MainActor final class … ObservableObject`. Alle vier laden ih
 | Datei | Zeilen | Zweck | Wichtigste Typen | Wird benutzt von |
 | --- | ---: | --- | --- | --- |
 | `FiSiTrainerApp.swift` | 41 | App-Einstieg, Environment-Injection, kombinierte XP | `FiSiTrainerApp` | — |
+| `Platform.swift` | 80 | Plattformschicht: AppKit/UIKit-Typaliase, SceneKit-`Float`/`CGFloat`-Helfer, Mac-only-Fenstergrößen, Touch-Hinweise | `PlatformColor`, `PlatformBezierPath`, `SCNVector3(cg:)`, `macMinimumSize`, `returnKeyHint` | `Pet*`, `ContentView`, Spiele-Views |
 | `ContentView.swift` | 823 | Sidebar-Navigation, Dashboard, Port-Quiz-UI, Port-Referenz | `ContentView`, `LabPage`, `LabStyle` | `FiSiTrainerApp` |
 | `Models.swift` | 157 | Port-Katalog, Fragen-Modell, Spielsitzung, Fortschritt | `PortService`, `Transport`, `QuestionKind`, `Question`, `GameSession`, `PlayerProgress` | `GameStore`, `ContentView`, `TrainingPetContext` |
 | `GameStore.swift` | 256 | Port-Quiz-Logik, Persistenz, Rundengenerierung | `GameStore` | `ContentView`, `FiSiTrainerApp` |
@@ -418,15 +421,15 @@ Dieses Verhalten ist über alle vier Stores identisch und wird in `AGENTS.md` al
 
 ### Verfügbarkeit (lokale KI)
 
-`PetIntelligence.refreshAvailability()` prüft `#if canImport(FoundationModels)` und `if #available(macOS 26.0, *)` den Status von `SystemLanguageModel.default.availability`:
+`PetIntelligence.refreshAvailability()` prüft `#if canImport(FoundationModels)` und `if #available(macOS 26.0, iOS 26.0, *)` den Status von `SystemLanguageModel.default.availability`:
 
 | Zustand | `isAvailable` | Anzeige |
 | --- | --- | --- |
-| `.available` | `true` | „Lokale KI bereit · Verarbeitung auf diesem Mac“ |
-| `.unavailable(.deviceNotEligible)` | `false` | „Lokale KI ist auf diesem Mac nicht verfügbar.“ |
-| `.unavailable(.appleIntelligenceNotEnabled)` | `false` | „Aktiviere Apple Intelligence in den Systemeinstellungen.“ |
+| `.available` | `true` | „Lokale KI bereit · Verarbeitung auf diesem Gerät“ |
+| `.unavailable(.deviceNotEligible)` | `false` | „Lokale KI ist auf diesem Gerät nicht verfügbar.“ |
+| `.unavailable(.appleIntelligenceNotEnabled)` | `false` | „Aktiviere Apple Intelligence in den Einstellungen.“ |
 | `.unavailable(.modelNotReady)` | `false` | „Das lokale Sprachmodell ist noch nicht bereit.“ |
-| unter macOS 26 / ohne FoundationModels | `false` | „Lokale KI benötigt macOS 26 oder neuer.“ |
+| unter macOS 26 / ohne FoundationModels | `false` | „Lokale KI benötigt macOS 26 bzw. iOS 26 oder neuer.“ |
 
 Ohne verfügbares Modell bleiben vorbereitete Tipps (`PetCompanionMessages`, `context.hint`/`context.explanation`) nutzbar; das Modell bewertet und vergibt niemals XP — das bleibt vollständig regelbasiert in den Stores.
 

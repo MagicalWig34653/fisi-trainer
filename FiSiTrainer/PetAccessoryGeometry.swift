@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright (C) 2026 Lino Laske
 
-import AppKit
 import SceneKit
 
 enum PetAccessoryGeometry {
@@ -43,7 +42,7 @@ enum PetAccessoryGeometry {
         }
     }
 
-    private static func headTop(_ kind: PetKind) -> CGFloat {
+    private static func headTop(_ kind: PetKind) -> SCNFloat {
         switch kind {
         case .cat: 0.43
         case .fox: 0.44
@@ -63,10 +62,10 @@ enum PetAccessoryGeometry {
                                 at: SCNVector3(0, 0.51, 0.665),
                                 name: "accessory.outfit.bandana.frontBand"))
 
-        let path = NSBezierPath()
-        path.move(to: NSPoint(x: -0.24, y: 0.08))
-        path.line(to: NSPoint(x: 0.24, y: 0.08))
-        path.line(to: NSPoint(x: 0, y: -0.25))
+        let path = PlatformBezierPath()
+        path.move(to: CGPoint(x: -0.24, y: 0.08))
+        path.line(to: CGPoint(x: 0.24, y: 0.08))
+        path.line(to: CGPoint(x: 0, y: -0.25))
         path.close()
         let flap = part(SCNShape(path: path, extrusionDepth: 0.035), color: cloth,
                         at: SCNVector3(0, 0.41, 0.70), name: "accessory.outfit.bandana.flap")
@@ -79,7 +78,7 @@ enum PetAccessoryGeometry {
     private static func addScarf(to torso: SCNNode, kind: PetKind) {
         let blue = color(0.24, 0.57, 0.85)
         let light = color(0.79, 0.91, 1.0)
-        for y: CGFloat in [0.39, 0.47, 0.55] {
+        for y: SCNFloat in [0.39, 0.47, 0.55] {
             let wrap = part(SCNTorus(ringRadius: neckRadius(kind), pipeRadius: 0.055),
                             color: y == 0.47 ? light : blue,
                             at: SCNVector3(0, y, 0), name: "accessory.outfit.scarf.wrap")
@@ -98,7 +97,7 @@ enum PetAccessoryGeometry {
         for index in 0..<3 {
             torso.addChildNode(part(SCNCylinder(radius: 0.009, height: 0.065),
                                     color: light,
-                                    at: SCNVector3(0.15 + CGFloat(index) * 0.04, 0.04, 0.71),
+                                    at: SCNVector3(x: 0.15 + SCNFloat(index) * 0.04, y: 0.04, z: 0.71),
                                     name: "accessory.outfit.scarf.fringe"))
         }
     }
@@ -129,7 +128,7 @@ enum PetAccessoryGeometry {
         head.addChildNode(part(SCNTorus(ringRadius: 0.27, pipeRadius: 0.055), color: gold,
                                at: SCNVector3(0, y + 0.04, -0.025),
                                name: "accessory.outfit.crown.band"))
-        for x: CGFloat in [-0.22, -0.11, 0, 0.11, 0.22] {
+        for x: SCNFloat in [-0.22, -0.11, 0, 0.11, 0.22] {
             let tall = x == 0
             head.addChildNode(part(SCNCone(topRadius: 0, bottomRadius: 0.075,
                                            height: tall ? 0.28 : 0.20), color: gold,
@@ -161,7 +160,7 @@ enum PetAccessoryGeometry {
         let light = color(0.91, 0.76, 1.0)
         root.addChildNode(part(SCNSphere(radius: 0.17), color: lavender,
                                at: SCNVector3Zero, name: "accessory.toy.yarn.ball"))
-        for angle: CGFloat in [0, .pi / 3, .pi * 2 / 3] {
+        for angle: SCNFloat in [0, .pi / 3, .pi * 2 / 3] {
             let loop = part(SCNTorus(ringRadius: 0.168, pipeRadius: 0.009), color: light,
                             at: SCNVector3Zero, name: "accessory.toy.yarn.threadLoop")
             loop.eulerAngles = SCNVector3(angle, angle * 0.65, 0)
@@ -195,7 +194,7 @@ enum PetAccessoryGeometry {
         root.addChildNode(part(SCNCone(topRadius: 0, bottomRadius: 0.085, height: 0.14),
                                color: red, at: SCNVector3(0, 0.19, 0),
                                name: "accessory.toy.rocket.nose"))
-        for side: CGFloat in [-1, 1] {
+        for side: SCNFloat in [-1, 1] {
             let fin = part(SCNBox(width: 0.09, height: 0.13, length: 0.035,
                                   chamferRadius: 0.012), color: red,
                            at: SCNVector3(side * 0.105, -0.085, 0),
@@ -212,21 +211,21 @@ enum PetAccessoryGeometry {
                                name: "accessory.toy.rocket.flame"))
     }
 
-    private static var goldFlame: NSColor { color(1.0, 0.68, 0.20) }
+    private static var goldFlame: PlatformColor { color(1.0, 0.68, 0.20) }
 
-    private static func starPath(outer: CGFloat, inner: CGFloat) -> NSBezierPath {
-        let path = NSBezierPath()
+    private static func starPath(outer: CGFloat, inner: CGFloat) -> PlatformBezierPath {
+        let path = PlatformBezierPath()
         for index in 0..<10 {
             let angle = CGFloat(index) * .pi / 5 - .pi / 2
             let radius = index.isMultiple(of: 2) ? outer : inner
-            let point = NSPoint(x: cos(angle) * radius, y: sin(angle) * radius)
+            let point = CGPoint(x: cos(angle) * radius, y: sin(angle) * radius)
             if index == 0 { path.move(to: point) } else { path.line(to: point) }
         }
         path.close()
         return path
     }
 
-    private static func part(_ geometry: SCNGeometry, color: NSColor, at position: SCNVector3,
+    private static func part(_ geometry: SCNGeometry, color: PlatformColor, at position: SCNVector3,
                              scale: SCNVector3 = SCNVector3(1, 1, 1), name: String) -> SCNNode {
         let material = SCNMaterial()
         material.diffuse.contents = color
@@ -241,7 +240,7 @@ enum PetAccessoryGeometry {
         return node
     }
 
-    private static func color(_ red: CGFloat, _ green: CGFloat, _ blue: CGFloat) -> NSColor {
-        NSColor(calibratedRed: red, green: green, blue: blue, alpha: 1)
+    private static func color(_ red: CGFloat, _ green: CGFloat, _ blue: CGFloat) -> PlatformColor {
+        PlatformColor(calibratedRed: red, green: green, blue: blue, alpha: 1)
     }
 }

@@ -65,18 +65,18 @@ final class PetIntelligence: ObservableObject {
 
     func refreshAvailability() {
         #if canImport(FoundationModels)
-        if #available(macOS 26.0, *) {
+        if #available(macOS 26.0, iOS 26.0, *) {
             switch SystemLanguageModel.default.availability {
             case .available:
                 isAvailable = true
-                availabilityText = "Lokale KI bereit · Verarbeitung auf diesem Mac"
+                availabilityText = "Lokale KI bereit · Verarbeitung auf diesem Gerät"
             case .unavailable(let reason):
                 isAvailable = false
                 switch reason {
                 case .deviceNotEligible:
-                    availabilityText = "Lokale KI ist auf diesem Mac nicht verfügbar."
+                    availabilityText = "Lokale KI ist auf diesem Gerät nicht verfügbar."
                 case .appleIntelligenceNotEnabled:
-                    availabilityText = "Aktiviere Apple Intelligence in den Systemeinstellungen."
+                    availabilityText = "Aktiviere Apple Intelligence in den Einstellungen."
                 case .modelNotReady:
                     availabilityText = "Das lokale Sprachmodell ist noch nicht bereit."
                 @unknown default:
@@ -87,7 +87,7 @@ final class PetIntelligence: ObservableObject {
         }
         #endif
         isAvailable = false
-        availabilityText = "Lokale KI benötigt macOS 26 oder neuer."
+        availabilityText = "Lokale KI benötigt macOS 26 bzw. iOS 26 oder neuer."
     }
 
     func respond(to text: String, pet: PetKind, context: PetLearningContext?,
@@ -98,7 +98,7 @@ final class PetIntelligence: ObservableObject {
         guard !Self.clean(text, limit: 1_000).isEmpty else { throw PetIntelligenceError.emptyMessage }
 
         #if canImport(FoundationModels)
-        if #available(macOS 26.0, *) {
+        if #available(macOS 26.0, iOS 26.0, *) {
             // Actual conversation roles prevent the model from treating its history as text to repeat.
             var entries: [Transcript.Entry] = [.instructions(.init(
                 segments: [.text(.init(content: Self.instructions(for: pet)))], toolDefinitions: []))]

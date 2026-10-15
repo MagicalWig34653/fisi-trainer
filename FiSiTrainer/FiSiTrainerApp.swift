@@ -21,13 +21,15 @@ struct FiSiTrainerApp: App {
                     rewards.updateXP(xp)
                 }
                 .preferredColorScheme(.dark)
-                .frame(minWidth: 1000, minHeight: 700)
+                .macMinimumSize(width: 1000, height: 700)
         }
+        #if os(macOS)
         .defaultSize(width: 1180, height: 800)
         .windowStyle(.hiddenTitleBar)
         .commands {
             CommandGroup(replacing: .newItem) { }
         }
+        #endif
     }
 
     /// Port-Quiz, Subnetz-Sprint and Prüfungswissen XP together, without overflowing.
