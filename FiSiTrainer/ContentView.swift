@@ -208,6 +208,17 @@ struct ContentView: View {
         }
         .swapAnimation(page)
         .background(LabStyle.background)
+        // Edge swipe to the right goes back from a game, like the back button in the header.
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 24)
+                .onEnded { value in
+                    guard compact, page.isPractice, page != .practice,
+                          value.startLocation.x < 32,
+                          value.translation.width > 70,
+                          abs(value.translation.height) < 60 else { return }
+                    goBackFromGame()
+                }
+        )
         .overlayPreferenceValue(PinnedActionKey.self, alignment: .bottom) { pinned in
             if isTouchDevice, let pinned {
                 PinnedActionBar(action: pinned)
