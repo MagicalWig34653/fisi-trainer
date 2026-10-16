@@ -71,7 +71,7 @@ bash Scripts/package-release.sh /tmp/fisi-release v1.0.0
 
 - Repository: https://github.com/MagicalWig34653/fisi-trainer
 - `build.yml` runs tests for pushes to `main` and pull requests. Untrusted PR jobs use read-only permissions and no credentials.
-- `release.yml` packages a published release's tag and attaches the app DMG and SHA-256 checksum to that release.
+- `release.yml` packages a published release's tag and attaches the app DMG and SHA-256 checksum to that release. It can also be started manually (`workflow_dispatch` on `main` with `tag`, `title`, `notes`), which creates the tag and release first and rolls both back if packaging fails.
 - Release tags use `vMAJOR.MINOR.PATCH`. The packaging script sets the app marketing version, verifies both `arm64` and `x86_64`, creates a clean staging copy, signs locally and packages the `.app` as a DMG with `Scripts/create-dmg.sh`. DMG tooling is version-pinned in `Packaging/requirements-dmg.txt` and isolated from app dependencies.
 - Release apps currently have an ad-hoc signature. They are not Developer-ID-signed or notarized. Do not imply otherwise or add Gatekeeper-disabling instructions.
 - Keep GitHub tokens in the step that requires them. Pass event-derived strings through quoted environment variables rather than interpolating them into shell code. Pin external actions to reviewed commit SHAs.

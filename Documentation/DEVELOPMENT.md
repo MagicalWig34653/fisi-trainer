@@ -28,6 +28,8 @@ xcodebuild build -project FiSiTrainer.xcodeproj -scheme FiSiTrainer \
 
 Wenn ein GitHub Release mit einem Tag wie `v1.0.0` veröffentlicht wird, baut `.github/workflows/release.yml` automatisch eine App mit `arm64`- und `x86_64`-Architektur. `Scripts/package-release.sh` erstellt `FiSiTrainer-v1.0.0-macOS-universal.dmg` und die dazugehörige `.dmg.sha256`-Datei. Release-Tags müssen das Format `vMAJOR.MINOR.PATCH` haben. Ein lokaler Probelauf ist mit `bash Scripts/package-release.sh /tmp/fisi-release v1.0.0` möglich.
 
+Alternativ lässt sich ein Release ohne die Release-Seite starten: unter **Actions → Release macOS app → Run workflow** (Branch `main`) Tag (`vMAJOR.MINOR.PATCH`), optional Titel und Notizen eingeben. Der Workflow legt Tag und Release an, baut die App und hängt DMG und Prüfsumme an; scheitert das Verpacken, wird das neu angelegte Release samt Tag wieder gelöscht.
+
 Der Build erhält nur eine ad-hoc-Signatur; eine Developer-ID-Signatur und Apple-Notarisierung sind derzeit nicht Teil des Release-Prozesses.
 
 ## DMG gestalten
