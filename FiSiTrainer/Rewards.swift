@@ -422,6 +422,7 @@ struct RewardsView: View {
     @EnvironmentObject private var game: GameStore
     @EnvironmentObject private var subnet: SubnetStore
     @EnvironmentObject private var exam: ExamStore
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var interaction: PetInteraction?
     @State private var interactionID = 0
     @State private var showingRecovery = false
@@ -649,33 +650,54 @@ struct RewardsView: View {
                      ? "Ziehen zum Drehen · Zwei Finger zum Zoomen · Doppeltippen zum Zentrieren"
                      : "Ziehen zum Drehen · Scrollen zum Zoomen · Doppelklick zum Zentrieren")
                     .font(.system(size: 11)).foregroundStyle(RewardStyle.muted)
-                Button {
-                    activePetSheet = .chat(pet)
-                } label: {
-                    Label("Mit deinem Haustier sprechen", systemImage: "bubble.left.and.bubble.right")
-                }
-                .buttonStyle(.bordered)
-                Button {
-                    activePetSheet = .wardrobe(pet)
-                } label: {
-                    Label("Ausstattung", systemImage: "tshirt.fill")
-                }
-                .buttonStyle(.bordered)
-                HStack {
-                    Text("Bindung: \(rewards.bond)")
-                        .font(.system(size: 12, weight: .semibold))
+                HStack(spacing: 8) {
+                    Image(systemName: "heart.fill")
                         .foregroundStyle(RewardStyle.accent)
+                    Text("Bindung")
+                        .foregroundStyle(RewardStyle.muted)
+                    Text("\(rewards.bond)")
+                        .foregroundStyle(RewardStyle.accent)
+                        .contentTransition(.numericText())
+                        .animation(reduceMotion ? nil : .easeOut(duration: 0.3), value: rewards.bond)
                     Spacer()
+                }
+                .font(.system(size: 13, weight: .semibold))
+                .accessibilityElement(children: .combine)
+                HStack(spacing: 10) {
                     ForEach(PetInteraction.allCases, id: \.self) { action in
                         Button {
                             rewards.interact(action)
                             interaction = action
                             interactionID += 1
                         } label: {
-                            Label(action.title, systemImage: action.symbol)
+                            VStack(spacing: 6) {
+                                Image(systemName: action.symbol)
+                                    .font(.system(size: 20))
+                                    .foregroundStyle(RewardStyle.accent)
+                                    .symbolEffect(.bounce, value: reduceMotion ? -1 : (interaction == action ? interactionID : -1))
+                                Text(action.title)
+                            }
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(PetTileStyle())
                     }
+                }
+                .tapFeedback(trigger: interactionID)
+                HStack(spacing: 10) {
+                    Button {
+                        activePetSheet = .chat(pet)
+                    } label: {
+                        Label("Plaudern", systemImage: "bubble.left.and.bubble.right")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(PetPillStyle(prominent: true))
+                    .accessibilityLabel("Mit deinem Haustier sprechen")
+                    Button {
+                        activePetSheet = .wardrobe(pet)
+                    } label: {
+                        Label("Ausstattung", systemImage: "tshirt.fill")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(PetPillStyle())
                 }
             } else {
                 Text("Erreiche Level 2 und schalte deine Katze frei.")

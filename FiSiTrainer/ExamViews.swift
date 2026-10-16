@@ -28,11 +28,12 @@ struct ExamArenaView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
             if let mode = openMode {
-                gameView(mode: mode)
+                gameView(mode: mode).contentSwap(mode)
             } else {
-                hub
+                hub.contentSwap("hub")
             }
         }
+        .swapAnimation(openMode)
         .foregroundStyle(ExamStyle.primary)
         .confirmationDialog("Prüfungswissen-Fortschritt zurücksetzen?",
                             isPresented: $showingResetConfirmation, titleVisibility: .visible) {
@@ -284,15 +285,17 @@ struct ExamArenaView: View {
 
             if let session = store.session(for: mode) {
                 if session.isComplete {
-                    mode == .exam ? AnyView(examCompletion(session)) : AnyView(completion(session, mode: mode))
+                    (mode == .exam ? AnyView(examCompletion(session)) : AnyView(completion(session, mode: mode)))
+                        .contentSwap("done")
                 } else if let task = session.currentTask {
                     // `currentTask` is nil only when `isComplete` is true, which is handled above.
-                    taskArea(session: session, task: task, mode: mode)
+                    taskArea(session: session, task: task, mode: mode).contentSwap(session.index)
                 }
             } else {
-                intro(mode: mode)
+                intro(mode: mode).contentSwap("intro")
             }
         }
+        .swapAnimation(store.session(for: mode).map { $0.index * 2 + ($0.isComplete ? 1 : 0) } ?? -1)
         .confirmationDialog("Runde abbrechen?", isPresented: $showingAbandonConfirmation, titleVisibility: .visible) {
             Button("Runde abbrechen", role: .destructive) { store.abandon(mode: mode) }
         } message: {
@@ -384,8 +387,10 @@ struct ExamArenaView: View {
 
             if session.showsResolution, let answer = session.currentAnswer {
                 resolution(session: session, task: task, mode: mode, answer: answer)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
+        .swapAnimation(session.showsResolution)
         .padding(30)
         .background(ExamStyle.surface, in: RoundedRectangle(cornerRadius: 18))
         .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(ExamStyle.border))
