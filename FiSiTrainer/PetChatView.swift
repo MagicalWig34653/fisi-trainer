@@ -55,6 +55,7 @@ struct PetChatView: View {
                     }
                     .padding()
                 }
+                .scrollDismissesKeyboard(.interactively)
                 .onChange(of: messages.count) { _, _ in
                     if let last = messages.last {
                         withAnimation { proxy.scrollTo(last.id, anchor: .bottom) }

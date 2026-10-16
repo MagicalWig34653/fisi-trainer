@@ -53,6 +53,7 @@
 		F28070EACAE82002E4B4C252 /* PetAccessoryGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93295978ED0A3B3854CC290 /* PetAccessoryGeometryTests.swift */; };
 		F7DAFEE2CE70B535EF87F2E2 /* ExamCatalogSozial.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0B598FDEC0D55BBF2324C5 /* ExamCatalogSozial.swift */; };
 		FAB2AE2B80CF9F11560484FB /* SubnetStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CB3BAD7768B31B1A559D656 /* SubnetStoreTests.swift */; };
+		8A3C5E7F9B1D2A4C6E80F113 /* MobileChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4D6F8A0C2E3B5D7F91A224 /* MobileChrome.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -115,6 +116,7 @@
 		F0136BB21B3F15D774B3FA2D /* ExamTaskFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamTaskFactory.swift; sourceTree = "<group>"; };
 		F8207D38A08636C571AA3C08 /* PetCompanionMessagesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetCompanionMessagesTests.swift; sourceTree = "<group>"; };
 		FF6CFF33DAB4657D1C55DA6A /* PetCompanionMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetCompanionMessages.swift; sourceTree = "<group>"; };
+		9B4D6F8A0C2E3B5D7F91A224 /* MobileChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileChrome.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -139,6 +141,7 @@
 				8A827392610E061E94D25713 /* FiSiTrainerApp.swift */,
 				3ED2FF0D608FEE792B7DB3F1 /* GameStore.swift */,
 				27C8D57108533DC26A86DD29 /* Models.swift */,
+				9B4D6F8A0C2E3B5D7F91A224 /* MobileChrome.swift */,
 				859E6D5C4A86FDA3A3E35549 /* PetAccessories.swift */,
 				2EAFA4FA46CAB600162446D4 /* PetAccessoryGeometry.swift */,
 				D15D91C120EC824FF414649C /* PetChatView.swift */,
@@ -327,6 +330,7 @@
 				79D416C6268A289C634AA2F9 /* FiSiTrainerApp.swift in Sources */,
 				A07E8979EA00FFA045C6574F /* GameStore.swift in Sources */,
 				AE668D69E4992F90ABCA2180 /* Models.swift in Sources */,
+				8A3C5E7F9B1D2A4C6E80F113 /* MobileChrome.swift in Sources */,
 				227A86562953F3305F4E4CA0 /* PetAccessories.swift in Sources */,
 				003DB5A1ACB63AF12ACAC320 /* PetAccessoryGeometry.swift in Sources */,
 				6F7DACCF207A76E5D6B32A20 /* PetChatView.swift in Sources */,
@@ -468,6 +472,7 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "FiSi Trainer";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -577,6 +582,7 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "FiSi Trainer";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
