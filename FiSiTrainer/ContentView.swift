@@ -15,28 +15,25 @@ private enum LabStyle {
     static let red = Color(red: 1.0, green: 0.45, blue: 0.43)
 }
 
-private enum LabPage: String, CaseIterable {
+private enum LabPage: String {
     case dashboard = "Übersicht"
     case game = "Port-Quiz"
     case subnet = "Subnetz-Sprint"
     case exam = "Prüfungswissen"
     case rewards = "Level & Haustiere"
     case reference = "Port-Referenz"
+    /// Hub for the three games on compact widths; the sidebar lists the games directly.
+    case practice = "Übungen"
 
-    /// Short label for the compact tab bar.
-    var shortTitle: String {
-        switch self {
-        case .dashboard: "Übersicht"
-        case .game: "Ports"
-        case .subnet: "Subnetz"
-        case .exam: "Prüfung"
-        case .rewards: "Level"
-        case .reference: "Referenz"
-        }
-    }
+    /// Pages listed in the Mac/iPad sidebar.
+    static let sidebarPages: [LabPage] = [.dashboard, .game, .subnet, .exam, .rewards, .reference]
+
+    /// The three games that share the "Übungen" tab on iPhone.
+    var isPractice: Bool { self == .practice || self == .game || self == .subnet || self == .exam }
 
     var symbol: String {
         switch self {
+        case .practice: "checklist"
         case .dashboard: "square.grid.2x2"
         case .game: "bolt.fill"
         case .subnet: "square.split.2x2"
@@ -45,6 +42,11 @@ private enum LabPage: String, CaseIterable {
         case .reference: "list.bullet.rectangle"
         }
     }
+}
+
+/// The four tabs of the native iPhone tab bar. Port-Quiz, Subnetz-Sprint and Prüfungswissen share "Übungen".
+private enum MobileTab: Hashable {
+    case dashboard, practice, rewards, reference
 }
 
 struct ContentView: View {
@@ -73,10 +75,7 @@ struct ContentView: View {
     var body: some View {
         Group {
             if compact {
-                VStack(spacing: 0) {
-                    mainColumn
-                    tabBar
-                }
+                mobileTabs
             } else {
                 HStack(spacing: 0) {
                     sidebar
@@ -167,6 +166,7 @@ struct ContentView: View {
                         case .exam: ExamArenaView(openMode: $openExamMode)
                         case .rewards: RewardsView()
                         case .reference: reference
+                        case .practice: practiceHub
                         }
                     }
                     .frame(maxWidth: 1050, alignment: .leading)
@@ -220,8 +220,21 @@ struct ContentView: View {
     /// Fixed header on iPhone and iPad: current page, level and the (optional) pet companion.
     private var touchHeader: some View {
         HStack(spacing: 10) {
-            Image(systemName: page.symbol)
-                .foregroundStyle(LabStyle.accent)
+            if compact && page.isPractice && page != .practice {
+                Button(action: goBackFromGame) {
+                    Image(systemName: "chevron.backward")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(LabStyle.accent)
+                        .frame(width: 44, height: 44)
+                        .glassSurface(in: Circle(), interactive: true)
+                        .contentShape(Circle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Zurück zu Übungen")
+            } else {
+                Image(systemName: page.symbol)
+                    .foregroundStyle(LabStyle.accent)
+            }
             Text(page.rawValue)
                 .font(.system(size: 17, weight: .bold, design: .rounded))
                 .lineLimit(1)
@@ -282,7 +295,7 @@ struct ContentView: View {
                 .padding(.top, 54)
                 .padding(.bottom, 15)
 
-            ForEach(LabPage.allCases, id: \.self) { item in
+            ForEach(LabPage.sidebarPages, id: \.self) { item in
                 Button {
                     page = item
                 } label: {
@@ -358,58 +371,125 @@ struct ContentView: View {
         .background(LabStyle.sidebar)
     }
 
-    /// Floating Liquid Glass navigation for compact widths (iPhone); the Mac and iPad use the sidebar.
-    private var tabBar: some View {
-        HStack(spacing: 2) {
-            ForEach(LabPage.allCases, id: \.self) { item in
-                Button {
-                    page = item
-                } label: {
-                    VStack(spacing: 2) {
-                        Image(systemName: item.symbol)
-                            .font(.system(size: 18, weight: .semibold))
-                            .frame(height: 22)
-                            .overlay(alignment: .topTrailing) {
-                                if hasActiveSession(item) {
-                                    Circle()
-                                        .fill(LabStyle.accent)
-                                        .frame(width: 7, height: 7)
-                                        .offset(x: 5, y: -1)
-                                }
-                            }
-                        Text(item.shortTitle)
-                            .font(.system(size: 9, weight: .semibold))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.7)
-                    }
-                    .foregroundStyle(page == item ? LabStyle.accent : LabStyle.muted)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 48)
-                    .background(page == item ? LabStyle.accent.opacity(0.16) : .clear, in: Capsule())
-                    .contentShape(Capsule())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(item.rawValue)
-                .accessibilityAddTraits(page == item ? .isSelected : [])
-            }
+    private var mobileTab: MobileTab {
+        switch page {
+        case .dashboard: .dashboard
+        case .game, .subnet, .exam, .practice: .practice
+        case .rewards: .rewards
+        case .reference: .reference
         }
-        .padding(4)
-        .glassSurface(in: Capsule())
-        .overlay(Capsule().strokeBorder(LabStyle.border))
-        .padding(.horizontal, 12)
-        .padding(.top, 6)
-        .padding(.bottom, 4)
     }
 
-    private func hasActiveSession(_ item: LabPage) -> Bool {
-        switch item {
-        case .game:
-            if let session = store.session { return !session.isComplete }
-            return false
-        case .exam:
-            return ExamMode.allCases.contains { examStore.hasActiveSession($0) }
-        default:
-            return false
+    private var tabSelection: Binding<MobileTab> {
+        Binding(
+            get: { mobileTab },
+            set: { tab in
+                switch tab {
+                case .dashboard: page = .dashboard
+                case .practice: if !page.isPractice { page = .practice }
+                case .rewards: page = .rewards
+                case .reference: page = .reference
+                }
+            }
+        )
+    }
+
+    /// Number of running rounds, shown as a badge on the "Übungen" tab.
+    private var runningPracticeRounds: Int {
+        var count = ExamMode.allCases.filter { examStore.hasActiveSession($0) }.count
+        if let session = store.session, !session.isComplete { count += 1 }
+        if let session = subnetStore.session, !session.isComplete { count += 1 }
+        return count
+    }
+
+    /// Native tab bar: Liquid Glass on iOS 26, the standard bar before that.
+    private var mobileTabs: some View {
+        TabView(selection: tabSelection) {
+            mobileTabContent(.dashboard)
+                .tabItem { Label("Übersicht", systemImage: "square.grid.2x2") }
+                .tag(MobileTab.dashboard)
+            mobileTabContent(.practice)
+                .tabItem { Label("Übungen", systemImage: "checklist") }
+                .badge(runningPracticeRounds)
+                .tag(MobileTab.practice)
+            mobileTabContent(.rewards)
+                .tabItem { Label("Level", systemImage: "pawprint.fill") }
+                .tag(MobileTab.rewards)
+            mobileTabContent(.reference)
+                .tabItem { Label("Referenz", systemImage: "list.bullet.rectangle") }
+                .tag(MobileTab.reference)
+        }
+        .tint(LabStyle.accent)
+        .minimizesTabBarOnScroll()
+    }
+
+    /// Only the selected tab builds its content, so heavy views such as the 3D habitat exist once.
+    @ViewBuilder
+    private func mobileTabContent(_ tab: MobileTab) -> some View {
+        if mobileTab == tab {
+            mainColumn
+        } else {
+            LabStyle.background.ignoresSafeArea()
+        }
+    }
+
+    private var practiceHub: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            eyebrow("WÄHLE EIN SPIEL")
+            practiceCard("Port-Quiz", "Ports, Dienste und TCP/UDP im Wechsel.", symbol: "bolt.fill",
+                         page: .game, running: store.session.map { !$0.isComplete } ?? false)
+            practiceCard("Subnetz-Sprint", "Präfixe, Subnetzmasken und nutzbare Hostadressen.",
+                         symbol: "square.split.2x2", page: .subnet,
+                         running: subnetStore.session.map { !$0.isComplete } ?? false)
+            practiceCard("Prüfungswissen", "Neun Spielarten zu WiSo und IT, plus Prüfungssimulation.",
+                         symbol: "graduationcap.fill", page: .exam,
+                         running: ExamMode.allCases.contains { examStore.hasActiveSession($0) })
+        }
+    }
+
+    private func practiceCard(_ title: String, _ subtitle: String, symbol: String, page target: LabPage,
+                              running: Bool) -> some View {
+        Button {
+            page = target
+        } label: {
+            HStack(spacing: 16) {
+                Image(systemName: symbol)
+                    .font(.system(size: 26))
+                    .foregroundStyle(LabStyle.accent)
+                    .frame(width: 36)
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(title)
+                        .font(.system(size: 18, weight: .bold, design: .rounded))
+                    Text(subtitle)
+                        .font(.system(size: 13))
+                        .foregroundStyle(LabStyle.muted)
+                        .multilineTextAlignment(.leading)
+                }
+                Spacer(minLength: 8)
+                if running {
+                    Text("LÄUFT")
+                        .font(.system(size: 10, weight: .bold, design: .monospaced))
+                        .foregroundStyle(LabStyle.accent)
+                }
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(LabStyle.muted)
+            }
+            .padding(20)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(LabStyle.surface, in: RoundedRectangle(cornerRadius: 16))
+            .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(LabStyle.border))
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(running ? "\(title), Runde läuft" : title)
+    }
+
+    /// One level up from a game: exam mode → exam overview → "Übungen".
+    private func goBackFromGame() {
+        if page == .exam, openExamMode != nil {
+            openExamMode = nil
+        } else {
+            page = .practice
         }
     }
 

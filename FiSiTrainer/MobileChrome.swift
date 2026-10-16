@@ -62,6 +62,20 @@ extension View {
         #endif
     }
 
+    /// Lets the iOS 26 tab bar shrink while scrolling down; earlier systems keep the standard bar.
+    @ViewBuilder
+    func minimizesTabBarOnScroll() -> some View {
+        #if os(iOS)
+        if #available(iOS 26.0, *) {
+            tabBarMinimizeBehavior(.onScrollDown)
+        } else {
+            self
+        }
+        #else
+        self
+        #endif
+    }
+
     /// Success or error haptic when an answer is revealed. Touch devices only; the Mac stays silent.
     func answerFeedback<T: Equatable>(trigger: T, outcome: @escaping (T) -> Bool?) -> some View {
         #if os(iOS)
