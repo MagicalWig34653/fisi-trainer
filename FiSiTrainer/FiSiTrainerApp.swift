@@ -10,10 +10,6 @@ struct FiSiTrainerApp: App {
     @StateObject private var examStore = ExamStore()
     @StateObject private var rewards = RewardStore()
 
-    init() {
-        StartupWarmup.run()
-    }
-
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -43,29 +39,5 @@ struct FiSiTrainerApp: App {
         let (total, overflowedSecond) = portAndSubnet
             .addingReportingOverflow(examStore.progress.totalXP)
         return (overflowedFirst || overflowedSecond) ? Int.max : total
-    }
-}
-
-/// Builds the large authored catalogs once on a thread with a generous stack.
-///
-/// The iOS main thread has a 1 MB stack (8 MB on the Mac). Debug builds compile the long array literals of
-/// the exam catalog, level rewards and port list into very large stack frames, which can overflow it at
-/// launch. The statics are initialized exactly once, so the main thread afterwards only reads them.
-enum StartupWarmup {
-    static func run() {
-        #if os(iOS)
-        let finished = DispatchSemaphore(value: 0)
-        let thread = Thread {
-            _ = ExamCatalog.all.count
-            _ = LevelReward.all.count
-            _ = RewardBadge.all.count
-            _ = PortService.catalog.count
-            finished.signal()
-        }
-        thread.stackSize = 32 * 1024 * 1024
-        thread.qualityOfService = .userInitiated
-        thread.start()
-        finished.wait()
-        #endif
     }
 }

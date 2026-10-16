@@ -78,11 +78,11 @@ struct ContentView: View {
                 mobileTabs
             } else {
                 HStack(spacing: 0) {
-                    sidebar
+                    LazyPage { AnyView(sidebar) }
                     Rectangle()
                         .fill(LabStyle.border)
                         .frame(width: 1)
-                    mainColumn
+                    LazyPage { AnyView(mainColumn) }
                 }
             }
         }
@@ -110,63 +110,71 @@ struct ContentView: View {
 
     private var showsCompanion: Bool { page == .game || page == .subnet || page == .exam }
 
+    private func levelBanner(_ level: Int) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: "gift.fill")
+            Text("Level \(level) erreicht! Entdecke deine Belohnungen.")
+                .font(.system(size: 13, weight: .semibold))
+            Spacer()
+            Button("Ansehen") { page = .rewards; newLevel = nil }
+                .buttonStyle(LabSecondaryButtonStyle())
+            Button { newLevel = nil } label: { Image(systemName: "xmark") }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Level-Hinweis schließen")
+        }
+        .foregroundStyle(LabStyle.accent)
+        .padding(16)
+        .background(LabStyle.accent.opacity(0.09), in: RoundedRectangle(cornerRadius: 12))
+        .padding(.horizontal, pagePadding)
+        .padding(.top, 20)
+    }
+
+    private func saveErrorBanner(_ error: String) -> some View {
+        HStack(alignment: .top, spacing: 11) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundStyle(LabStyle.red)
+            VStack(alignment: .leading, spacing: 5) {
+                Text(error)
+                    .font(.system(size: 12, weight: .semibold))
+                Text("Falls das Training blockiert ist, kannst du den Fortschritt zurücksetzen.")
+                    .font(.system(size: 11))
+                    .foregroundStyle(LabStyle.muted)
+            }
+            Spacer(minLength: 12)
+            Button("Zurücksetzen") { showingResetConfirmation = true }
+                .buttonStyle(LabSecondaryButtonStyle())
+        }
+        .padding(16)
+        .background(LabStyle.red.opacity(0.09), in: RoundedRectangle(cornerRadius: 10))
+        .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(LabStyle.red.opacity(0.25)))
+        .padding(.horizontal, pagePadding)
+        .padding(.top, 20)
+    }
+
     private var mainColumn: some View {
         VStack(spacing: 0) {
-            if isTouchDevice { touchHeader }
+            if isTouchDevice { LazyPage { AnyView(touchHeader) } }
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    if !isTouchDevice { topBar }
+                    if !isTouchDevice { LazyPage { AnyView(topBar) } }
 
                     if let level = newLevel {
-                        HStack(spacing: 12) {
-                            Image(systemName: "gift.fill")
-                            Text("Level \(level) erreicht! Entdecke deine Belohnungen.")
-                                .font(.system(size: 13, weight: .semibold))
-                            Spacer()
-                            Button("Ansehen") { page = .rewards; newLevel = nil }
-                                .buttonStyle(LabSecondaryButtonStyle())
-                            Button { newLevel = nil } label: { Image(systemName: "xmark") }
-                                .buttonStyle(.plain)
-                                .accessibilityLabel("Level-Hinweis schließen")
-                        }
-                        .foregroundStyle(LabStyle.accent)
-                        .padding(16)
-                        .background(LabStyle.accent.opacity(0.09), in: RoundedRectangle(cornerRadius: 12))
-                        .padding(.horizontal, pagePadding)
-                        .padding(.top, 20)
+                        LazyPage { AnyView(levelBanner(level)) }
                     }
 
                     if let error = store.saveError {
-                        HStack(alignment: .top, spacing: 11) {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundStyle(LabStyle.red)
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text(error)
-                                    .font(.system(size: 12, weight: .semibold))
-                                Text("Falls das Training blockiert ist, kannst du den Fortschritt zurücksetzen.")
-                                    .font(.system(size: 11))
-                                    .foregroundStyle(LabStyle.muted)
-                            }
-                            Spacer(minLength: 12)
-                            Button("Zurücksetzen") { showingResetConfirmation = true }
-                                .buttonStyle(LabSecondaryButtonStyle())
-                        }
-                        .padding(16)
-                        .background(LabStyle.red.opacity(0.09), in: RoundedRectangle(cornerRadius: 10))
-                        .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(LabStyle.red.opacity(0.25)))
-                        .padding(.horizontal, pagePadding)
-                        .padding(.top, 20)
+                        LazyPage { AnyView(saveErrorBanner(error)) }
                     }
 
                     Group {
                         switch page {
-                        case .dashboard: dashboard
-                        case .game: game
+                        case .dashboard: LazyPage { AnyView(dashboard) }
+                        case .game: LazyPage { AnyView(game) }
                         case .subnet: SubnetTrainerView()
                         case .exam: ExamArenaView(openMode: $openExamMode)
                         case .rewards: RewardsView()
-                        case .reference: reference
-                        case .practice: practiceHub
+                        case .reference: LazyPage { AnyView(reference) }
+                        case .practice: LazyPage { AnyView(practiceHub) }
                         }
                     }
                     .frame(maxWidth: 1050, alignment: .leading)
@@ -427,7 +435,7 @@ struct ContentView: View {
     @ViewBuilder
     private func mobileTabContent(_ tab: MobileTab) -> some View {
         if mobileTab == tab {
-            mainColumn
+            LazyPage { AnyView(mainColumn) }
         } else {
             LabStyle.background.ignoresSafeArea()
         }
@@ -1091,5 +1099,19 @@ private struct PinnedActionBar: View {
         .padding(.horizontal, 16)
         .padding(.bottom, 8)
         .transition(.move(edge: .bottom).combined(with: .opacity))
+    }
+}
+
+/// A non-generic type boundary around a large view.
+///
+/// ContentView builds its pages as long `some View` properties. Combined in one `VStack`, their nested
+/// generic types become so large that resolving the metadata overflowed the 1 MB iOS main-thread stack
+/// at launch (`swift::_gatherGenericParameterCounts`). Wrapping each page in this struct keeps the
+/// parent type short, and the page is only built when SwiftUI evaluates this view's body.
+private struct LazyPage: View {
+    let build: () -> AnyView
+
+    var body: some View {
+        build()
     }
 }
