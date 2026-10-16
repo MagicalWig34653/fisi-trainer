@@ -56,6 +56,7 @@ struct ContentView: View {
     @State private var showingResetConfirmation = false
     @State private var newLevel: Int?
     @State private var openExamMode: ExamMode?
+    @State private var showingCompanion = false
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     /// iPhone portrait and iPad split-view slots are compact; Mac and full-width iPad are not.
@@ -74,9 +75,6 @@ struct ContentView: View {
             if compact {
                 VStack(spacing: 0) {
                     mainColumn
-                    Rectangle()
-                        .fill(LabStyle.border)
-                        .frame(height: 1)
                     tabBar
                 }
             } else {
@@ -96,6 +94,7 @@ struct ContentView: View {
         .onChange(of: rewards.level) { previous, current in
             if current > previous { newLevel = current }
         }
+        .onChange(of: page) { _, _ in showingCompanion = false }
         .confirmationDialog(
             "Port-Quiz-Fortschritt zurücksetzen?",
             isPresented: $showingResetConfirmation,
@@ -110,10 +109,14 @@ struct ContentView: View {
         }
     }
 
+    private var showsCompanion: Bool { page == .game || page == .subnet || page == .exam }
+
     private var mainColumn: some View {
+        VStack(spacing: 0) {
+            if isTouchDevice { touchHeader }
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    topBar
+                    if !isTouchDevice { topBar }
 
                     if let level = newLevel {
                         HStack(spacing: 12) {
@@ -169,15 +172,15 @@ struct ContentView: View {
                     .frame(maxWidth: 1050, alignment: .leading)
                     .padding(.horizontal, pagePadding)
                     .padding(.top, compact ? 24 : 40)
-                    .padding(.bottom, compact ? 32 : 64)
+                    .padding(.bottom, isTouchDevice ? 120 : 64)
                     .frame(maxWidth: .infinity, alignment: .topLeading)
                 }
             }
             .safeAreaInset(edge: .bottom, spacing: 0) {
-                if page == .game || page == .subnet || page == .exam {
+                if showsCompanion && !isTouchDevice {
                     if let pet = rewards.selectedPet {
                         PetCompanionView(pet: pet, context: petContext)
-                            .padding(.horizontal, compact ? 12 : 20)
+                            .padding(.horizontal, 20)
                             .padding(.vertical, 10)
                             .background(LabStyle.sidebar)
                     } else {
@@ -193,7 +196,63 @@ struct ContentView: View {
                     }
                 }
             }
-            .background(LabStyle.background)
+        }
+        .background(LabStyle.background)
+        .overlayPreferenceValue(PinnedActionKey.self, alignment: .bottom) { pinned in
+            if isTouchDevice, let pinned {
+                PinnedActionBar(action: pinned)
+            }
+        }
+        .sheet(isPresented: $showingCompanion) {
+            if let pet = rewards.selectedPet {
+                PetCompanionView(pet: pet, context: petContext)
+                    .padding(12)
+                    .frame(maxHeight: .infinity, alignment: .top)
+                    .background(LabStyle.sidebar.ignoresSafeArea())
+                    .preferredColorScheme(.dark)
+                    .presentationDetents([.medium, .large])
+                    .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+                    .presentationDragIndicator(.visible)
+            }
+        }
+    }
+
+    /// Fixed header on iPhone and iPad: current page, level and the (optional) pet companion.
+    private var touchHeader: some View {
+        HStack(spacing: 10) {
+            Image(systemName: page.symbol)
+                .foregroundStyle(LabStyle.accent)
+            Text(page.rawValue)
+                .font(.system(size: 17, weight: .bold, design: .rounded))
+                .lineLimit(1)
+            Spacer(minLength: 8)
+            Text("LV \(rewards.level)")
+                .font(.system(size: 11, weight: .bold, design: .monospaced))
+                .foregroundStyle(LabStyle.accent)
+                .padding(.horizontal, 10)
+                .frame(height: 30)
+                .glassSurface(in: Capsule())
+                .accessibilityLabel("Level \(rewards.level)")
+            if showsCompanion, let pet = rewards.selectedPet {
+                Button {
+                    showingCompanion = true
+                } label: {
+                    Image(systemName: pet.symbol)
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(LabStyle.accent)
+                        .frame(width: 44, height: 44)
+                        .glassSurface(in: Circle(), interactive: true)
+                        .contentShape(Circle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("\(pet.name), dein Begleiter")
+                .accessibilityHint("Öffnet Tipps und Chat")
+            }
+        }
+        .padding(.horizontal, pagePadding)
+        .frame(height: 56)
+        .background(LabStyle.background)
+        .overlay(alignment: .bottom) { LabStyle.border.frame(height: 1) }
     }
 
     private var sidebar: some View {
@@ -299,17 +358,25 @@ struct ContentView: View {
         .background(LabStyle.sidebar)
     }
 
-    /// Bottom navigation for compact widths (iPhone); the Mac and iPad use the sidebar.
+    /// Floating Liquid Glass navigation for compact widths (iPhone); the Mac and iPad use the sidebar.
     private var tabBar: some View {
-        HStack(spacing: 0) {
+        HStack(spacing: 2) {
             ForEach(LabPage.allCases, id: \.self) { item in
                 Button {
                     page = item
                 } label: {
-                    VStack(spacing: 3) {
+                    VStack(spacing: 2) {
                         Image(systemName: item.symbol)
                             .font(.system(size: 18, weight: .semibold))
                             .frame(height: 22)
+                            .overlay(alignment: .topTrailing) {
+                                if hasActiveSession(item) {
+                                    Circle()
+                                        .fill(LabStyle.accent)
+                                        .frame(width: 7, height: 7)
+                                        .offset(x: 5, y: -1)
+                                }
+                            }
                         Text(item.shortTitle)
                             .font(.system(size: 9, weight: .semibold))
                             .lineLimit(1)
@@ -317,16 +384,33 @@ struct ContentView: View {
                     }
                     .foregroundStyle(page == item ? LabStyle.accent : LabStyle.muted)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 8)
-                    .contentShape(Rectangle())
+                    .frame(height: 48)
+                    .background(page == item ? LabStyle.accent.opacity(0.16) : .clear, in: Capsule())
+                    .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(item.rawValue)
                 .accessibilityAddTraits(page == item ? .isSelected : [])
             }
         }
-        .padding(.horizontal, 4)
-        .background(LabStyle.sidebar)
+        .padding(4)
+        .glassSurface(in: Capsule())
+        .overlay(Capsule().strokeBorder(LabStyle.border))
+        .padding(.horizontal, 12)
+        .padding(.top, 6)
+        .padding(.bottom, 4)
+    }
+
+    private func hasActiveSession(_ item: LabPage) -> Bool {
+        switch item {
+        case .game:
+            if let session = store.session { return !session.isComplete }
+            return false
+        case .exam:
+            return ExamMode.allCases.contains { examStore.hasActiveSession($0) }
+        default:
+            return false
+        }
     }
 
     private var topBar: some View {
@@ -683,11 +767,11 @@ struct ContentView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(LabStyle.raised, in: RoundedRectangle(cornerRadius: 11))
 
-                Button(session.index + 1 == session.questions.count ? "Ergebnis ansehen\(returnKeyHint)" : "Nächste Frage\(returnKeyHint)") {
+                FlowButton(title: session.index + 1 == session.questions.count
+                           ? "Ergebnis ansehen\(returnKeyHint)" : "Nächste Frage\(returnKeyHint)",
+                           style: LabPrimaryButtonStyle()) {
                     store.nextQuestion()
                 }
-                .buttonStyle(LabPrimaryButtonStyle())
-                .keyboardShortcut(.return, modifiers: [])
             } else {
                 Text(isTouchDevice
                      ? "Tippe die richtige Antwort an."
@@ -699,6 +783,9 @@ struct ContentView: View {
         .padding(compact ? 18 : 30)
         .background(LabStyle.surface, in: RoundedRectangle(cornerRadius: 18))
         .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(LabStyle.border))
+        .answerFeedback(trigger: session.selectedAnswer) { selected in
+            selected.map { $0 == question.correctAnswer }
+        }
     }
 
     private func completion(_ session: GameSession) -> some View {
@@ -884,7 +971,7 @@ private struct LabPrimaryButtonStyle: ButtonStyle {
             .font(.system(size: 13, weight: .bold))
             .foregroundStyle(LabStyle.background)
             .padding(.horizontal, 20)
-            .frame(height: 42)
+            .frame(height: isTouchDevice ? 48 : 42)
             .background(configuration.isPressed ? LabStyle.accent.opacity(0.8) : LabStyle.accent,
                         in: RoundedRectangle(cornerRadius: 9))
     }
@@ -896,9 +983,33 @@ private struct LabSecondaryButtonStyle: ButtonStyle {
             .font(.system(size: 13, weight: .semibold))
             .foregroundStyle(LabStyle.primary)
             .padding(.horizontal, 19)
-            .frame(height: 42)
+            .frame(height: isTouchDevice ? 48 : 42)
             .background(configuration.isPressed ? LabStyle.raised : LabStyle.surface,
                         in: RoundedRectangle(cornerRadius: 9))
             .overlay(RoundedRectangle(cornerRadius: 9).strokeBorder(LabStyle.border))
+    }
+}
+
+/// Primary exercise action pinned above the tab bar on touch devices (see `FlowButton`).
+private struct PinnedActionBar: View {
+    let action: PinnedAction
+
+    var body: some View {
+        Button(action: action.action) {
+            Text(action.title)
+                .font(.system(size: 16, weight: .bold))
+                .foregroundStyle(action.isDisabled ? LabStyle.muted : LabStyle.background)
+                .frame(maxWidth: .infinity)
+                .frame(height: 52)
+                .glassSurface(in: Capsule(), tint: action.isDisabled ? nil : LabStyle.accent,
+                              interactive: !action.isDisabled)
+                .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .keyboardShortcut(.return, modifiers: [])
+        .disabled(action.isDisabled)
+        .padding(.horizontal, 16)
+        .padding(.bottom, 8)
+        .transition(.move(edge: .bottom).combined(with: .opacity))
     }
 }

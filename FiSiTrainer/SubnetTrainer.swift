@@ -421,15 +421,17 @@ struct SubnetTrainerView: View {
                         .font(.system(size: 16, weight: .bold))
                         .foregroundStyle(selected == question.correctAnswer ? SubnetStyle.accent : SubnetStyle.red)
                     Text(question.explanation).foregroundStyle(SubnetStyle.muted)
-                    Button(session.index == session.questions.count - 1
-                           ? "Ergebnis anzeigen\(returnKeyHint)" : "Nächste Frage\(returnKeyHint)") { store.nextQuestion() }
-                        .keyboardShortcut(.return, modifiers: [])
-                        .buttonStyle(SubnetPrimaryButtonStyle())
+                    FlowButton(title: session.index == session.questions.count - 1
+                               ? "Ergebnis anzeigen\(returnKeyHint)" : "Nächste Frage\(returnKeyHint)",
+                               style: SubnetPrimaryButtonStyle()) { store.nextQuestion() }
                 }
             }
         }
         .padding(28).frame(maxWidth: .infinity, alignment: .leading)
         .background(SubnetStyle.surface, in: RoundedRectangle(cornerRadius: 16))
+        .answerFeedback(trigger: session.selectedAnswer) { selected in
+            selected.map { $0 == question.correctAnswer }
+        }
     }
 
     private func completion(_ session: SubnetSession) -> some View {
@@ -473,7 +475,7 @@ private struct SubnetPrimaryButtonStyle: ButtonStyle {
         configuration.label
             .font(.system(size: 13, weight: .bold))
             .foregroundStyle(Color(red: 0.035, green: 0.063, blue: 0.095))
-            .padding(.horizontal, 19).padding(.vertical, 11)
+            .padding(.horizontal, 19).padding(.vertical, isTouchDevice ? 15 : 11)
             .background(SubnetStyle.accent.opacity(configuration.isPressed ? 0.8 : 1),
                         in: RoundedRectangle(cornerRadius: 9))
     }

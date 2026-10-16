@@ -389,6 +389,9 @@ struct ExamArenaView: View {
         .padding(30)
         .background(ExamStyle.surface, in: RoundedRectangle(cornerRadius: 18))
         .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(ExamStyle.border))
+        .answerFeedback(trigger: session.showsResolution) { revealed in
+            revealed ? session.currentAnswer.map { task.isCorrect($0) } : nil
+        }
     }
 
     private func resolution(session: ExamSession, task: ExamTask, mode: ExamMode, answer: [Int]) -> some View {
@@ -419,11 +422,11 @@ struct ExamArenaView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(ExamStyle.raised, in: RoundedRectangle(cornerRadius: 11))
 
-            Button(session.index + 1 == session.tasks.count ? "Ergebnis anzeigen\(returnKeyHint)" : "Nächste Aufgabe\(returnKeyHint)") {
+            FlowButton(title: session.index + 1 == session.tasks.count
+                       ? "Ergebnis anzeigen\(returnKeyHint)" : "Nächste Aufgabe\(returnKeyHint)",
+                       style: ExamPrimaryButtonStyle()) {
                 store.next(mode: mode)
             }
-            .buttonStyle(ExamPrimaryButtonStyle())
-            .keyboardShortcut(.return, modifiers: [])
         }
     }
 
@@ -634,10 +637,8 @@ private struct MultipleTaskView: View {
                 }
             }
             if !answered {
-                Button("Prüfen\(returnKeyHint)") { store.answer(chosen.sorted(), mode: mode) }
-                    .buttonStyle(ExamPrimaryButtonStyle())
-                    .keyboardShortcut(.return, modifiers: [])
-                    .disabled(chosen.isEmpty)
+                FlowButton(title: "Prüfen\(returnKeyHint)", isDisabled: chosen.isEmpty,
+                           style: ExamPrimaryButtonStyle()) { store.answer(chosen.sorted(), mode: mode) }
             }
         }
     }
@@ -710,12 +711,10 @@ private struct MatchTaskView: View {
                 row(index: index, item: item)
             }
             if !answered {
-                Button("Prüfen\(returnKeyHint)") {
+                FlowButton(title: "Prüfen\(returnKeyHint)", isDisabled: selections.contains(nil),
+                           style: ExamPrimaryButtonStyle()) {
                     store.answer(selections.map { $0 ?? 0 }, mode: mode)
                 }
-                .buttonStyle(ExamPrimaryButtonStyle())
-                .keyboardShortcut(.return, modifiers: [])
-                .disabled(selections.contains(nil))
             }
         }
     }
@@ -784,10 +783,8 @@ private struct OrderTaskView: View {
                     Button("Zurücksetzen") { order = [] }
                         .buttonStyle(ExamSecondaryButtonStyle())
                         .disabled(order.isEmpty)
-                    Button("Prüfen\(returnKeyHint)") { store.answer(order, mode: mode) }
-                        .buttonStyle(ExamPrimaryButtonStyle())
-                        .keyboardShortcut(.return, modifiers: [])
-                        .disabled(order.count != task.items.count)
+                    FlowButton(title: "Prüfen\(returnKeyHint)", isDisabled: order.count != task.items.count,
+                               style: ExamPrimaryButtonStyle()) { store.answer(order, mode: mode) }
                 }
             }
         }
@@ -846,7 +843,7 @@ private struct ExamPrimaryButtonStyle: ButtonStyle {
             .font(.system(size: 13, weight: .bold))
             .foregroundStyle(ExamStyle.background)
             .padding(.horizontal, 20)
-            .frame(height: 42)
+            .frame(height: isTouchDevice ? 48 : 42)
             .background(configuration.isPressed ? ExamStyle.accent.opacity(0.8) : ExamStyle.accent,
                         in: RoundedRectangle(cornerRadius: 9))
     }
@@ -858,7 +855,7 @@ private struct ExamSecondaryButtonStyle: ButtonStyle {
             .font(.system(size: 13, weight: .semibold))
             .foregroundStyle(ExamStyle.primary)
             .padding(.horizontal, 19)
-            .frame(height: 42)
+            .frame(height: isTouchDevice ? 48 : 42)
             .background(configuration.isPressed ? ExamStyle.raised : ExamStyle.surface,
                         in: RoundedRectangle(cornerRadius: 9))
             .overlay(RoundedRectangle(cornerRadius: 9).strokeBorder(ExamStyle.border))
