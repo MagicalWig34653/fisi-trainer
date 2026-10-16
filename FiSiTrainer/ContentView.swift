@@ -184,6 +184,7 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, alignment: .topLeading)
                 }
             }
+            .contentSwap(page)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 if showsCompanion && !isTouchDevice {
                     if let pet = rewards.selectedPet {
@@ -205,6 +206,7 @@ struct ContentView: View {
                 }
             }
         }
+        .swapAnimation(page)
         .background(LabStyle.background)
         .overlayPreferenceValue(PinnedActionKey.self, alignment: .bottom) { pinned in
             if isTouchDevice, let pinned {
@@ -706,16 +708,17 @@ struct ContentView: View {
 
             if let session = store.session {
                 if session.isComplete {
-                    completion(session)
+                    completion(session).contentSwap("done")
                 } else if let question = store.currentQuestion {
-                    questionCard(question, session: session)
+                    questionCard(question, session: session).contentSwap(session.index)
                 } else {
-                    emptyGame
+                    emptyGame.contentSwap("empty")
                 }
             } else {
-                emptyGame
+                emptyGame.contentSwap("empty")
             }
         }
+        .swapAnimation(store.session.map { $0.index * 2 + ($0.isComplete ? 1 : 0) } ?? -1)
     }
 
     private var emptyGame: some View {
@@ -854,6 +857,7 @@ struct ContentView: View {
                 .padding(17)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(LabStyle.raised, in: RoundedRectangle(cornerRadius: 11))
+                .transition(.opacity.combined(with: .move(edge: .top)))
 
                 FlowButton(title: session.index + 1 == session.questions.count
                            ? "Ergebnis ansehen\(returnKeyHint)" : "Nächste Frage\(returnKeyHint)",
@@ -868,6 +872,7 @@ struct ContentView: View {
                     .foregroundStyle(LabStyle.muted)
             }
         }
+        .swapAnimation(answered)
         .padding(compact ? 18 : 30)
         .background(LabStyle.surface, in: RoundedRectangle(cornerRadius: 18))
         .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(LabStyle.border))

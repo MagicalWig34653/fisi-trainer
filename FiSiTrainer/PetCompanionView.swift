@@ -94,6 +94,7 @@ struct PetCompanionView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .tapFeedback(trigger: interactionID)
         .padding(14)
         .background(background, in: RoundedRectangle(cornerRadius: 16))
         .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(Color.white.opacity(0.09)))
@@ -136,14 +137,14 @@ struct PetCompanionView: View {
     private func actionButton(_ title: String, symbol: String,
                               action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Label(title, systemImage: symbol)
-                .font(.system(size: 11, weight: .semibold))
-                .lineLimit(1)
-                .padding(.horizontal, 9)
-                .padding(.vertical, 6)
-                .background(raised, in: RoundedRectangle(cornerRadius: 7))
+            HStack(spacing: 6) {
+                Image(systemName: symbol)
+                    .foregroundStyle(accent)
+                Text(title)
+            }
+            .lineLimit(1)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PetPillStyle(small: true))
     }
 
     private func showPreparedTip() {

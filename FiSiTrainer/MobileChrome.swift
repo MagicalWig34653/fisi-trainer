@@ -98,3 +98,97 @@ extension View {
     }
     #endif
 }
+
+// MARK: - Transitions
+
+/// Fade-and-lift used when a page, question or result replaces another. Reduce Motion keeps only the fade.
+private struct ContentSwap<ID: Hashable>: ViewModifier {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    let id: ID
+
+    func body(content: Content) -> some View {
+        content
+            .id(id)
+            .transition(reduceMotion
+                        ? AnyTransition.opacity
+                        : AnyTransition.asymmetric(
+                            insertion: AnyTransition.opacity.combined(with: AnyTransition.offset(x: 0, y: 14)),
+                            removal: AnyTransition.opacity))
+    }
+}
+
+/// Animates the swap announced by `contentSwap` when `value` changes; off with Reduce Motion.
+private struct SwapAnimation<Value: Equatable>: ViewModifier {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    let value: Value
+
+    func body(content: Content) -> some View {
+        content.animation(reduceMotion ? nil : .easeOut(duration: 0.28), value: value)
+    }
+}
+
+extension View {
+    /// Gives the view a new identity (and a fade-and-lift transition) whenever `id` changes.
+    func contentSwap<ID: Hashable>(_ id: ID) -> some View {
+        modifier(ContentSwap(id: id))
+    }
+
+    /// Put on the container of `contentSwap` views, with the value that triggers the swap.
+    func swapAnimation<Value: Equatable>(_ value: Value) -> some View {
+        modifier(SwapAnimation(value: value))
+    }
+
+    /// Light tap haptic on touch devices only.
+    func tapFeedback<T: Equatable>(trigger: T) -> some View {
+        #if os(iOS)
+        sensoryFeedback(.impact(weight: .light), trigger: trigger)
+        #else
+        self
+        #endif
+    }
+}
+
+// MARK: - Pet buttons
+
+private enum PetButtonColors {
+    static let accent = Color(red: 0.76, green: 0.97, blue: 0.32)
+    static let dark = Color(red: 0.035, green: 0.063, blue: 0.095)
+    static let primary = Color(red: 0.94, green: 0.97, blue: 0.96)
+}
+
+/// Capsule button for pet actions: tinted when `prominent`, glass on iOS 26, springy press feedback.
+struct PetPillStyle: ButtonStyle {
+    var prominent = false
+    var small = false
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.system(size: small ? 12 : 14, weight: .semibold))
+            .foregroundStyle(prominent ? PetButtonColors.dark : PetButtonColors.primary)
+            .padding(.horizontal, small ? 12 : 18)
+            .frame(minHeight: isTouchDevice ? 44 : (small ? 32 : 38))
+            .background(Capsule().fill(Color.white.opacity(prominent ? 0 : 0.06)))
+            .glassSurface(in: Capsule(), tint: prominent ? PetButtonColors.accent : nil, interactive: true)
+            .overlay(Capsule().strokeBorder(Color.white.opacity(prominent ? 0 : 0.10)))
+            .contentShape(Capsule())
+            .scaleEffect(configuration.isPressed ? 0.95 : 1)
+            .animation(.spring(response: 0.25, dampingFraction: 0.6), value: configuration.isPressed)
+    }
+}
+
+/// Square-ish tile with an icon above its label, used for petting, feeding and playing.
+struct PetTileStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        let shape = RoundedRectangle(cornerRadius: 16, style: .continuous)
+        configuration.label
+            .font(.system(size: 12, weight: .semibold))
+            .foregroundStyle(PetButtonColors.primary)
+            .frame(maxWidth: .infinity, minHeight: 68)
+            .background(shape.fill(Color.white.opacity(0.06)))
+            .glassSurface(in: shape, interactive: true)
+            .overlay(shape.strokeBorder(Color.white.opacity(0.10)))
+            .contentShape(shape)
+            .scaleEffect(configuration.isPressed ? 0.94 : 1)
+            .animation(.spring(response: 0.25, dampingFraction: 0.6), value: configuration.isPressed)
+    }
+}

@@ -327,10 +327,12 @@ struct SubnetTrainerView: View {
             }
 
             if let session = store.session {
-                if session.isComplete { completion(session) }
-                else if let question = store.currentQuestion { questionCard(session, question) }
+                if session.isComplete { completion(session).contentSwap("done") }
+                else if let question = store.currentQuestion {
+                    questionCard(session, question).contentSwap(session.index)
+                }
             } else {
-                intro
+                intro.contentSwap("intro")
             }
 
             Text("Bei /16 bis /30 gilt: nutzbare Hosts = 2^(32 − Präfix) − 2; " +
@@ -338,6 +340,7 @@ struct SubnetTrainerView: View {
                 .font(.system(size: 12)).foregroundStyle(SubnetStyle.muted)
                 .fixedSize(horizontal: false, vertical: true)
         }
+        .swapAnimation(store.session.map { $0.index * 2 + ($0.isComplete ? 1 : 0) } ?? -1)
         .frame(maxWidth: 850, alignment: .leading)
         .foregroundStyle(SubnetStyle.primary)
         .confirmationDialog("Subnetz-Fortschritt zurücksetzen?",
@@ -425,8 +428,10 @@ struct SubnetTrainerView: View {
                                ? "Ergebnis anzeigen\(returnKeyHint)" : "Nächste Frage\(returnKeyHint)",
                                style: SubnetPrimaryButtonStyle()) { store.nextQuestion() }
                 }
+                .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
+        .swapAnimation(session.selectedAnswer)
         .padding(28).frame(maxWidth: .infinity, alignment: .leading)
         .background(SubnetStyle.surface, in: RoundedRectangle(cornerRadius: 16))
         .answerFeedback(trigger: session.selectedAnswer) { selected in
