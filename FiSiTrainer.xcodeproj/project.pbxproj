@@ -54,6 +54,8 @@
 		F7DAFEE2CE70B535EF87F2E2 /* ExamCatalogSozial.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0B598FDEC0D55BBF2324C5 /* ExamCatalogSozial.swift */; };
 		FAB2AE2B80CF9F11560484FB /* SubnetStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CB3BAD7768B31B1A559D656 /* SubnetStoreTests.swift */; };
 		8A3C5E7F9B1D2A4C6E80F113 /* MobileChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4D6F8A0C2E3B5D7F91A224 /* MobileChrome.swift */; };
+		A1B2C3D4E5F60718293A4B5C /* SyncMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F60718293A4B5C6D /* SyncMerge.swift */; };
+		C3D4E5F60718293A4B5C6D7E /* SyncMergeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E5F60718293A4B5C6D7E8F /* SyncMergeTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -117,6 +119,8 @@
 		F8207D38A08636C571AA3C08 /* PetCompanionMessagesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetCompanionMessagesTests.swift; sourceTree = "<group>"; };
 		FF6CFF33DAB4657D1C55DA6A /* PetCompanionMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetCompanionMessages.swift; sourceTree = "<group>"; };
 		9B4D6F8A0C2E3B5D7F91A224 /* MobileChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileChrome.swift; sourceTree = "<group>"; };
+		B2C3D4E5F60718293A4B5C6D /* SyncMerge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMerge.swift; sourceTree = "<group>"; };
+		D4E5F60718293A4B5C6D7E8F /* SyncMergeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMergeTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -154,6 +158,7 @@
 				7E2A1B4C6D8F0E3A5B7C9D12 /* Platform.swift */,
 				1DFCA4150B50E2B3B5C71100 /* QuestionTiming.swift */,
 				2F5B7C2CFC0C172B48DF841C /* Rewards.swift */,
+				B2C3D4E5F60718293A4B5C6D /* SyncMerge.swift */,
 				030E2B318A7211A592421A48 /* SubnetTrainer.swift */,
 				35E1C352939372750DFA3178 /* TrainingPetContext.swift */,
 			);
@@ -183,6 +188,7 @@
 			isa = PBXGroup;
 			children = (
 				5575563E57A8B68CA5DE8D25 /* AdaptiveLearningTests.swift */,
+				D4E5F60718293A4B5C6D7E8F /* SyncMergeTests.swift */,
 				09152EC070BE0BB141D83F85 /* ExamCalculationTests.swift */,
 				6EF965F7699A6C17FB66C131 /* ExamCatalogTests.swift */,
 				92027BFCD3161E9D326B6BE4 /* ExamStoreTests.swift */,
@@ -294,6 +300,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				47EC1CBB6CB31615D609428C /* AdaptiveLearningTests.swift in Sources */,
+				C3D4E5F60718293A4B5C6D7E /* SyncMergeTests.swift in Sources */,
 				1AB36E428D33217BB7BFA4D7 /* ExamCalculationTests.swift in Sources */,
 				A4366DF804AD2DE2992846AD /* ExamCatalogTests.swift in Sources */,
 				9E226071B8ACA31C76B73867 /* ExamStoreTests.swift in Sources */,
@@ -343,6 +350,7 @@
 				6D1F0A3B5C7E9D2F4A6B8C01 /* Platform.swift in Sources */,
 				CE4534C6FE7374DA7D4225C5 /* QuestionTiming.swift in Sources */,
 				C25519674B70CA8A489E0076 /* Rewards.swift in Sources */,
+				A1B2C3D4E5F60718293A4B5C /* SyncMerge.swift in Sources */,
 				0660430E433E4435883DAF96 /* SubnetTrainer.swift in Sources */,
 				079C57C71ED4A74A275127B0 /* TrainingPetContext.swift in Sources */,
 			);
