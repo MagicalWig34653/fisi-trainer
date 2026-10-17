@@ -113,3 +113,123 @@ final class StoreSyncCoordinator {
         lastPublished = data
     }
 }
+
+/// iCloud Key-Value Storage. Needs the `com.apple.developer.ubiquity-kvstore-identifier` entitlement; without
+/// it the system keeps the values on the device only and nothing is synchronized.
+@MainActor
+final class KeyValueSyncBackend: SyncBackend {
+    private let store = NSUbiquitousKeyValueStore.default
+    private var observers: [String: () -> Void] = [:]
+    private var token: NSObjectProtocol?
+
+    init() {
+        token = NotificationCenter.default.addObserver(
+            forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
+            object: store, queue: .main
+        ) { [weak self] note in
+            let keys = note.userInfo?[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String] ?? []
+            MainActor.assumeIsolated {
+                for key in keys { self?.observers[key]?() }
+            }
+        }
+        store.synchronize()
+    }
+
+    deinit {
+        if let token { NotificationCenter.default.removeObserver(token) }
+    }
+
+    func read(_ key: String) -> Data? { store.data(forKey: key) }
+
+    func write(_ data: Data, forKey key: String) {
+        store.set(data, forKey: key)
+        store.synchronize()
+    }
+
+    func setObserver(forKey key: String, _ handler: (() -> Void)?) {
+        observers[key] = handler
+    }
+}
+
+/// Owns the user's choice to sync and connects the three stores to iCloud while it is on.
+///
+/// Sync is off by default and only offered in builds that carry the iCloud entitlement (`ICLOUD_SYNC`, set for
+/// signed iOS device builds). The ad-hoc signed Mac DMG cannot use iCloud, so it never shows the switch.
+@MainActor
+final class SyncController: ObservableObject {
+    static let enabledKey = "sync.enabled"
+
+    static var isSupported: Bool {
+        #if ICLOUD_SYNC
+        true
+        #else
+        false
+        #endif
+    }
+
+    @Published private(set) var isEnabled: Bool
+    @Published private(set) var accountAvailable: Bool
+
+    private let defaults: UserDefaults
+    private let makeBackend: @MainActor () -> SyncBackend
+    private var backend: SyncBackend?
+    private weak var game: GameStore?
+    private weak var subnet: SubnetStore?
+    private weak var exam: ExamStore?
+    private var accountObserver: NSObjectProtocol?
+
+    init(defaults: UserDefaults = .standard,
+         makeBackend: @escaping @MainActor () -> SyncBackend = { KeyValueSyncBackend() }) {
+        self.defaults = defaults
+        self.makeBackend = makeBackend
+        isEnabled = defaults.bool(forKey: Self.enabledKey)
+        accountAvailable = FileManager.default.ubiquityIdentityToken != nil
+        accountObserver = NotificationCenter.default.addObserver(
+            forName: NSNotification.Name.NSUbiquityIdentityDidChange, object: nil, queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                self.accountAvailable = FileManager.default.ubiquityIdentityToken != nil
+                self.apply()
+            }
+        }
+    }
+
+    deinit {
+        if let accountObserver { NotificationCenter.default.removeObserver(accountObserver) }
+    }
+
+    /// Whether the stores are connected to iCloud right now.
+    var isActive: Bool { Self.isSupported && isEnabled && accountAvailable }
+
+    func attach(game: GameStore, subnet: SubnetStore, exam: ExamStore) {
+        self.game = game
+        self.subnet = subnet
+        self.exam = exam
+        apply()
+    }
+
+    func setEnabled(_ enabled: Bool) {
+        guard Self.isSupported else { return }
+        isEnabled = enabled
+        defaults.set(enabled, forKey: Self.enabledKey)
+        apply()
+    }
+
+    private func apply() {
+        guard let game, let subnet, let exam else { return }
+        if isActive {
+            let backend = self.backend ?? makeBackend()
+            self.backend = backend
+            let deviceID = SyncDevice.id(defaults: defaults)
+            game.enableSync(backend: backend, deviceID: deviceID)
+            subnet.enableSync(backend: backend, deviceID: deviceID)
+            exam.enableSync(backend: backend, deviceID: deviceID)
+        } else {
+            game.disableSync()
+            subnet.disableSync()
+            exam.disableSync()
+            backend = nil
+        }
+    }
+}

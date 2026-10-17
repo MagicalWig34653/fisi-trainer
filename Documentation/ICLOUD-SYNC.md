@@ -1,6 +1,12 @@
 # Konzept: iCloud-Sync
 
-Status: **Entwurf, nicht implementiert.** Voraussetzung ist ein bezahlter Apple Developer Account (iCloud-Capability, Provisioning-Profile). Das Konzept hält fest, wie der Sync mit der bestehenden Persistenz (siehe [ARCHITECTURE.md](ARCHITECTURE.md#persistenz)) zusammenpasst, damit die Umsetzung in einem Zug möglich ist.
+Status: **Code implementiert, noch nicht auf echten Geräten getestet und nicht in der README beworben.** Aktuell gilt:
+
+- Merge-Logik (`SyncMerge.swift`), Store-Anbindung (`CloudSync.swift`) und `KeyValueSyncBackend` sind fertig und per Fake getestet.
+- Der Schalter „Mit iCloud synchronisieren“ (`SyncSettingsView`, Ansicht „Level“) erscheint nur in Builds mit dem Compile-Flag `ICLOUD_SYNC`. Das ist für signierte iOS-Geräte-Builds gesetzt (zusammen mit `FiSiTrainer-iOS.entitlements`); Simulator, CI und die ad-hoc signierte Mac-DMG haben weder Flag noch Entitlement und zeigen den Schalter nicht.
+- Offen: Developer-ID-Signierung für den Mac, Synchronisation von Haustier-Auswahl und Ausstattung (aktuell nur XP, Lernstand und Prüfungsverlauf; Belohnungen leiten sich aus der kombinierten XP ab), Zwei-Geräte-Test.
+
+Voraussetzung ist ein bezahlter Apple Developer Account (iCloud-Capability, Provisioning-Profile). Das Konzept hält fest, wie der Sync mit der bestehenden Persistenz (siehe [ARCHITECTURE.md](ARCHITECTURE.md#persistenz)) zusammenpasst, damit die Umsetzung in einem Zug möglich ist.
 
 ## Ziele und Nicht-Ziele
 

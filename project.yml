@@ -39,6 +39,8 @@ targets:
         ENABLE_RESOURCE_ACCESS_USB: NO
         ENABLE_INCOMING_NETWORK_CONNECTIONS: NO
         "CODE_SIGN_ENTITLEMENTS[sdk=macosx*]": FiSiTrainer/FiSiTrainer.entitlements
+        "CODE_SIGN_ENTITLEMENTS[sdk=iphoneos*]": FiSiTrainer/FiSiTrainer-iOS.entitlements
+        "SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos*]": "$(inherited) ICLOUD_SYNC"
         SUPPORTS_MACCATALYST: NO
         TARGETED_DEVICE_FAMILY: "1,2"
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
