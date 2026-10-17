@@ -7,6 +7,9 @@ import SwiftUI
 struct SyncSettingsView: View {
     @EnvironmentObject private var sync: SyncController
 
+    private let muted = Color(red: 0.53, green: 0.61, blue: 0.64)
+    private let accent = Color(red: 0.76, green: 0.97, blue: 0.32)
+
     var body: some View {
         if SyncController.isSupported {
             VStack(alignment: .leading, spacing: 10) {
@@ -16,13 +19,13 @@ struct SyncSettingsView: View {
                             .font(.system(size: 14, weight: .semibold))
                         Text(detail)
                             .font(.system(size: 12))
-                            .foregroundStyle(RewardStyle.muted)
+                            .foregroundStyle(muted)
                     }
                 }
                 .disabled(!sync.accountAvailable && !sync.isEnabled)
             }
             .padding(16)
-            .background(RewardStyle.accent.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
+            .background(accent.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
         }
     }
 
