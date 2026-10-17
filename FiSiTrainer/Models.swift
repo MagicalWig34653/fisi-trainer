@@ -146,7 +146,7 @@ struct GameSession: Codable {
     var isComplete: Bool { index >= questions.count }
 }
 
-struct PlayerProgress: Codable {
+struct PlayerProgress: Codable, Equatable {
     var totalXP: Int = 0
     var completedRounds: Int = 0
     var bestScore: Int = 0
