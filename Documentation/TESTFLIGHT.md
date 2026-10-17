@@ -1,25 +1,38 @@
-# TestFlight
+# TestFlight und Geräte-Builds
 
-Der Workflow `.github/workflows/testflight.yml` baut die iOS-/iPadOS-App, signiert sie automatisch und lädt sie zu TestFlight hoch. Er läuft nur manuell (Actions → TestFlight → Run workflow) und braucht keine Zertifikatsdateien im Repository.
+Die Entwicklung läuft lokal in Xcode auf dem Mac. TestFlight-Builds entstehen ebenfalls lokal; das ist der normale Weg und braucht weder Secrets noch Zertifikatsdateien im Repository. Die GitHub-Action `testflight.yml` ist nur eine optionale Alternative (siehe unten).
 
 ## Einmalige Einrichtung
 
-1. **App-Eintrag** in App Store Connect anlegen (Apps → +): Plattform iOS, Bundle-ID `de.linolaske.fisitrainer`, Name und SKU frei wählbar. Die Bundle-ID erscheint erst im Auswahlfeld, wenn sie im Developer-Portal registriert ist; Xcode legt sie beim ersten Lauf mit `-allowProvisioningUpdates` selbst an.
-2. **API-Schlüssel** erzeugen: App Store Connect → Benutzer und Zugriff → Integrationen → App Store Connect API → Schlüssel erzeugen. Die Rolle muss Zertifikate und Profile verwalten dürfen (in der Regel *Admin*). Die `.p8`-Datei lässt sich nur einmal herunterladen.
-3. **Repository-Secrets** anlegen (Settings → Secrets and variables → Actions):
-   - `ASC_KEY_ID`: Schlüssel-ID
-   - `ASC_ISSUER_ID`: Issuer-ID (oben auf der Schlüsselseite)
-   - `ASC_KEY_P8`: kompletter Inhalt der `.p8`-Datei inklusive `-----BEGIN PRIVATE KEY-----`
-4. In TestFlight eine interne Testgruppe mit den eigenen Apple-IDs anlegen. Interne Tester brauchen keine Beta-Prüfung durch Apple.
+1. **Xcode-Account:** Xcode → Einstellungen → Accounts: die Apple-ID des Entwicklerteams (`J2DU2P47XW`) anmelden. Mit Automatic Signing erzeugt Xcode Zertifikate und Profile selbst.
+2. **App-Eintrag** in App Store Connect (Apps → +): Plattform iOS, Name „FiSi Trainer“, Bundle-ID `de.linolaske.fisitrainer`, SKU frei wählbar (z. B. `fisitrainer`).
+3. **iCloud:** Beim ersten Signieren mit Automatic Signing aktiviert Xcode die iCloud-Fähigkeit für die App-ID selbst, weil `FiSiTrainer/FiSiTrainer-iOS.entitlements` das Entitlement `com.apple.developer.ubiquity-kvstore-identifier` enthält. Nur falls Xcode meldet, dass die App-ID die Fähigkeit nicht hat: Developer-Portal → Identifiers → `de.linolaske.fisitrainer` → **iCloud** aktivieren (die Basisoption genügt, CloudKit und Container sind nicht nötig).
+4. In TestFlight eine **interne Testgruppe** mit den eigenen Apple-IDs anlegen. Interne Tester brauchen keine Beta-Prüfung durch Apple.
 
-## Ablauf
+## Auf dem eigenen iPhone oder iPad testen
 
-- Die Build-Nummer ist die Nummer des Workflow-Laufs (`CURRENT_PROJECT_VERSION`), steigt also bei jedem Upload. Die Marketing-Version kommt aus dem Projekt (`MARKETING_VERSION`) oder aus dem optionalen Eingabefeld.
-- Signiert wird mit `-allowProvisioningUpdates` und dem API-Schlüssel (cloud-verwaltete Zertifikate und Profile). Der Archive-Build verwendet `FiSiTrainer-iOS.entitlements` und das Flag `ICLOUD_SYNC`; der iCloud-Schalter ist deshalb nur in diesen Builds sichtbar.
-- Der Export lädt direkt hoch (`destination = upload`). Nach der Verarbeitung durch Apple (einige Minuten) erscheint der Build in TestFlight.
-- Das Secret-File liegt nur im temporären Runner-Verzeichnis und wird am Ende des Schritts gelöscht. Der Workflow hat nur Leserechte auf das Repository.
+1. Gerät per Kabel (oder drahtlos) koppeln, in Xcode das Scheme **FiSiTrainer** und das Gerät als Ziel wählen, Command-R.
+2. Dieser Geräte-Build trägt automatisch das Compile-Flag `ICLOUD_SYNC` und die iCloud-Entitlements. Der Schalter **Mit iCloud synchronisieren** erscheint in der Ansicht „Level“. Im Simulator, auf dem Mac und in der CI fehlt er absichtlich.
+3. Für einen Sync-Test müssen beide Geräte bei derselben Apple-ID in iCloud angemeldet sein (iPhone und iPad). Der Mac kann noch nicht teilnehmen, siehe `ICLOUD-SYNC.md`.
+
+## Build zu TestFlight hochladen
+
+Am einfachsten per Skript, das mit dem lokalen Xcode archiviert und direkt hochlädt:
+
+```sh
+bash Scripts/testflight-local.sh          # Version aus dem Projekt
+bash Scripts/testflight-local.sh 1.5.0    # optional: Marketing-Version setzen
+```
+
+Das Skript nutzt den in Xcode angemeldeten Account (`-allowProvisioningUpdates`), setzt als Build-Nummer einen UTC-Zeitstempel (`yyyymmddHHMM`, steigt also bei jedem Upload) und exportiert mit `Packaging/ExportOptions-TestFlight.plist` (`destination = upload`). Nach der Verarbeitung durch Apple (einige Minuten) erscheint der Build in TestFlight. Statt des Skripts geht auch in Xcode: Product → Archive → Distribute App → TestFlight & App Store → Distribute; dann die Build-Nummer vorher selbst erhöhen.
+
+Wer lieber einen API-Schlüssel statt des Xcode-Accounts nutzt, setzt `ASC_KEY_PATH`, `ASC_KEY_ID` und `ASC_ISSUER_ID`; der Schlüssel braucht für das cloud-verwaltete Signieren die Rolle *Admin*.
+
+## Optional: Upload per GitHub Actions
+
+`.github/workflows/testflight.yml` macht dasselbe auf einem Runner (Actions → TestFlight → Run workflow). Er braucht die Repository-Secrets `ASC_KEY_ID`, `ASC_ISSUER_ID` und `ASC_KEY_P8` (Inhalt der `.p8`-Datei) und einen Schlüssel mit der Rolle **Admin**: Beim Export signiert Apple in der Cloud, ein Schlüssel mit der Rolle *App Manager* scheitert dort mit `Cloud signing permission error`. Das Repository ist öffentlich; ein Admin-Schlüssel als dauerhaftes Secret ist deshalb nur mit Bedacht zu empfehlen (am besten in einer Environment, die auf `main` beschränkt ist). Eine Variante mit manuell erzeugtem Distribution-Zertifikat und Profil als Secrets würde mit einem Upload-Schlüssel der Rolle *App Manager* auskommen, ist aber noch nicht umgesetzt.
 
 ## Bekannte Grenzen
 
 - Der Mac-Build ist nicht Teil davon. Er bleibt eine ad-hoc signierte DMG (siehe `Scripts/package-release.sh`), bis Developer-ID-Signierung und Notarisierung eingerichtet sind.
-- Der Workflow wurde noch nicht mit echten Zugangsdaten ausgeführt. Beim ersten Lauf können Fehler zu fehlender Rolle, App-Eintrag oder Icon-Format auftreten; die Meldungen von `xcodebuild` nennen die Ursache.
+- Der erste Archive-Lauf auf einem Runner war erfolgreich (inklusive iCloud-Entitlement); der Upload per Skript wurde noch nicht ausgeführt.
