@@ -95,6 +95,8 @@ Alle vier sind `@MainActor final class … ObservableObject`. Alle vier laden ih
 | `GameStore.swift` | 256 | Port-Quiz-Logik, Persistenz, Rundengenerierung | `GameStore` | `ContentView`, `FiSiTrainerApp` |
 | `AdaptiveLearning.swift` | 70 | Lernschlüssel, gewichtetes Sampling, Lernhistorie | `LearningRecord`, `AdaptiveLearning` | `GameStore`, `SubnetStore`, `ExamStore`, `ExamTaskFactory` |
 | `QuestionTiming.swift` | 59 | Zeitmessung pro Frage, Tempo-Bonus, Timer-UI | `QuestionTiming`, `QuestionTimerView` | `GameStore`, `SubnetStore`, `ExamStore`, `ExamViews` |
+| `SyncMerge.swift` | – | Reine Merge-Logik für den iCloud-Sync (Zähler pro Gerät, Lernstand, Verlauf, Reset-Epoche) | `ProgressCounters`, `SyncPayload`, `SyncState`, `SyncBookkeeping`, `SyncMerge` | `CloudSync`, Stores |
+| `CloudSync.swift` | – | Anbindung der Stores an ein `SyncBackend` (gedrosseltes Veröffentlichen, Zusammenführen, ungültige Daten ignorieren) | `SyncBackend`, `SyncDevice`, `StoreSyncCoordinator` | `GameStore`, `SubnetStore`, `ExamStore` (`enableSync`/`disableSync`) |
 | `SubnetTrainer.swift` | 478 | Subnetz-Sprint: Logik, Persistenz, UI | `SubnetQuestionKind`, `SubnetQuestion`, `SubnetSession`, `SubnetStore`, `SubnetTrainerView` | `ContentView`, `FiSiTrainerApp` |
 
 **Wichtige Signaturen:**
