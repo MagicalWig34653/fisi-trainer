@@ -477,6 +477,7 @@ struct RewardsView: View {
             }
 
             progressCard
+            SyncSettingsView()
             badgeCard
             petCard
             roadmapCard

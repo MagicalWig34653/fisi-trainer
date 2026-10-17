@@ -9,6 +9,7 @@ struct FiSiTrainerApp: App {
     @StateObject private var subnetStore = SubnetStore()
     @StateObject private var examStore = ExamStore()
     @StateObject private var rewards = RewardStore()
+    @StateObject private var sync = SyncController()
 
     var body: some Scene {
         WindowGroup {
@@ -17,6 +18,8 @@ struct FiSiTrainerApp: App {
                 .environmentObject(subnetStore)
                 .environmentObject(examStore)
                 .environmentObject(rewards)
+                .environmentObject(sync)
+                .onAppear { sync.attach(game: store, subnet: subnetStore, exam: examStore) }
                 .onChange(of: combinedXP, initial: true) { _, xp in
                     rewards.updateXP(xp)
                 }
