@@ -123,7 +123,8 @@ final class StoreSyncTests: XCTestCase {
         XCTAssertEqual(deviceA.progress.totalXP, 0)
         XCTAssertTrue(deviceA.learning.isEmpty)
         // Progress earned afterwards counts again on both.
-        answerCorrectly(deviceA, count: 1)
+        deviceA.nextQuestion()
+        deviceA.answer(try XCTUnwrap(deviceA.currentQuestion).correctAnswer)
         XCTAssertGreaterThan(deviceA.progress.totalXP, 0)
         XCTAssertEqual(deviceB.progress.totalXP, deviceA.progress.totalXP)
     }
