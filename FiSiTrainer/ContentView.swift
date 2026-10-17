@@ -185,7 +185,7 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, alignment: .topLeading)
                 }
             }
-            .contentSwap(shown)
+            .contentSwap(shown, animated: isTouchDevice)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 if showsCompanion && !isTouchDevice {
                     if let pet = rewards.selectedPet {
@@ -207,7 +207,7 @@ struct ContentView: View {
                 }
             }
         }
-        .swapAnimation(shown)
+        .swapAnimation(shown, animated: isTouchDevice)
         .background(LabStyle.background)
         // Inside an open exam mode the native back button is hidden; an edge swipe closes the mode instead.
         .simultaneousGesture(
@@ -228,6 +228,8 @@ struct ContentView: View {
         .sheet(isPresented: $showingCompanion) {
             if let pet = rewards.selectedPet {
                 PetCompanionView(pet: pet, context: petContext)
+                    // Passed on explicitly: the sheet content must not depend on environment inheritance.
+                    .environmentObject(rewards)
                     .padding(12)
                     .frame(maxHeight: .infinity, alignment: .top)
                     .background(LabStyle.sidebar.ignoresSafeArea())

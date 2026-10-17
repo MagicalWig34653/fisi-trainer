@@ -101,6 +101,7 @@ struct PetCompanionView: View {
         .foregroundStyle(.white)
         .sheet(isPresented: $showingChat) {
             PetChatView(pet: pet, context: context)
+                .environmentObject(rewards)
         }
         .onAppear { intelligence.refreshAvailability() }
         .onChange(of: context.id) { _, _ in clearForNewContext() }
