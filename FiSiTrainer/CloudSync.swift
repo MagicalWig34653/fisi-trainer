@@ -171,7 +171,7 @@ final class SyncController: ObservableObject {
     @Published private(set) var accountAvailable: Bool
 
     private let defaults: UserDefaults
-    private let makeBackend: () -> SyncBackend
+    private let makeBackend: @MainActor () -> SyncBackend
     private var backend: SyncBackend?
     private weak var game: GameStore?
     private weak var subnet: SubnetStore?
@@ -179,7 +179,7 @@ final class SyncController: ObservableObject {
     private var accountObserver: NSObjectProtocol?
 
     init(defaults: UserDefaults = .standard,
-         makeBackend: @escaping () -> SyncBackend = { KeyValueSyncBackend() }) {
+         makeBackend: @escaping @MainActor () -> SyncBackend = { KeyValueSyncBackend() }) {
         self.defaults = defaults
         self.makeBackend = makeBackend
         isEnabled = defaults.bool(forKey: Self.enabledKey)
