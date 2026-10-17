@@ -87,7 +87,8 @@ final class SyncMergeTests: XCTestCase {
         let republishedB = SyncMerge.payload(for: bAfterA, deviceID: "B")
         XCTAssertEqual(SyncMerge.merged(aAfterB, with: republishedB, deviceID: "A"), aAfterB)
         XCTAssertEqual(SyncMerge.merged(bAfterA, with: republishedA, deviceID: "B"), bAfterA)
-        XCTAssertEqual(republishedA.devices, republishedB.devices)
+        XCTAssertEqual(republishedA.devices.mapValues(\.additivePart),
+                       republishedB.devices.mapValues(\.additivePart))
     }
 
     func testOwnOldEntryInMergedPayloadDoesNotDoubleCount() {

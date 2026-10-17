@@ -35,6 +35,15 @@ struct ProgressCounters: Codable, Equatable {
             .allSatisfy { (0...Self.limit).contains($0) } && answeredQuestions >= correctAnswers
     }
 
+    /// The additive fields only. A peer's best score is not remembered per device: `bestScore` of the local
+    /// progress already is the maximum over all devices, and remembering it again would make every device
+    /// republish the global maximum as its own.
+    var additivePart: ProgressCounters {
+        var result = self
+        result.bestScore = 0
+        return result
+    }
+
     /// Field-wise maximum, used to take over a peer's newest published values.
     func maximum(with other: ProgressCounters) -> ProgressCounters {
         var result = ProgressCounters()
@@ -148,8 +157,8 @@ enum SyncMerge {
             // Another device reset: everything from before is discarded, including this device's share.
             var peers = remote.devices
             peers.removeValue(forKey: deviceID)
-            state.bookkeeping = SyncBookkeeping(epoch: remote.epoch, peers: peers)
             state.progress = PlayerProgress(peers.values.reduce(ProgressCounters()) { $0.adding($1) })
+            state.bookkeeping = SyncBookkeeping(epoch: remote.epoch, peers: peers.mapValues(\.additivePart))
             state.learning = remote.learning
             state.history = remote.history
             return state
@@ -158,7 +167,7 @@ enum SyncMerge {
         var counters = ProgressCounters(state.progress)
         for (id, published) in remote.devices where id != deviceID {
             let known = state.bookkeeping.peers[id] ?? ProgressCounters()
-            let updated = known.maximum(with: published)
+            let updated = known.maximum(with: published).additivePart
             if updated != known {
                 counters = counters.adding(updated.increase(over: known))
                 state.bookkeeping.peers[id] = updated
