@@ -2,7 +2,8 @@ name: TestFlight
 
 # Baut die iOS-App, signiert sie automatisch über einen App-Store-Connect-API-Schlüssel und lädt sie zu
 # TestFlight hoch. Nur manuell startbar; die Secrets ASC_KEY_ID, ASC_ISSUER_ID und ASC_KEY_P8 müssen im
-# Repository hinterlegt sein.
+# Repository hinterlegt sein. Der Schlüssel braucht die Rolle Admin (cloud-verwaltete Signierung). Der
+# normale Weg ist Scripts/testflight-local.sh, siehe Documentation/TESTFLIGHT.md.
 
 on:
   workflow_dispatch:
@@ -36,7 +37,6 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
           VERSION_INPUT: ${{ inputs.version }}
-          BUILD_NUMBER: ${{ github.run_number }}
         run: |
           set -euo pipefail
           for name in ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8; do
@@ -57,31 +57,17 @@ jobs:
 
           archive="$RUNNER_TEMP/FiSiTrainer.xcarchive"
           export_dir="$RUNNER_TEMP/export"
-          options="$RUNNER_TEMP/ExportOptions.plist"
           auth=(
             -allowProvisioningUpdates
             -authenticationKeyPath "$key_path"
             -authenticationKeyID "$ASC_KEY_ID"
             -authenticationKeyIssuerID "$ASC_ISSUER_ID"
           )
-          overrides=("CURRENT_PROJECT_VERSION=$BUILD_NUMBER")
+          # Gleiches Schema wie Scripts/testflight-local.sh, damit die Nummern nie kollidieren.
+          overrides=("CURRENT_PROJECT_VERSION=$(date -u +%Y%m%d%H%M)")
           if [ -n "$VERSION_INPUT" ]; then
             overrides+=("MARKETING_VERSION=$VERSION_INPUT")
           fi
-
-          cat > "$options" <<'PLIST'
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key><string>app-store-connect</string>
-            <key>destination</key><string>upload</string>
-            <key>teamID</key><string>J2DU2P47XW</string>
-            <key>signingStyle</key><string>automatic</string>
-            <key>manageAppVersionAndBuildNumber</key><false/>
-          </dict>
-          </plist>
-          PLIST
 
           xcodebuild archive \
             -project FiSiTrainer.xcodeproj \
@@ -95,5 +81,5 @@ jobs:
           xcodebuild -exportArchive \
             -archivePath "$archive" \
             -exportPath "$export_dir" \
-            -exportOptionsPlist "$options" \
+            -exportOptionsPlist Packaging/ExportOptions-TestFlight.plist \
             "${auth[@]}"
