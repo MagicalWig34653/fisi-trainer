@@ -1,0 +1,99 @@
+name: TestFlight
+
+# Baut die iOS-App, signiert sie automatisch über einen App-Store-Connect-API-Schlüssel und lädt sie zu
+# TestFlight hoch. Nur manuell startbar; die Secrets ASC_KEY_ID, ASC_ISSUER_ID und ASC_KEY_P8 müssen im
+# Repository hinterlegt sein.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Marketing-Version (z. B. 1.5.0); leer lässt die Version aus dem Projekt'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: testflight
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    runs-on: macos-26
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Archive and upload to TestFlight
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          VERSION_INPUT: ${{ inputs.version }}
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: |
+          set -euo pipefail
+          for name in ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Secret $name fehlt (Repository-Einstellungen > Secrets and variables > Actions)."
+              exit 1
+            fi
+          done
+          if [ -n "$VERSION_INPUT" ] && ! [[ "$VERSION_INPUT" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
+            echo "::error::Ungültige Version: $VERSION_INPUT"
+            exit 1
+          fi
+
+          key_path="$RUNNER_TEMP/AuthKey_${ASC_KEY_ID}.p8"
+          printf '%s\n' "$ASC_KEY_P8" > "$key_path"
+          chmod 600 "$key_path"
+          trap 'rm -f "$key_path"' EXIT
+
+          archive="$RUNNER_TEMP/FiSiTrainer.xcarchive"
+          export_dir="$RUNNER_TEMP/export"
+          options="$RUNNER_TEMP/ExportOptions.plist"
+          auth=(
+            -allowProvisioningUpdates
+            -authenticationKeyPath "$key_path"
+            -authenticationKeyID "$ASC_KEY_ID"
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+          )
+          overrides=("CURRENT_PROJECT_VERSION=$BUILD_NUMBER")
+          if [ -n "$VERSION_INPUT" ]; then
+            overrides+=("MARKETING_VERSION=$VERSION_INPUT")
+          fi
+
+          cat > "$options" <<'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>J2DU2P47XW</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict>
+          </plist>
+          PLIST
+
+          xcodebuild archive \
+            -project FiSiTrainer.xcodeproj \
+            -scheme FiSiTrainer \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$archive" \
+            -derivedDataPath "$RUNNER_TEMP/FiSiTrainer-iOS-DerivedData" \
+            "${auth[@]}" "${overrides[@]}"
+
+          xcodebuild -exportArchive \
+            -archivePath "$archive" \
+            -exportPath "$export_dir" \
+            -exportOptionsPlist "$options" \
+            "${auth[@]}"
