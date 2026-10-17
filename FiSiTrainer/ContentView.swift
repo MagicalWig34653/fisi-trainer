@@ -82,7 +82,7 @@ struct ContentView: View {
                     Rectangle()
                         .fill(LabStyle.border)
                         .frame(width: 1)
-                    LazyPage { AnyView(mainColumn) }
+                    LazyPage { AnyView(mainColumn(showing: page)) }
                 }
             }
         }
@@ -151,9 +151,10 @@ struct ContentView: View {
         .padding(.top, 20)
     }
 
-    private var mainColumn: some View {
+    private func mainColumn(showing shown: LabPage) -> some View {
         VStack(spacing: 0) {
-            if isTouchDevice { LazyPage { AnyView(touchHeader) } }
+            // iPhone uses the native navigation bar instead (see `screen`).
+            if isTouchDevice && !compact { LazyPage { AnyView(touchHeader) } }
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     if !isTouchDevice { LazyPage { AnyView(topBar) } }
@@ -167,7 +168,7 @@ struct ContentView: View {
                     }
 
                     Group {
-                        switch page {
+                        switch shown {
                         case .dashboard: LazyPage { AnyView(dashboard) }
                         case .game: LazyPage { AnyView(game) }
                         case .subnet: SubnetTrainerView()
@@ -184,7 +185,7 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, alignment: .topLeading)
                 }
             }
-            .contentSwap(page)
+            .contentSwap(shown)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 if showsCompanion && !isTouchDevice {
                     if let pet = rewards.selectedPet {
@@ -206,17 +207,17 @@ struct ContentView: View {
                 }
             }
         }
-        .swapAnimation(page)
+        .swapAnimation(shown)
         .background(LabStyle.background)
-        // Edge swipe to the right goes back from a game, like the back button in the header.
+        // Inside an open exam mode the native back button is hidden; an edge swipe closes the mode instead.
         .simultaneousGesture(
             DragGesture(minimumDistance: 24)
                 .onEnded { value in
-                    guard compact, page.isPractice, page != .practice,
+                    guard compact, shown == .exam, openExamMode != nil,
                           value.startLocation.x < 32,
                           value.translation.width > 70,
                           abs(value.translation.height) < 60 else { return }
-                    goBackFromGame()
+                    openExamMode = nil
                 }
         )
         .overlayPreferenceValue(PinnedActionKey.self, alignment: .bottom) { pinned in
@@ -241,21 +242,8 @@ struct ContentView: View {
     /// Fixed header on iPhone and iPad: current page, level and the (optional) pet companion.
     private var touchHeader: some View {
         HStack(spacing: 10) {
-            if compact && page.isPractice && page != .practice {
-                Button(action: goBackFromGame) {
-                    Image(systemName: "chevron.backward")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(LabStyle.accent)
-                        .frame(width: 44, height: 44)
-                        .glassSurface(in: Circle(), interactive: true)
-                        .contentShape(Circle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Zurück zu Übungen")
-            } else {
-                Image(systemName: page.symbol)
-                    .foregroundStyle(LabStyle.accent)
-            }
+            Image(systemName: page.symbol)
+                .foregroundStyle(LabStyle.accent)
             Text(page.rawValue)
                 .font(.system(size: 17, weight: .bold, design: .rounded))
                 .lineLimit(1)
@@ -444,15 +432,102 @@ struct ContentView: View {
         .minimizesTabBarOnScroll()
     }
 
+    private func rootPage(of tab: MobileTab) -> LabPage {
+        switch tab {
+        case .dashboard: .dashboard
+        case .practice: .practice
+        case .rewards: .rewards
+        case .reference: .reference
+        }
+    }
+
+    /// The "Übungen" stack: a game is pushed on top of the hub. `page` stays the single source of truth,
+    /// so the dashboard buttons and the sidebar layouts keep working.
+    private var practicePath: Binding<[LabPage]> {
+        Binding(
+            get: { page.isPractice && page != .practice ? [page] : [] },
+            set: { path in
+                if let last = path.last {
+                    page = last
+                } else if page.isPractice {
+                    openExamMode = nil
+                    page = .practice
+                }
+            }
+        )
+    }
+
     /// Only the selected tab builds its content, so heavy views such as the 3D habitat exist once.
     @ViewBuilder
     private func mobileTabContent(_ tab: MobileTab) -> some View {
         if mobileTab == tab {
-            LazyPage { AnyView(mainColumn) }
+            if tab == .practice {
+                NavigationStack(path: practicePath) {
+                    screen(.practice)
+                        .navigationDestination(for: LabPage.self) { destination in
+                            screen(destination)
+                        }
+                }
+            } else {
+                NavigationStack {
+                    screen(rootPage(of: tab))
+                }
+            }
         } else {
             LabStyle.background.ignoresSafeArea()
         }
     }
+
+    /// A page of the compact layout with the native navigation bar (Liquid Glass on iOS 26).
+    @ViewBuilder
+    private func screen(_ shown: LabPage) -> some View {
+        #if os(iOS)
+        LazyPage {
+            AnyView(
+                mainColumn(showing: shown)
+                    .navigationTitle(shown.rawValue)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbarColorScheme(.dark, for: .navigationBar)
+                    .navigationBarBackButtonHidden(shown == .exam && openExamMode != nil)
+                    .toolbar { navigationToolbar(for: shown) }
+            )
+        }
+        #else
+        LazyPage { AnyView(mainColumn(showing: shown)) }
+        #endif
+    }
+
+    #if os(iOS)
+    @ToolbarContentBuilder
+    private func navigationToolbar(for shown: LabPage) -> some ToolbarContent {
+        if shown == .exam && openExamMode != nil {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    openExamMode = nil
+                } label: {
+                    Label("Übersicht", systemImage: "chevron.backward")
+                }
+            }
+        }
+        ToolbarItem(placement: .topBarTrailing) {
+            Text("LV \(rewards.level)")
+                .font(.system(size: 12, weight: .bold, design: .monospaced))
+                .foregroundStyle(LabStyle.accent)
+                .accessibilityLabel("Level \(rewards.level)")
+        }
+        if shown == .game || shown == .subnet || shown == .exam, let pet = rewards.selectedPet {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showingCompanion = true
+                } label: {
+                    Image(systemName: pet.symbol)
+                }
+                .accessibilityLabel("\(pet.name), dein Begleiter")
+                .accessibilityHint("Öffnet Tipps und Chat")
+            }
+        }
+    }
+    #endif
 
     private var practiceHub: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -503,15 +578,6 @@ struct ContentView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(running ? "\(title), Runde läuft" : title)
-    }
-
-    /// One level up from a game: exam mode → exam overview → "Übungen".
-    private func goBackFromGame() {
-        if page == .exam, openExamMode != nil {
-            openExamMode = nil
-        } else {
-            page = .practice
-        }
     }
 
     private var topBar: some View {

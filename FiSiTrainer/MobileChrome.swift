@@ -106,14 +106,24 @@ private struct ContentSwap<ID: Hashable>: ViewModifier {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let id: ID
 
+    /// Touch devices step through content like a navigation stack (new content from the right);
+    /// the Mac fades and lifts. Reduce Motion keeps only the fade.
+    private var transition: AnyTransition {
+        if reduceMotion { return .opacity }
+        if isTouchDevice {
+            return .asymmetric(
+                insertion: AnyTransition.move(edge: .trailing).combined(with: .opacity),
+                removal: AnyTransition.move(edge: .leading).combined(with: .opacity))
+        }
+        return .asymmetric(
+            insertion: AnyTransition.opacity.combined(with: AnyTransition.offset(x: 0, y: 14)),
+            removal: .opacity)
+    }
+
     func body(content: Content) -> some View {
         content
             .id(id)
-            .transition(reduceMotion
-                        ? AnyTransition.opacity
-                        : AnyTransition.asymmetric(
-                            insertion: AnyTransition.opacity.combined(with: AnyTransition.offset(x: 0, y: 14)),
-                            removal: AnyTransition.opacity))
+            .transition(transition)
     }
 }
 
