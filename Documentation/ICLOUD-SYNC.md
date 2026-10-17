@@ -4,7 +4,7 @@ Status: **Code implementiert, noch nicht auf echten Geräten getestet und nicht 
 
 - Merge-Logik (`SyncMerge.swift`), Store-Anbindung (`CloudSync.swift`) und `KeyValueSyncBackend` sind fertig und per Fake getestet.
 - Der Schalter „Mit iCloud synchronisieren“ (`SyncSettingsView`, Ansicht „Level“) erscheint nur in Builds mit dem Compile-Flag `ICLOUD_SYNC`. Das ist für signierte iOS-Geräte-Builds gesetzt (zusammen mit `FiSiTrainer-iOS.entitlements`); Simulator, CI und die ad-hoc signierte Mac-DMG haben weder Flag noch Entitlement und zeigen den Schalter nicht.
-- Offen: Developer-ID-Signierung für den Mac, Synchronisation von Haustier-Auswahl und Ausstattung (aktuell nur XP, Lernstand und Prüfungsverlauf; Belohnungen leiten sich aus der kombinierten XP ab), Zwei-Geräte-Test.
+- Offen: Developer-ID-Signierung für den Mac, Zwei-Geräte-Test. Haustier-Auswahl, Ausstattung, Spielzeug und Bindung werden mit synchronisiert (`RewardSyncData`, Schlüssel `sync.rewards`); die Reward-XP leitet sich weiter aus der kombinierten Spiel-XP ab.
 
 Voraussetzung ist ein bezahlter Apple Developer Account (iCloud-Capability, Provisioning-Profile). Das Konzept hält fest, wie der Sync mit der bestehenden Persistenz (siehe [ARCHITECTURE.md](ARCHITECTURE.md#persistenz)) zusammenpasst, damit die Umsetzung in einem Zug möglich ist.
 
@@ -39,7 +39,7 @@ Alle Regeln sind reine Funktionen `merge(local, remote) -> merged` und werden ge
 | `LearningRecord` | der Datensatz mit der größeren `attempts`-Zahl gewinnt; bei Gleichstand der mit mehr `correct` | verlustbehaftet, aber ohne Zeitstempel nicht exakter möglich; betrifft nur die Gewichtung der Fragenauswahl |
 | `RewardStore.totalXP` | wird **nicht** direkt synchronisiert, sondern nach dem Merge aus den drei Spielen neu berechnet und über `updateXP` angehoben | bleibt Höchststand, Haustiere und Ausstattung werden nie wieder gesperrt |
 | `interactionCounts` (Bindung) | pro Schlüssel Maximum | monoton |
-| `selectedPet`, `outfitsByPet`, `toysByPet` | pro Haustier „letzte Änderung gewinnt“ mit Zeitstempel (`updatedAt`) | Einstellung, kein Zähler; beim Laden wird weiterhin gegen `unlockLevel` validiert |
+| `selectedPet`, `outfitsByPet`, `toysByPet` | „letzte Änderung gewinnt“ mit Zeitstempel (`RewardSyncStamps` im Save, `RewardSyncChoice` im Blob); auch das Ablegen eines Outfits ist eine Änderung mit Stempel; bei gleichem Zeitstempel gewinnt der größere Wert, damit alle Geräte dasselbe wählen | Einstellung, kein Zähler. Nur vom Nutzer gesetzte Werte tragen einen Stempel (die automatische Standardauswahl nicht). Ein noch gesperrtes Haustier wird nicht ausgewählt; Ausstattung bleibt gespeichert, `outfit(for:)`/`toy(for:)` zeigen sie erst ab dem nötigen Level |
 | `[ExamResult]` | Vereinigung, Duplikate nach (Datum, Modus, Fach, Ergebnis) entfernen, neueste 20 | Historie |
 | Zurücksetzen eines Spiels | **Epoche** (`resetEpoch: Int`) pro Store; höhere Epoche gewinnt und verwirft ältere Zähler | sonst würde der Sync einen Reset sofort wieder rückgängig machen |
 

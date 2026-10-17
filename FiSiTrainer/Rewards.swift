@@ -211,6 +211,13 @@ struct LevelReward: Identifiable {
     }
 }
 
+/// When the user last changed each choice. Stored next to the save so the newest change wins across devices.
+struct RewardSyncStamps: Codable, Equatable {
+    var selectedPet: TimeInterval?
+    var outfits: [String: TimeInterval] = [:]
+    var toys: [String: TimeInterval] = [:]
+}
+
 @MainActor
 final class RewardStore: ObservableObject {
     @Published private(set) var totalXP = 0
@@ -254,6 +261,7 @@ final class RewardStore: ObservableObject {
               outfit == nil || level >= outfit!.unlockLevel else { return }
         guard outfitsByPet[pet.rawValue] != outfit?.rawValue else { return }
         outfitsByPet[pet.rawValue] = outfit?.rawValue
+        syncStamps.outfits[pet.rawValue] = stamp()
         save()
     }
 
@@ -262,6 +270,7 @@ final class RewardStore: ObservableObject {
               toy == nil || level >= toy!.unlockLevel else { return }
         guard toysByPet[pet.rawValue] != toy?.rawValue else { return }
         toysByPet[pet.rawValue] = toy?.rawValue
+        syncStamps.toys[pet.rawValue] = stamp()
         save()
     }
 
@@ -271,18 +280,20 @@ final class RewardStore: ObservableObject {
         var interactionCounts: [String: [String: Int]]
         var outfitsByPet: [String: String]
         var toysByPet: [String: String]
+        var sync: RewardSyncStamps?
 
         enum CodingKeys: String, CodingKey {
-            case totalXP, selectedPet, interactionCounts, outfitsByPet, toysByPet
+            case totalXP, selectedPet, interactionCounts, outfitsByPet, toysByPet, sync
         }
 
         init(totalXP: Int, selectedPet: PetKind?, interactionCounts: [String: [String: Int]],
-             outfitsByPet: [String: String], toysByPet: [String: String]) {
+             outfitsByPet: [String: String], toysByPet: [String: String], sync: RewardSyncStamps) {
             self.totalXP = totalXP
             self.selectedPet = selectedPet
             self.interactionCounts = interactionCounts
             self.outfitsByPet = outfitsByPet
             self.toysByPet = toysByPet
+            self.sync = sync
         }
 
         init(from decoder: Decoder) throws {
@@ -295,13 +306,18 @@ final class RewardStore: ObservableObject {
                                                       forKey: .outfitsByPet) ?? [:]
             toysByPet = try values.decodeIfPresent([String: String].self,
                                                    forKey: .toysByPet) ?? [:]
+            sync = try values.decodeIfPresent(RewardSyncStamps.self, forKey: .sync)
         }
     }
 
     private let saveURL: URL
+    private let now: () -> Date
     private var maySave = true
+    private var syncStamps = RewardSyncStamps()
+    private var syncCoordinator: StoreSyncCoordinator<RewardSyncData, RewardSyncData>?
 
-    init(saveURL: URL? = nil) {
+    init(saveURL: URL? = nil, now: @escaping () -> Date = Date.init) {
+        self.now = now
         self.saveURL = saveURL ?? FileManager.default
             .urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("FiSiTrainer", isDirectory: true)
@@ -323,6 +339,7 @@ final class RewardStore: ObservableObject {
     func selectPet(_ pet: PetKind) {
         guard maySave, unlockedPets.contains(pet), selectedPet != pet else { return }
         selectedPet = pet
+        syncStamps.selectedPet = stamp()
         save()
     }
 
@@ -357,7 +374,65 @@ final class RewardStore: ObservableObject {
         interactionCounts = [:]
         outfitsByPet = [:]
         toysByPet = [:]
+        syncStamps = RewardSyncStamps()
         maySave = true
+        save()
+    }
+
+    private func stamp() -> TimeInterval { now().timeIntervalSince1970 }
+
+    // MARK: iCloud sync
+
+    /// What this device shares: only choices the user made (they carry a stamp) and the bond counters.
+    private var syncData: RewardSyncData {
+        var data = RewardSyncData()
+        if let at = syncStamps.selectedPet {
+            data.selectedPet = RewardSyncChoice(value: selectedPet?.rawValue, at: at)
+        }
+        for (pet, at) in syncStamps.outfits { data.outfits[pet] = RewardSyncChoice(value: outfitsByPet[pet], at: at) }
+        for (pet, at) in syncStamps.toys { data.toys[pet] = RewardSyncChoice(value: toysByPet[pet], at: at) }
+        data.interactions = interactionCounts
+        return data
+    }
+
+    /// Starts mirroring the choices and the bond to the user's other devices. Calling it again does nothing,
+    /// and a damaged save never syncs. The reward XP stays out of it: it follows the games' combined XP.
+    func enableSync(backend: SyncBackend, key: String = "sync.rewards", throttle: TimeInterval = 1.5) {
+        guard syncCoordinator == nil else { return }
+        let coordinator = StoreSyncCoordinator<RewardSyncData, RewardSyncData>(
+            key: key, backend: backend, throttle: throttle,
+            snapshot: { [weak self] in self?.syncData ?? RewardSyncData() },
+            canSync: { [weak self] in self?.maySave ?? false },
+            makePayload: { $0 },
+            merge: { $0.merged(with: $1) },
+            apply: { [weak self] in self?.applySynced($0) })
+        syncCoordinator = coordinator
+        coordinator.start()
+    }
+
+    func disableSync() {
+        syncCoordinator?.stop()
+        syncCoordinator = nil
+    }
+
+    /// Takes over merged choices. A pet that is still locked here is not selected, and equipment is kept even
+    /// while locked because `outfit(for:)`/`toy(for:)` only show what the current level allows.
+    private func applySynced(_ data: RewardSyncData) {
+        guard maySave else { return }
+        if let choice = data.selectedPet, let raw = choice.value, let pet = PetKind(rawValue: raw),
+           unlockedPets.contains(pet) {
+            selectedPet = pet
+            syncStamps.selectedPet = choice.at
+        }
+        for (pet, choice) in data.outfits {
+            outfitsByPet[pet] = choice.value
+            syncStamps.outfits[pet] = choice.at
+        }
+        for (pet, choice) in data.toys {
+            toysByPet[pet] = choice.value
+            syncStamps.toys[pet] = choice.at
+        }
+        interactionCounts = data.interactions
         save()
     }
 
@@ -374,16 +449,27 @@ final class RewardStore: ObservableObject {
             interactionCounts = saved.interactionCounts
             selectedPet = saved.selectedPet.flatMap { unlockedPets.contains($0) ? $0 : nil }
                 ?? unlockedPets.first
+            var stamps = saved.sync ?? RewardSyncStamps()
+            stamps.outfits = stamps.outfits.filter { PetKind(rawValue: $0.key) != nil && $0.value.isFinite }
+            stamps.toys = stamps.toys.filter { PetKind(rawValue: $0.key) != nil && $0.value.isFinite }
             for (key, raw) in saved.outfitsByPet {
                 guard let pet = PetKind(rawValue: key), unlockedPets.contains(pet),
-                      let outfit = PetOutfit(rawValue: raw), level >= outfit.unlockLevel else { continue }
+                      let outfit = PetOutfit(rawValue: raw), level >= outfit.unlockLevel else {
+                    // Dropped choices must not keep a stamp, or they would override the other devices' choice.
+                    stamps.outfits[key] = nil
+                    continue
+                }
                 outfitsByPet[key] = raw
             }
             for (key, raw) in saved.toysByPet {
                 guard let pet = PetKind(rawValue: key), unlockedPets.contains(pet),
-                      let toy = PetToy(rawValue: raw), level >= toy.unlockLevel else { continue }
+                      let toy = PetToy(rawValue: raw), level >= toy.unlockLevel else {
+                    stamps.toys[key] = nil
+                    continue
+                }
                 toysByPet[key] = raw
             }
+            syncStamps = stamps
         } catch {
             maySave = false
             saveError = "Belohnungen konnten nicht gelesen werden: \(error.localizedDescription)"
@@ -399,9 +485,11 @@ final class RewardStore: ObservableObject {
                                                      selectedPet: selectedPet,
                                                      interactionCounts: interactionCounts,
                                                      outfitsByPet: outfitsByPet,
-                                                     toysByPet: toysByPet))
+                                                     toysByPet: toysByPet,
+                                                     sync: syncStamps))
             try data.write(to: saveURL, options: .atomic)
             saveError = nil
+            syncCoordinator?.publish()
         } catch {
             saveError = "Belohnungen konnten nicht gespeichert werden: \(error.localizedDescription)"
         }
@@ -485,8 +573,8 @@ struct RewardsView: View {
         .foregroundStyle(RewardStyle.primary)
         .sheet(item: $activePetSheet) { destination in
             switch destination {
-            case .chat(let pet): PetChatView(pet: pet)
-            case .wardrobe(let pet): PetWardrobeView(pet: pet)
+            case .chat(let pet): PetChatView(pet: pet).environmentObject(rewards)
+            case .wardrobe(let pet): PetWardrobeView(pet: pet).environmentObject(rewards)
             }
         }
         .confirmationDialog("Beschädigte Belohnungen zurücksetzen?",

@@ -105,10 +105,12 @@ extension View {
 private struct ContentSwap<ID: Hashable>: ViewModifier {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let id: ID
+    let animated: Bool
 
     /// Touch devices step through content like a navigation stack (new content from the right);
     /// the Mac fades and lifts. Reduce Motion keeps only the fade.
     private var transition: AnyTransition {
+        if !animated { return .identity }
         if reduceMotion { return .opacity }
         if isTouchDevice {
             return .asymmetric(
@@ -131,21 +133,23 @@ private struct ContentSwap<ID: Hashable>: ViewModifier {
 private struct SwapAnimation<Value: Equatable>: ViewModifier {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let value: Value
+    let animated: Bool
 
     func body(content: Content) -> some View {
-        content.animation(reduceMotion ? nil : .easeOut(duration: 0.28), value: value)
+        content.animation(reduceMotion || !animated ? nil : .easeOut(duration: 0.28), value: value)
     }
 }
 
 extension View {
     /// Gives the view a new identity (and a fade-and-lift transition) whenever `id` changes.
-    func contentSwap<ID: Hashable>(_ id: ID) -> some View {
-        modifier(ContentSwap(id: id))
+    /// With `animated: false` the identity still changes but the content is replaced instantly.
+    func contentSwap<ID: Hashable>(_ id: ID, animated: Bool = true) -> some View {
+        modifier(ContentSwap(id: id, animated: animated))
     }
 
     /// Put on the container of `contentSwap` views, with the value that triggers the swap.
-    func swapAnimation<Value: Equatable>(_ value: Value) -> some View {
-        modifier(SwapAnimation(value: value))
+    func swapAnimation<Value: Equatable>(_ value: Value, animated: Bool = true) -> some View {
+        modifier(SwapAnimation(value: value, animated: animated))
     }
 
     /// Light tap haptic on touch devices only.

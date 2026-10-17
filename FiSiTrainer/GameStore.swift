@@ -149,7 +149,7 @@ final class GameStore: ObservableObject {
     // MARK: iCloud sync
 
     private var syncBookkeeping = SyncBookkeeping()
-    private var syncCoordinator: StoreSyncCoordinator?
+    private var syncCoordinator: ProgressSyncCoordinator?
 
     private var syncState: SyncState {
         SyncState(progress: progress, learning: learning, history: [],
@@ -161,7 +161,7 @@ final class GameStore: ObservableObject {
     func enableSync(backend: SyncBackend, deviceID: String, key: String = "sync.port",
                     throttle: TimeInterval = 1.5) {
         guard syncCoordinator == nil else { return }
-        let coordinator = StoreSyncCoordinator(
+        let coordinator = ProgressSyncCoordinator(
             key: key, deviceID: deviceID, backend: backend, throttle: throttle,
             snapshot: { [weak self] in self?.syncState ?? SyncState() },
             canSync: { [weak self] in self?.maySave ?? false },
