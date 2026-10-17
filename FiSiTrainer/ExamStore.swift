@@ -53,6 +53,7 @@ final class ExamStore: ObservableObject {
         let sessions: [String: ExamSession]
         let learning: [String: LearningRecord]?
         let examHistory: [ExamResult]?
+        let sync: SyncBookkeeping?
     }
 
     private let saveURL: URL
@@ -180,6 +181,9 @@ final class ExamStore: ObservableObject {
             }
         }
         maySave = true
+        syncBookkeeping = syncCoordinator != nil
+            ? SyncMerge.resetBookkeeping(syncBookkeeping)
+            : SyncBookkeeping(epoch: syncBookkeeping.epoch)
         progress = PlayerProgress()
         sessions = [:]
         learning = [:]
@@ -263,6 +267,44 @@ final class ExamStore: ObservableObject {
         return text[..<cut].trimmingCharacters(in: .whitespaces) + "…"
     }
 
+    // MARK: iCloud sync
+
+    private var syncBookkeeping = SyncBookkeeping()
+    private var syncCoordinator: StoreSyncCoordinator?
+
+    private var syncState: SyncState {
+        SyncState(progress: progress, learning: learning, history: examHistory,
+                  bookkeeping: syncBookkeeping)
+    }
+
+    /// Starts mirroring this progress to the user's other devices. Calling it again does nothing,
+    /// and a damaged save never syncs.
+    func enableSync(backend: SyncBackend, deviceID: String, key: String = "sync.exam",
+                    throttle: TimeInterval = 1.5) {
+        guard syncCoordinator == nil else { return }
+        let coordinator = StoreSyncCoordinator(
+            key: key, deviceID: deviceID, backend: backend, throttle: throttle,
+            snapshot: { [weak self] in self?.syncState ?? SyncState() },
+            canSync: { [weak self] in self?.maySave ?? false },
+            apply: { [weak self] in self?.applySynced($0) })
+        syncCoordinator = coordinator
+        coordinator.start()
+    }
+
+    func disableSync() {
+        syncCoordinator?.stop()
+        syncCoordinator = nil
+    }
+
+    private func applySynced(_ state: SyncState) {
+        guard maySave else { return }
+        progress = state.progress
+        learning = state.learning
+        examHistory = state.history
+        syncBookkeeping = state.bookkeeping
+        save()
+    }
+
     private func load() {
         guard FileManager.default.fileExists(atPath: saveURL.path) else { return }
         do {
@@ -274,6 +316,7 @@ final class ExamStore: ObservableObject {
                 ExamMode(rawValue: key).map { ($0, session) }
             })
             learning = saved.learning ?? [:]
+            syncBookkeeping = saved.sync ?? SyncBookkeeping()
             examHistory = saved.examHistory ?? []
             var didResumeTiming = false
             for (mode, var session) in sessions {
@@ -297,9 +340,11 @@ final class ExamStore: ObservableObject {
                 at: saveURL.deletingLastPathComponent(), withIntermediateDirectories: true)
             let sessionsByKey = Dictionary(uniqueKeysWithValues: sessions.map { ($0.key.rawValue, $0.value) })
             let data = try JSONEncoder().encode(SavedGame(
-                progress: progress, sessions: sessionsByKey, learning: learning, examHistory: examHistory))
+                progress: progress, sessions: sessionsByKey, learning: learning, examHistory: examHistory,
+                sync: syncBookkeeping))
             try data.write(to: saveURL, options: .atomic)
             saveError = nil
+            syncCoordinator?.publish()
         } catch {
             saveError = "Prüfungs-Spielstand konnte nicht gespeichert werden: \(error.localizedDescription)"
         }

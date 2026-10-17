@@ -41,6 +41,7 @@ final class GameStore: ObservableObject {
         let progress: PlayerProgress
         let session: GameSession?
         let learning: [String: LearningRecord]?
+        let sync: SyncBookkeeping?
     }
 
     private let saveURL: URL
@@ -135,10 +136,50 @@ final class GameStore: ObservableObject {
             }
         }
         maySave = true
+        syncBookkeeping = syncCoordinator != nil
+            ? SyncMerge.resetBookkeeping(syncBookkeeping)
+            : SyncBookkeeping(epoch: syncBookkeeping.epoch)
         progress = PlayerProgress()
         learning = [:]
         session = nil
         saveError = nil
+        save()
+    }
+
+    // MARK: iCloud sync
+
+    private var syncBookkeeping = SyncBookkeeping()
+    private var syncCoordinator: StoreSyncCoordinator?
+
+    private var syncState: SyncState {
+        SyncState(progress: progress, learning: learning, history: [],
+                  bookkeeping: syncBookkeeping)
+    }
+
+    /// Starts mirroring this progress to the user's other devices. Calling it again does nothing,
+    /// and a damaged save never syncs.
+    func enableSync(backend: SyncBackend, deviceID: String, key: String = "sync.port",
+                    throttle: TimeInterval = 1.5) {
+        guard syncCoordinator == nil else { return }
+        let coordinator = StoreSyncCoordinator(
+            key: key, deviceID: deviceID, backend: backend, throttle: throttle,
+            snapshot: { [weak self] in self?.syncState ?? SyncState() },
+            canSync: { [weak self] in self?.maySave ?? false },
+            apply: { [weak self] in self?.applySynced($0) })
+        syncCoordinator = coordinator
+        coordinator.start()
+    }
+
+    func disableSync() {
+        syncCoordinator?.stop()
+        syncCoordinator = nil
+    }
+
+    private func applySynced(_ state: SyncState) {
+        guard maySave else { return }
+        progress = state.progress
+        learning = state.learning
+        syncBookkeeping = state.bookkeeping
         save()
     }
 
@@ -153,6 +194,7 @@ final class GameStore: ObservableObject {
             progress = saved.progress
             session = saved.session
             learning = saved.learning ?? [:]
+            syncBookkeeping = saved.sync ?? SyncBookkeeping()
             if var session, !session.isComplete, session.selectedAnswer == nil,
                session.timing == nil {
                 session.timing = QuestionTiming(startedAt: now())
@@ -173,9 +215,10 @@ final class GameStore: ObservableObject {
                 withIntermediateDirectories: true
             )
             let data = try JSONEncoder().encode(SavedGame(
-                progress: progress, session: session, learning: learning))
+                progress: progress, session: session, learning: learning, sync: syncBookkeeping))
             try data.write(to: saveURL, options: .atomic)
             saveError = nil
+            syncCoordinator?.publish()
         } catch {
             saveError = "Spielstand konnte nicht gespeichert werden: \(error.localizedDescription)"
         }

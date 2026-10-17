@@ -56,6 +56,8 @@
 		8A3C5E7F9B1D2A4C6E80F113 /* MobileChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4D6F8A0C2E3B5D7F91A224 /* MobileChrome.swift */; };
 		A1B2C3D4E5F60718293A4B5C /* SyncMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F60718293A4B5C6D /* SyncMerge.swift */; };
 		C3D4E5F60718293A4B5C6D7E /* SyncMergeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E5F60718293A4B5C6D7E8F /* SyncMergeTests.swift */; };
+		E5F60718293A4B5C6D7E8F90 /* CloudSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60718293A4B5C6D7E8F9012 /* CloudSync.swift */; };
+		0718293A4B5C6D7E8F901234 /* StoreSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18293A4B5C6D7E8F90123456 /* StoreSyncTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -121,6 +123,8 @@
 		9B4D6F8A0C2E3B5D7F91A224 /* MobileChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileChrome.swift; sourceTree = "<group>"; };
 		B2C3D4E5F60718293A4B5C6D /* SyncMerge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMerge.swift; sourceTree = "<group>"; };
 		D4E5F60718293A4B5C6D7E8F /* SyncMergeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMergeTests.swift; sourceTree = "<group>"; };
+		F60718293A4B5C6D7E8F9012 /* CloudSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSync.swift; sourceTree = "<group>"; };
+		18293A4B5C6D7E8F90123456 /* StoreSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreSyncTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -128,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				B807428B3BE04C9C9AE8431F /* AdaptiveLearning.swift */,
+				F60718293A4B5C6D7E8F9012 /* CloudSync.swift */,
 				5F0690CA446A9243AB2A442F /* AppIcon.icon */,
 				48ABCD202D6A9C01B366A3EE /* ContentView.swift */,
 				0CCC1C724DDD94D24F5F6D78 /* ExamCalculation.swift */,
@@ -189,6 +194,7 @@
 			children = (
 				5575563E57A8B68CA5DE8D25 /* AdaptiveLearningTests.swift */,
 				D4E5F60718293A4B5C6D7E8F /* SyncMergeTests.swift */,
+				18293A4B5C6D7E8F90123456 /* StoreSyncTests.swift */,
 				09152EC070BE0BB141D83F85 /* ExamCalculationTests.swift */,
 				6EF965F7699A6C17FB66C131 /* ExamCatalogTests.swift */,
 				92027BFCD3161E9D326B6BE4 /* ExamStoreTests.swift */,
@@ -301,6 +307,7 @@
 			files = (
 				47EC1CBB6CB31615D609428C /* AdaptiveLearningTests.swift in Sources */,
 				C3D4E5F60718293A4B5C6D7E /* SyncMergeTests.swift in Sources */,
+				0718293A4B5C6D7E8F901234 /* StoreSyncTests.swift in Sources */,
 				1AB36E428D33217BB7BFA4D7 /* ExamCalculationTests.swift in Sources */,
 				A4366DF804AD2DE2992846AD /* ExamCatalogTests.swift in Sources */,
 				9E226071B8ACA31C76B73867 /* ExamStoreTests.swift in Sources */,
@@ -322,6 +329,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2A0A4EE98D95DE69A46DAB4C /* AdaptiveLearning.swift in Sources */,
+				E5F60718293A4B5C6D7E8F90 /* CloudSync.swift in Sources */,
 				58A0BE590AB51EADD0755798 /* ContentView.swift in Sources */,
 				A6FF5A6277B21F30E1BDA273 /* ExamCalculation.swift in Sources */,
 				C4F544A9E5C2B7AE82D60F04 /* ExamCatalog.swift in Sources */,
