@@ -19,7 +19,7 @@ struct FiSiTrainerApp: App {
                 .environmentObject(examStore)
                 .environmentObject(rewards)
                 .environmentObject(sync)
-                .onAppear { sync.attach(game: store, subnet: subnetStore, exam: examStore) }
+                .onAppear { sync.attach(game: store, subnet: subnetStore, exam: examStore, rewards: rewards) }
                 .onChange(of: combinedXP, initial: true) { _, xp in
                     rewards.updateXP(xp)
                 }

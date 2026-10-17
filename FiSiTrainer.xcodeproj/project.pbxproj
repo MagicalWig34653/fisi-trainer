@@ -58,6 +58,7 @@
 		C3D4E5F60718293A4B5C6D7E /* SyncMergeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E5F60718293A4B5C6D7E8F /* SyncMergeTests.swift */; };
 		E5F60718293A4B5C6D7E8F90 /* CloudSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60718293A4B5C6D7E8F9012 /* CloudSync.swift */; };
 		0718293A4B5C6D7E8F901234 /* StoreSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18293A4B5C6D7E8F90123456 /* StoreSyncTests.swift */; };
+		5A6B7C8D9E0F1A2B3C4D5E6F /* RewardSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B7C8D9E0F1A2B3C4D5E6F70 /* RewardSyncTests.swift */; };
 		293A4B5C6D7E8F9012345678 /* SyncSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4B5C6D7E8F901234567890 /* SyncSettingsView.swift */; };
 /* End PBXBuildFile section */
 
@@ -126,6 +127,7 @@
 		D4E5F60718293A4B5C6D7E8F /* SyncMergeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMergeTests.swift; sourceTree = "<group>"; };
 		F60718293A4B5C6D7E8F9012 /* CloudSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSync.swift; sourceTree = "<group>"; };
 		18293A4B5C6D7E8F90123456 /* StoreSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreSyncTests.swift; sourceTree = "<group>"; };
+		6B7C8D9E0F1A2B3C4D5E6F70 /* RewardSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardSyncTests.swift; sourceTree = "<group>"; };
 		3A4B5C6D7E8F901234567890 /* SyncSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncSettingsView.swift; sourceTree = "<group>"; };
 		4B5C6D7E8F90123456789012 /* FiSiTrainer-iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "FiSiTrainer-iOS.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -200,6 +202,7 @@
 				5575563E57A8B68CA5DE8D25 /* AdaptiveLearningTests.swift */,
 				D4E5F60718293A4B5C6D7E8F /* SyncMergeTests.swift */,
 				18293A4B5C6D7E8F90123456 /* StoreSyncTests.swift */,
+				6B7C8D9E0F1A2B3C4D5E6F70 /* RewardSyncTests.swift */,
 				09152EC070BE0BB141D83F85 /* ExamCalculationTests.swift */,
 				6EF965F7699A6C17FB66C131 /* ExamCatalogTests.swift */,
 				92027BFCD3161E9D326B6BE4 /* ExamStoreTests.swift */,
@@ -313,6 +316,7 @@
 				47EC1CBB6CB31615D609428C /* AdaptiveLearningTests.swift in Sources */,
 				C3D4E5F60718293A4B5C6D7E /* SyncMergeTests.swift in Sources */,
 				0718293A4B5C6D7E8F901234 /* StoreSyncTests.swift in Sources */,
+				5A6B7C8D9E0F1A2B3C4D5E6F /* RewardSyncTests.swift in Sources */,
 				1AB36E428D33217BB7BFA4D7 /* ExamCalculationTests.swift in Sources */,
 				A4366DF804AD2DE2992846AD /* ExamCatalogTests.swift in Sources */,
 				9E226071B8ACA31C76B73867 /* ExamStoreTests.swift in Sources */,

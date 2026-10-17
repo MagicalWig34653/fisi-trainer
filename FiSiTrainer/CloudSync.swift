@@ -29,36 +29,42 @@ enum SyncDevice {
 ///
 /// The local save file stays the source of truth. A store with a damaged save (`canSync == false`) neither
 /// publishes nor merges, and invalid remote data is ignored instead of overwriting local progress.
+///
+/// `State` is what the store snapshots and applies, `Payload` is the blob in iCloud. The three games use
+/// `SyncState`/`SyncPayload` (see the convenience initializer), the rewards share one `RewardSyncData`.
 @MainActor
-final class StoreSyncCoordinator {
+final class StoreSyncCoordinator<State: Equatable, Payload: Codable & SyncValidatable> {
     private let key: String
-    private let deviceID: String
     private let backend: SyncBackend
     private let throttle: TimeInterval
-    private let snapshot: () -> SyncState
+    private let snapshot: () -> State
     private let canSync: () -> Bool
-    private let apply: (SyncState) -> Void
+    private let makePayload: (State) -> Payload
+    private let merge: (State, Payload) -> State
+    private let apply: (State) -> Void
     private var lastPublished: Data?
     private var scheduled: Task<Void, Never>?
 
     /// Set when remote data was ignored because it could not be decoded or failed validation.
     private(set) var ignoredRemoteData = false
 
-    private static let encoder: JSONEncoder = {
+    private static var encoder: JSONEncoder {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         return encoder
-    }()
+    }
 
-    init(key: String, deviceID: String, backend: SyncBackend, throttle: TimeInterval = 1.5,
-         snapshot: @escaping () -> SyncState, canSync: @escaping () -> Bool,
-         apply: @escaping (SyncState) -> Void) {
+    init(key: String, backend: SyncBackend, throttle: TimeInterval = 1.5,
+         snapshot: @escaping () -> State, canSync: @escaping () -> Bool,
+         makePayload: @escaping (State) -> Payload, merge: @escaping (State, Payload) -> State,
+         apply: @escaping (State) -> Void) {
         self.key = key
-        self.deviceID = deviceID
         self.backend = backend
         self.throttle = throttle
         self.snapshot = snapshot
         self.canSync = canSync
+        self.makePayload = makePayload
+        self.merge = merge
         self.apply = apply
     }
 
@@ -93,24 +99,38 @@ final class StoreSyncCoordinator {
 
     func pull() {
         guard canSync(), let data = backend.read(key) else { return }
-        guard let payload = try? JSONDecoder().decode(SyncPayload.self, from: data),
+        guard let payload = try? JSONDecoder().decode(Payload.self, from: data),
               payload.isValid else {
             ignoredRemoteData = true
             return
         }
         ignoredRemoteData = false
         let current = snapshot()
-        let merged = SyncMerge.merged(current, with: payload, deviceID: deviceID)
+        let merged = merge(current, payload)
         // `apply` saves, which publishes the merged state, so the other devices converge.
         if merged != current { apply(merged) }
     }
 
     private func publishNow() {
         guard canSync() else { return }
-        let payload = SyncMerge.payload(for: snapshot(), deviceID: deviceID)
+        let payload = makePayload(snapshot())
         guard let data = try? Self.encoder.encode(payload), data != lastPublished else { return }
         backend.write(data, forKey: key)
         lastPublished = data
+    }
+}
+
+/// The coordinator of the three games, which publish what this device earned next to what the others did.
+typealias ProgressSyncCoordinator = StoreSyncCoordinator<SyncState, SyncPayload>
+
+extension StoreSyncCoordinator where State == SyncState, Payload == SyncPayload {
+    convenience init(key: String, deviceID: String, backend: SyncBackend, throttle: TimeInterval = 1.5,
+                     snapshot: @escaping () -> SyncState, canSync: @escaping () -> Bool,
+                     apply: @escaping (SyncState) -> Void) {
+        self.init(key: key, backend: backend, throttle: throttle, snapshot: snapshot, canSync: canSync,
+                  makePayload: { SyncMerge.payload(for: $0, deviceID: deviceID) },
+                  merge: { SyncMerge.merged($0, with: $1, deviceID: deviceID) },
+                  apply: apply)
     }
 }
 
@@ -151,7 +171,7 @@ final class KeyValueSyncBackend: SyncBackend {
     }
 }
 
-/// Owns the user's choice to sync and connects the three stores to iCloud while it is on.
+/// Owns the user's choice to sync and connects the stores to iCloud while it is on.
 ///
 /// Sync is off by default and only offered in builds that carry the iCloud entitlement (`ICLOUD_SYNC`, set for
 /// signed iOS device builds). The ad-hoc signed Mac DMG cannot use iCloud, so it never shows the switch.
@@ -176,6 +196,7 @@ final class SyncController: ObservableObject {
     private weak var game: GameStore?
     private weak var subnet: SubnetStore?
     private weak var exam: ExamStore?
+    private weak var rewards: RewardStore?
     private var accountObserver: NSObjectProtocol?
 
     init(defaults: UserDefaults = .standard,
@@ -202,10 +223,11 @@ final class SyncController: ObservableObject {
     /// Whether the stores are connected to iCloud right now.
     var isActive: Bool { Self.isSupported && isEnabled && accountAvailable }
 
-    func attach(game: GameStore, subnet: SubnetStore, exam: ExamStore) {
+    func attach(game: GameStore, subnet: SubnetStore, exam: ExamStore, rewards: RewardStore) {
         self.game = game
         self.subnet = subnet
         self.exam = exam
+        self.rewards = rewards
         apply()
     }
 
@@ -217,7 +239,7 @@ final class SyncController: ObservableObject {
     }
 
     private func apply() {
-        guard let game, let subnet, let exam else { return }
+        guard let game, let subnet, let exam, let rewards else { return }
         if isActive {
             let backend = self.backend ?? makeBackend()
             self.backend = backend
@@ -225,10 +247,12 @@ final class SyncController: ObservableObject {
             game.enableSync(backend: backend, deviceID: deviceID)
             subnet.enableSync(backend: backend, deviceID: deviceID)
             exam.enableSync(backend: backend, deviceID: deviceID)
+            rewards.enableSync(backend: backend)
         } else {
             game.disableSync()
             subnet.disableSync()
             exam.disableSync()
+            rewards.disableSync()
             backend = nil
         }
     }

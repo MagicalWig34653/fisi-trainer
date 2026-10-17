@@ -7,13 +7,13 @@ import XCTest
 
 /// A stand-in for iCloud: all clients share the values and are told when another client wrote.
 @MainActor
-private final class FakeCloud {
+final class FakeCloud {
     var values: [String: Data] = [:]
     var clients: [FakeBackend] = []
 }
 
 @MainActor
-private final class FakeBackend: SyncBackend {
+final class FakeBackend: SyncBackend {
     let cloud: FakeCloud
     private var observers: [String: () -> Void] = [:]
 

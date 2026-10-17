@@ -216,3 +216,74 @@ enum SyncMerge {
         SyncBookkeeping(epoch: bookkeeping.epoch + 1, peers: [:])
     }
 }
+
+/// Remote data is only merged when it could have been produced by this app.
+protocol SyncValidatable {
+    var isValid: Bool { get }
+}
+
+extension SyncPayload: SyncValidatable {}
+
+/// One selection or equipment choice and when it was made. `value == nil` is a deliberate "nothing", so
+/// taking an outfit off spreads to the other devices like putting one on.
+struct RewardSyncChoice: Codable, Equatable {
+    var value: String?
+    var at: TimeInterval
+
+    /// The later choice wins. Equal times fall back to the larger value so every device picks the same one.
+    static func winner(_ first: RewardSyncChoice, _ second: RewardSyncChoice) -> RewardSyncChoice {
+        if first.at != second.at { return first.at > second.at ? first : second }
+        return (first.value ?? "") >= (second.value ?? "") ? first : second
+    }
+
+    func isValid(knownValue: (String) -> Bool) -> Bool {
+        at.isFinite && at >= 0 && (value.map(knownValue) ?? true)
+    }
+}
+
+/// The reward state that is shared between devices: which pet is selected, its outfit and toy, and the bond
+/// counters. The reward XP is deliberately missing: it is derived from the three games' combined XP, which
+/// sync themselves, and only ever rises (`RewardStore.updateXP`), so nothing is relocked.
+struct RewardSyncData: Codable, Equatable, SyncValidatable {
+    var selectedPet: RewardSyncChoice?
+    var outfits: [String: RewardSyncChoice] = [:]
+    var toys: [String: RewardSyncChoice] = [:]
+    var interactions: [String: [String: Int]] = [:]
+
+    var isValid: Bool {
+        let isPet: (String) -> Bool = { PetKind(rawValue: $0) != nil }
+        return (selectedPet?.isValid(knownValue: isPet) ?? true) &&
+            outfits.allSatisfy { isPet($0.key) && $0.value.isValid { PetOutfit(rawValue: $0) != nil } } &&
+            toys.allSatisfy { isPet($0.key) && $0.value.isValid { PetToy(rawValue: $0) != nil } } &&
+            interactions.allSatisfy { pet, counts in
+                isPet(pet) && counts.allSatisfy {
+                    PetInteraction(rawValue: $0.key) != nil && (0...ProgressCounters.limit).contains($0.value)
+                }
+            }
+    }
+
+    /// Choices: the later one wins. Counters: the larger value, because they only ever grow.
+    /// Commutative, associative and idempotent, so all devices end up with the same state.
+    func merged(with other: RewardSyncData) -> RewardSyncData {
+        var result = self
+        result.selectedPet = Self.winner(selectedPet, other.selectedPet)
+        result.outfits = Self.winners(outfits, other.outfits)
+        result.toys = Self.winners(toys, other.toys)
+        for (pet, counts) in other.interactions {
+            result.interactions[pet] = (result.interactions[pet] ?? [:])
+                .merging(counts) { max($0, $1) }
+        }
+        return result
+    }
+
+    private static func winner(_ first: RewardSyncChoice?, _ second: RewardSyncChoice?) -> RewardSyncChoice? {
+        guard let first else { return second }
+        guard let second else { return first }
+        return RewardSyncChoice.winner(first, second)
+    }
+
+    private static func winners(_ first: [String: RewardSyncChoice],
+                                _ second: [String: RewardSyncChoice]) -> [String: RewardSyncChoice] {
+        first.merging(second) { RewardSyncChoice.winner($0, $1) }
+    }
+}

@@ -17,7 +17,7 @@ FiSi Trainer is a native macOS, iPadOS and iOS learning app for Fachinformatiker
 - `Rewards.swift` owns the shared level roadmap, unlocks, per-pet equipment and persistence.
 - `PetScene.swift` owns the SceneKit lifecycle, camera and animations. `PetDetailGeometry.swift` and `PetAccessoryGeometry.swift` build procedural geometry.
 - `PetIntelligence.swift` uses Apple's on-device Foundation Models. Keep framework imports and API calls guarded so the rest of the app works on macOS 14. The model is optional and must never grade answers or award XP.
-- `SyncMerge.swift`, `CloudSync.swift` and `SyncSettingsView.swift` implement the optional iCloud key-value sync (see `Documentation/ICLOUD-SYNC.md`). `FiSiTrainerApp.swift` also injects a `SyncController`. The switch is visible only in signed iOS device builds (`ICLOUD_SYNC`); `RewardStore` is not synced yet.
+- `SyncMerge.swift`, `CloudSync.swift` and `SyncSettingsView.swift` implement the optional iCloud key-value sync (see `Documentation/ICLOUD-SYNC.md`). `FiSiTrainerApp.swift` also injects a `SyncController`. The switch is visible only in signed iOS device builds (`ICLOUD_SYNC`); `RewardStore` syncs its choices and bond counters (`RewardSyncData`) but never its XP.
 - `project.yml` is the source for the checked-in `FiSiTrainer.xcodeproj`. Regenerate with XcodeGen when changing targets, settings or source/resource files.
 
 ## Working style and agent coordination
