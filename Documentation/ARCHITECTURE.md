@@ -385,7 +385,7 @@ Alle Save-Dateien liegen unter `Application Support/FiSiTrainer/` (im sandboxten
 | `exam-progress.json` | `ExamStore` | `PlayerProgress`, `[ExamMode-rawValue: ExamSession]`, `[String: LearningRecord]` (Schlüssel `"exam:<taskID>"`), `[ExamResult]` (max. 20, neueste zuerst) |
 | `rewards.json` | `RewardStore` | `totalXP`, `selectedPet`, `interactionCounts` (`[PetKind-rawValue: [PetInteraction-rawValue: Int]]`), `outfitsByPet`, `toysByPet` |
 
-Der geplante optionale iCloud-Sync (nicht implementiert) ist in [ICLOUD-SYNC.md](ICLOUD-SYNC.md) beschrieben.
+Der optionale iCloud-Sync ist implementiert, aber nur in signierten iOS-Geräte-Builds mit Flag `ICLOUD_SYNC` sichtbar und noch nicht auf echten Geräten getestet. Die drei Spiel-Stores (`GameStore`, `SubnetStore`, `ExamStore`) tragen dafür im Spielstand ein optionales Feld `sync` (`SyncBookkeeping`: Epoche und zuletzt gesehene Anteile anderer Geräte; fehlt es in alten Saves, startet es leer) und veröffentlichen nach `save()` ihren Anteil über `StoreSyncCoordinator` (Schlüssel `sync.port`, `sync.subnet`, `sync.exam`). `RewardStore` wird noch nicht synchronisiert. `FiSiTrainerApp` hält einen `SyncController`, der die Stores verbindet. Konzept und Regeln: [ICLOUD-SYNC.md](ICLOUD-SYNC.md); aktueller Arbeitsstand: [STATUS.md](STATUS.md).
 
 ### Validierung
 
