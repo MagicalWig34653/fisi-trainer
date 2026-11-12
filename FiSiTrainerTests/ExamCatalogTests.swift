@@ -174,7 +174,7 @@ final class ExamOriginTests: XCTestCase {
         }
         XCTAssertEqual([ExamCatalog.ihkS2023GA1.count, ExamCatalog.ihkS2023GA2.count, ExamCatalog.ihkS2023WiSo.count], [19, 24, 31])
         XCTAssertEqual([ExamCatalog.ihkW2022GA1.count, ExamCatalog.ihkW2022GA2.count, ExamCatalog.ihkW2022WiSo.count], [17, 22, 30])
-        XCTAssertEqual([ExamCatalog.ihkS2022GA1.count, ExamCatalog.ihkS2022GA2.count, ExamCatalog.ihkS2022WiSo.count], [20, 26, 30])
+        XCTAssertEqual([ExamCatalog.ihkS2022GA1.count, ExamCatalog.ihkS2022GA2.count, ExamCatalog.ihkS2022WiSo.count], [20, 26, 29])
         XCTAssertEqual([ExamCatalog.ihkW2021GA1.count, ExamCatalog.ihkW2021GA2.count, ExamCatalog.ihkW2021WiSo.count], [24, 21, 30])
         XCTAssertEqual(ExamCatalog.ihkS2022.count, ExamCatalog.ihkS2022GA1.count + ExamCatalog.ihkS2022GA2.count + ExamCatalog.ihkS2022WiSo.count)
         XCTAssertEqual(ExamCatalog.ihkW2021.count, ExamCatalog.ihkW2021GA1.count + ExamCatalog.ihkW2021GA2.count + ExamCatalog.ihkW2021WiSo.count)
@@ -184,6 +184,26 @@ final class ExamOriginTests: XCTestCase {
         XCTAssertEqual(ExamCatalog.ihkW2022.count, ExamCatalog.ihkW2022GA1.count + ExamCatalog.ihkW2022GA2.count + ExamCatalog.ihkW2022WiSo.count)
         XCTAssertTrue(ExamCatalog.ihk.contains { $0.id.hasPrefix("ihk-ap2-2023s-") })
         XCTAssertTrue(ExamCatalog.ihk.contains { $0.id.hasPrefix("ihk-ap2-2022w-") })
+    }
+
+    /// Erklärungen nennen den Antwortwortlaut statt der Ziffern des Originals, auch bei Mehrfachauswahl.
+    func testIhkZifferNamesAnswerWording() {
+        XCTAssertEqual(ExamCatalog.ihkZiffer("Ziffer 3. Weil …", answer: "Bausparvertrag."),
+                       "„Bausparvertrag“ (im Original Ziffer 3). Weil …")
+        XCTAssertEqual(ExamCatalog.ihkZiffer("Ziffern 3 und 6.", answers: ["Bausparvertrag", "VL-Sparplan"]),
+                       "„Bausparvertrag“ und „VL-Sparplan“ (im Original Ziffern 3 und 6).")
+        XCTAssertEqual(ExamCatalog.ihkZiffer("Ziffern 1, 2 und 5.", answers: ["A", "B", "C"]),
+                       "„A“, „B“ und „C“ (im Original Ziffern 1, 2 und 5).")
+        // Zahl der Ziffern passt nicht zur Zahl der Antworten: Erklärung bleibt unverändert.
+        XCTAssertEqual(ExamCatalog.ihkZiffer("Ziffern 1 und 5.", answers: ["A"]), "Ziffern 1 und 5.")
+        XCTAssertEqual(ExamCatalog.ihkZiffer("Position 1 und 2.", answers: ["A", "B"]), "Position 1 und 2.")
+        let wiso = ExamCatalog.ihkS2022WiSo.first { $0.id == "ihk-ap2-2022s-wiso-2" }
+        if case let .multiple(_, _, _, _, _, explanation)? = wiso {
+            XCTAssertFalse(explanation.contains("Lösungsblatt: Ziffern"), explanation)
+            XCTAssertTrue(explanation.contains("(im Original Ziffern 1 und 5)"), explanation)
+        } else {
+            XCTFail("2022S WiSo 2 fehlt oder ist keine Mehrfachauswahl")
+        }
     }
 
     func testOwnCardsHaveNoOrigin() {

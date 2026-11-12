@@ -9,6 +9,8 @@ import Foundation
 ///
 /// Regeln: Aufgabenstellung und Ausgangssituation unverändert übernehmen, Abbildungen als gekennzeichnete
 /// Textbeschreibung, Antwortoptionen bei offenen Aufgaben sind ergänzt (die erste Option ist richtig).
+/// Bei Aufgaben mit festen Antworten oder Eintragefeld (WiSo) werden ergänzte Antworten im Aufgabentext
+/// als ergänzte Distraktoren gekennzeichnet („(Hier: …)“).
 /// Lösungen „laut Lösungshinweis“ stammen aus den offiziellen Lösungshinweisen des Archivs, alle anderen
 /// aus inoffiziellen Musterlösungen; alle wurden am 12.11.2026 gegengelesen (Regeln: `Documentation/IHK-IMPORT.md`). Die Quelle steht am Ende jeder Erklärung. Fortschritt: `Documentation/IHK-IMPORT.md`.
 extension ExamCatalog {
@@ -24,12 +26,26 @@ extension ExamCatalog {
     /// WiSo-Erklärung „Ziffer N. …“ mit der gewerteten Antwort vorn, weil die App die Optionen mischt:
     /// „„Antwort“ (im Original Ziffer N). …“. Andere Erklärungen bleiben unverändert.
     static func ihkZiffer(_ explanation: String, answer: String) -> String {
-        guard explanation.hasPrefix("Ziffer "), let dot = explanation.firstIndex(of: ".") else { return explanation }
-        let number = explanation[explanation.index(explanation.startIndex, offsetBy: 7)..<dot]
-        guard !number.isEmpty, number.allSatisfy(\.isNumber) else { return explanation }
+        ihkZiffer(explanation, answers: [answer])
+    }
+
+    /// Mehrfachauswahl: „Ziffern 1 und 5. …“ wird zu „„Antwort A“ und „Antwort B“ (im Original Ziffern 1 und 5). …“.
+    /// Die Antworten stehen in derselben Reihenfolge wie die Ziffern. Passt die Zahl der Ziffern nicht zur Zahl der
+    /// Antworten, bleibt die Erklärung unverändert.
+    static func ihkZiffer(_ explanation: String, answers: [String]) -> String {
+        let label = explanation.hasPrefix("Ziffern ") ? "Ziffern" : explanation.hasPrefix("Ziffer ") ? "Ziffer" : nil
+        guard let label, let dot = explanation.firstIndex(of: ".") else { return explanation }
+        let numberText = explanation[explanation.index(explanation.startIndex, offsetBy: label.count + 1)..<dot]
+        let numbers = numberText.replacingOccurrences(of: " und ", with: ",")
+            .split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+        guard !numbers.isEmpty, numbers.count == answers.count,
+              numbers.allSatisfy({ !$0.isEmpty && $0.allSatisfy(\.isNumber) }) else { return explanation }
+        let quoted = answers.map { answer in
+            answer.hasPrefix("„") ? answer : "„\(answer.hasSuffix(".") ? String(answer.dropLast()) : answer)“"
+        }
+        let joined = quoted.count > 1 ? quoted.dropLast().joined(separator: ", ") + " und " + quoted.last! : quoted[0]
         let rest = explanation[explanation.index(after: dot)...]
-        let quoted = answer.hasPrefix("„") ? answer : "„\(answer.hasSuffix(".") ? String(answer.dropLast()) : answer)“"
-        return "\(quoted) (im Original Ziffer \(number)).\(rest)"
+        return "\(joined) (im Original \(label) \(numberText)).\(rest)"
     }
 
     private static func ihkPrompt(_ lage: String, _ prompt: String) -> String {
