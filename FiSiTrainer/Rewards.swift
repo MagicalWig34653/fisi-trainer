@@ -237,9 +237,24 @@ final class RewardStore: ObservableObject {
     var xpToNextReward: Int? {
         nextReward.map { max(0, ($0.level - 1) * 250 - totalXP) }
     }
+    /// Schlüssel für Bindungspunkte aus dem Lernpfad (Tagesziel, Streak-Meilensteine) neben den Interaktionen.
+    static let bonusBondKey = "bonus"
+
     var bond: Int {
         guard let selectedPet else { return 0 }
-        return PetInteraction.allCases.reduce(0) { $0 + count($1, for: selectedPet) }
+        let bonus = interactionCounts[selectedPet.rawValue]?[Self.bonusBondKey] ?? 0
+        return PetInteraction.allCases.reduce(bonus) { $0 + count($1, for: selectedPet) }
+    }
+
+    /// Schreibt Bindungspunkte aus dem Lernpfad dem gewählten Haustier gut; false, wenn das nicht geht.
+    @discardableResult
+    func addBond(_ amount: Int) -> Bool {
+        guard maySave, amount > 0, let selectedPet, unlockedPets.contains(selectedPet) else { return false }
+        let old = interactionCounts[selectedPet.rawValue]?[Self.bonusBondKey] ?? 0
+        guard old <= ProgressCounters.limit - amount else { return false }
+        interactionCounts[selectedPet.rawValue, default: [:]][Self.bonusBondKey] = old + amount
+        save()
+        return true
     }
 
     var rankTitle: String { LevelReward.rankTitle(for: level) }
@@ -443,7 +458,7 @@ final class RewardStore: ObservableObject {
             let saved = try JSONDecoder().decode(Save.self, from: data)
             guard saved.totalXP >= 0,
                   saved.interactionCounts.allSatisfy({ PetKind(rawValue: $0.key) != nil &&
-                      $0.value.allSatisfy({ PetInteraction(rawValue: $0.key) != nil && $0.value >= 0 }) })
+                      $0.value.allSatisfy({ ($0.key == RewardStore.bonusBondKey || PetInteraction(rawValue: $0.key) != nil) && $0.value >= 0 }) })
             else { throw CocoaError(.coderInvalidValue) }
             totalXP = saved.totalXP
             interactionCounts = saved.interactionCounts

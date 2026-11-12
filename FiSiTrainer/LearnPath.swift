@@ -23,6 +23,29 @@ struct LearnPathProgress: Codable, Equatable {
     var streakFreezes = 0
     /// Summen-XP beim letzten Abgleich; nil, solange noch nichts beobachtet wurde.
     var lastTotalXP: Int?
+    /// Bereits belohnte Streak-Meilensteine (7, 30, 100 Tage); jeder zählt einmalig.
+    var reachedMilestones: Set<Int> = []
+    /// Bindungspunkte fürs Haustier, die noch nicht verbucht sind (Tagesziel, Meilensteine).
+    var pendingBond = 0
+
+    static let milestones: [(days: Int, bond: Int)] = [(7, 10), (30, 25), (100, 60)]
+    static let goalBond = 2
+
+    init() {}
+
+    /// Ältere Spielstände kennen die neueren Felder nicht und bleiben lesbar.
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        completedLessons = try values.decodeIfPresent([String: Int].self, forKey: .completedLessons) ?? [:]
+        dailyXP = try values.decodeIfPresent([String: Int].self, forKey: .dailyXP) ?? [:]
+        metDays = try values.decodeIfPresent(Set<String>.self, forKey: .metDays) ?? []
+        frozenDays = try values.decodeIfPresent(Set<String>.self, forKey: .frozenDays) ?? []
+        goalXP = try values.decodeIfPresent(Int.self, forKey: .goalXP) ?? Self.defaultGoalXP
+        streakFreezes = try values.decodeIfPresent(Int.self, forKey: .streakFreezes) ?? 0
+        lastTotalXP = try values.decodeIfPresent(Int.self, forKey: .lastTotalXP)
+        reachedMilestones = try values.decodeIfPresent(Set<Int>.self, forKey: .reachedMilestones) ?? []
+        pendingBond = try values.decodeIfPresent(Int.self, forKey: .pendingBond) ?? 0
+    }
 
     // MARK: Lektionen
 
@@ -80,6 +103,7 @@ struct LearnPathProgress: Codable, Equatable {
         if !metDays.contains(today), (dailyXP[today] ?? 0) >= xp {
             bridgeGap(before: now, calendar: calendar)
             metDays.insert(today)
+            goalReached(now: now, calendar: calendar)
         }
     }
 
@@ -106,6 +130,46 @@ struct LearnPathProgress: Codable, Equatable {
             if currentStreak(now: now, calendar: calendar) % Self.freezeInterval == 0 {
                 streakFreezes = min(streakFreezes + 1, Self.maxFreezes)
             }
+            goalReached(now: now, calendar: calendar)
+        }
+    }
+
+    /// Das Tagesziel wurde heute erstmals erreicht: Bindungspunkte fürs Haustier, dazu einmalig je Meilenstein.
+    private mutating func goalReached(now: Date, calendar: Calendar) {
+        pendingBond += Self.goalBond
+        let streak = currentStreak(now: now, calendar: calendar)
+        for milestone in Self.milestones where streak >= milestone.days && !reachedMilestones.contains(milestone.days) {
+            reachedMilestones.insert(milestone.days)
+            pendingBond += milestone.bond
+        }
+    }
+
+    // MARK: Woche
+
+    enum DayState: Equatable { case met, frozen, open, future }
+
+    struct WeekDay: Equatable {
+        let key: String
+        let label: String
+        let isToday: Bool
+        let state: DayState
+    }
+
+    private static let weekdayLabels = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
+
+    /// Die sieben Tage der laufenden Woche (Montag bis Sonntag) mit Stand des Tagesziels.
+    func week(now: Date, calendar: Calendar) -> [WeekDay] {
+        let weekday = calendar.component(.weekday, from: now)   // 1 = Sonntag
+        let offsetToMonday = (weekday + 5) % 7
+        let todayKey = Self.dayKey(now, calendar: calendar)
+        return (0..<7).map { index in
+            let date = calendar.date(byAdding: .day, value: index - offsetToMonday, to: now)
+                ?? now.addingTimeInterval(Double(index - offsetToMonday) * 86_400)
+            let key = Self.dayKey(date, calendar: calendar)
+            let state: DayState = metDays.contains(key) ? .met : frozenDays.contains(key) ? .frozen
+                : (index > offsetToMonday ? .future : .open)
+            let label = Self.weekdayLabels[(calendar.component(.weekday, from: date) + 6) % 7]
+            return WeekDay(key: key, label: label, isToday: key == todayKey, state: state)
         }
     }
 
@@ -179,6 +243,7 @@ final class LearnPathStore: ObservableObject {
         progress.setGoal(xp, now: now(), calendar: calendar)
         save()
     }
+    var week: [LearnPathProgress.WeekDay] { progress.week(now: now(), calendar: calendar) }
     var goalMetToday: Bool { progress.isGoalMet(on: now(), calendar: calendar) }
 
     /// Startet die nächste Lektion eines Themas. Läuft schon eine Prüfungsquiz-Runde, wird sie
@@ -201,6 +266,15 @@ final class LearnPathStore: ObservableObject {
         save()
     }
 
+    /// Verbucht offene Bindungspunkte beim gewählten Haustier. Bleibt etwas offen (kein Haustier,
+    /// beschädigter Spielstand), wird es beim nächsten Mal erneut versucht.
+    func settleBond(into rewards: RewardStore) {
+        let amount = progress.pendingBond
+        guard amount > 0, rewards.addBond(amount) else { return }
+        progress.pendingBond = 0
+        save()
+    }
+
     func observeTotalXP(_ total: Int) {
         let before = progress
         progress.observeTotalXP(total, now: now(), calendar: calendar)
@@ -213,7 +287,7 @@ final class LearnPathStore: ObservableObject {
         guard FileManager.default.fileExists(atPath: saveURL.path) else { return }
         do {
             let saved = try JSONDecoder().decode(LearnPathProgress.self, from: Data(contentsOf: saveURL))
-            guard saved.goalXP > 0, saved.streakFreezes >= 0,
+            guard saved.goalXP > 0, saved.streakFreezes >= 0, saved.pendingBond >= 0,
                   saved.streakFreezes <= LearnPathProgress.maxFreezes,
                   saved.dailyXP.values.allSatisfy({ $0 >= 0 }) else {
                 throw CocoaError(.fileReadCorruptFile)

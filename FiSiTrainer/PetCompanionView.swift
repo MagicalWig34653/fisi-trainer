@@ -7,6 +7,9 @@ import SwiftUI
 struct PetCompanionView: View {
     let pet: PetKind
     let context: PetLearningContext
+    /// Stand des Lernpfads: Tagesziel heute erreicht und aktuelle Serie.
+    var goalMet = false
+    var streak = 0
 
     @EnvironmentObject private var rewards: RewardStore
 
@@ -132,7 +135,8 @@ struct PetCompanionView: View {
     }
 
     private var greeting: String {
-        PetCompanionMessages.greeting(after: context.wasCorrect, turn: greetingTurn)
+        PetCompanionMessages.greeting(after: context.wasCorrect, turn: greetingTurn,
+                                      goalMet: goalMet, streak: streak)
     }
 
     private func actionButton(_ title: String, symbol: String,

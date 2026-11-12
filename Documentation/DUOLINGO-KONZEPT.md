@@ -74,6 +74,8 @@ Umgesetzt (12.11.): Rechentraining mit Zahleneingabe. `ExamNumericAnswer` liest 
 
 Haustier reagiert auf Tagesziel und Streak-Meilensteine, Wochenkalender, Meilensteine 7/30/100 Tage, Bindungspunkte.
 
+Umgesetzt (12.11.): Beim ersten Erreichen des Tagesziels eines Tages gibt es 2 Bindungspunkte, einmalig je Streak-Meilenstein 7/30/100 Tage 10/25/60. `LearnPathProgress.pendingBond` sammelt sie, `LearnPathStore.settleBond(into:)` verbucht sie beim gewählten Haustier (`RewardStore.addBond`, Zähler `bonus` neben den Interaktionen, wird wie die übrige Bindung per Maximum synchronisiert). Ohne gewähltes Haustier bleiben sie offen. Der Lernpfad zeigt die Woche (Mo bis So) mit Häkchen für erreichte und Schild für überbrückte Tage sowie die drei Meilensteine; die Begleiter-Karte wechselt bei erreichtem Tagesziel zwischen Aufgabengruß und Freude über Ziel und Serie. Keine Änderung an SceneKit (keine neuen Animationen).
+
 ## 6. Risiken
 
 - `ContentView.swift` ist groß; neue Ansichten in eigene Dateien auslagern und über `LazyPage`/`AnyView`-Grenzen einbinden (Stack-Limit iOS, siehe STATUS.md).

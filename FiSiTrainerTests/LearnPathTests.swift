@@ -283,4 +283,69 @@ final class LearnPathTests: XCTestCase {
         XCTAssertEqual(path.progress.completedCount(for: .netze), 1, "Wiederholung ist keine Lektion")
         XCTAssertTrue(reloaded.dueCards(subject: .it).isEmpty)
     }
+
+    // MARK: Welle 5: Haustier und Belohnungen
+
+    func testGoalAndMilestonesGiveBondOnceAndWeekShowsDays() {
+        var p = LearnPathProgress()
+        for offset in 0..<7 { p.addXP(100, now: day(offset), calendar: calendar) }
+        let expected = 7 * LearnPathProgress.goalBond + 10
+        XCTAssertEqual(p.pendingBond, expected, "Tagesziel je Tag plus Meilenstein 7")
+        XCTAssertEqual(p.reachedMilestones, [7])
+        p.addXP(500, now: day(6), calendar: calendar)
+        XCTAssertEqual(p.pendingBond, expected, "Mehr XP am selben Tag gibt keine weiteren Punkte")
+        // 2026-11-01 war ein Sonntag: Die Woche Mo 26.10. bis So 01.11. endet am Tag 0.
+        let week = p.week(now: day(0), calendar: calendar)
+        XCTAssertEqual(week.map(\.label), ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"])
+        XCTAssertEqual(week.last?.isToday, true)
+        XCTAssertEqual(week.last?.state, .met)
+        XCTAssertEqual(week.first?.state, .open, "Vor dem Start der Aufzeichnung: verpasst")
+        let next = p.week(now: day(2), calendar: calendar)   // Dienstag 03.11.
+        XCTAssertEqual(next.filter(\.isToday).map(\.label), ["Di"])
+        XCTAssertEqual(next.first?.state, .met)
+    }
+
+    func testSavedProgressFromWelle1And2StillLoads() throws {
+        let json = #"{"completedLessons":{"netze":2},"dailyXP":{"2026-11-01":120},"metDays":["2026-11-01"],"frozenDays":[],"goalXP":100,"streakFreezes":1,"lastTotalXP":500}"#
+        let p = try JSONDecoder().decode(LearnPathProgress.self, from: Data(json.utf8))
+        XCTAssertEqual(p.completedLessons["netze"], 2)
+        XCTAssertEqual(p.pendingBond, 0)
+        XCTAssertTrue(p.reachedMilestones.isEmpty)
+        XCTAssertEqual(try JSONDecoder().decode(LearnPathProgress.self, from: JSONEncoder().encode(p)), p)
+    }
+
+    /// Echte Stores und Dateien: Tagesziel erreicht, Bindung beim Haustier, nach Neustart erhalten.
+    @MainActor
+    func testGoalBondReachesPetAndSurvivesRestart() throws {
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let clock = day(0)
+        let path = LearnPathStore(saveURL: dir.appendingPathComponent("path.json"), now: { clock }, calendar: calendar)
+        let rewards = RewardStore(saveURL: dir.appendingPathComponent("rewards.json"), now: { clock })
+        path.observeTotalXP(0)
+        path.observeTotalXP(120)
+        XCTAssertEqual(path.progress.pendingBond, LearnPathProgress.goalBond)
+        path.settleBond(into: rewards)   // noch kein Haustier gewählt
+        XCTAssertEqual(path.progress.pendingBond, LearnPathProgress.goalBond, "bleibt offen")
+        rewards.updateXP((PetKind.allCases.map(\.unlockLevel).min()! - 1) * 250 + 1)
+        XCTAssertNotNil(rewards.selectedPet)
+        path.settleBond(into: rewards)
+        XCTAssertEqual(path.progress.pendingBond, 0)
+        XCTAssertEqual(rewards.bond, LearnPathProgress.goalBond)
+        path.settleBond(into: rewards)
+        XCTAssertEqual(rewards.bond, LearnPathProgress.goalBond, "nicht doppelt verbucht")
+
+        let reloaded = RewardStore(saveURL: dir.appendingPathComponent("rewards.json"), now: { clock })
+        XCTAssertEqual(reloaded.bond, LearnPathProgress.goalBond)
+        XCTAssertFalse(reloaded.needsRecovery, "Bonus-Schlüssel gilt nicht als beschädigt")
+        XCTAssertTrue(RewardSyncData(interactions: ["fox": [RewardStore.bonusBondKey: 5]]).isValid)
+    }
+
+    func testCompanionCelebratesDayGoal() {
+        XCTAssertTrue(PetCompanionMessages.dayGoal(streak: 30, turn: 0).contains("30"))
+        XCTAssertEqual(PetCompanionMessages.greeting(after: true, turn: 1, goalMet: true, streak: 3),
+                       PetCompanionMessages.dayGoal(streak: 3, turn: 0))
+        XCTAssertEqual(PetCompanionMessages.greeting(after: false, turn: 1, goalMet: true, streak: 3),
+                       PetCompanionMessages.greeting(after: false, turn: 1))
+    }
 }
