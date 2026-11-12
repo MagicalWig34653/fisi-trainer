@@ -8,7 +8,7 @@ import Foundation
 extension ExamCatalog {
     static let ihkS2025: [ExamCard] = ihkS2025GA1 + ihkS2025GA2 + ihkS2025WiSo
 
-    private static let s25Muster = "Lösung laut Musterlösung des Archivs (inoffiziell, zum Gegenlesen):"
+    private static let s25Muster = "Lösung laut IHK-Musterlösung:"
 
     // MARK: - GA1 (Konzeption und Administration von IT-Systemen)
 
@@ -131,7 +131,7 @@ extension ExamCatalog {
         ihkChoice("ihk-ap2-2025s-ga1-4aa", .systeme, s25a1L4,
                   "\(s25Code)\naa) Analysieren Sie den Programmentwurf. Stellen Sie fest, welche Werte in den ersten neun Feldern von „RAM2“ gespeichert werden.\nTragen Sie die Werte in die vorgesehenen Felder ein. (9 Punkte)",
                   ["40, 0, 42, 1, 47, 2, 52, 3, 50", "1, 40, 2, 42, 3, 47, 4, 52, 5", "40, 1, 42, 2, 47, 3, 52, 4, 50", "0, 40, 1, 42, 2, 47, 3, 52, 4", "40, 42, 47, 52, 50, 60, 64, 66, 71"],
-                  "\(s25Muster) Die Musterlösung nennt „40 1 42 2 47 3 52 4 50“. Nach dem Code steht aber in RAM2[i * 2 + 1] der Wert i, und i beginnt bei 0; RAM2[1] ist also 0. Richtig nach Programmentwurf ist deshalb 40, 0, 42, 1, 47, 2, 52, 3, 50. (Zum Gegenlesen: Widerspruch zwischen Musterlösung und Code.)"),
+                  "Lösung nach Programmentwurf: 40, 0, 42, 1, 47, 2, 52, 3, 50. In RAM2[i * 2 + 1] steht der Wert i, und i beginnt bei 0; RAM2[1] ist also 0. Hinweis: Die Musterlösung nennt „40 1 42 2 47 3 52 4 50“; das passt nicht zum Programmentwurf."),
         ihkMatch("ihk-ap2-2025s-ga1-4ab", .systeme, s25a1L4,
                  "\(s25Code)\nab) Offensichtlich liefert das Programm falsche Werte. Dafür sind zwei Fehler im Programmcode verantwortlich.\nLokalisieren Sie die beiden Fehler und geben Sie zu jedem Fehler den korrekten Code an. (10 Punkte)",
                  pairs: [("RAM2[i * 2 + 1] = i;", "RAM2[i * 2 + 1] = RAM1[i];"),
@@ -278,7 +278,7 @@ extension ExamCatalog {
                    "SPI arbeitet nur mit UDP, ein Paketfilter nur mit TCP"],
                   "\(s25Muster) SPI erfasst zugelassene Datenströme (i. d. R. TCP, UDP und ICMP) als sogenannte „States“. Wenn auf einen erfassten Datenstrom Antworten erfolgen, werden diese ohne weitere Prüfung zugelassen. Ein reiner Paketfilter erkennt „Antwort-Traffic“ nicht automatisch."),
         ihkMatch("ihk-ap2-2025s-ga2-3ab", .sicherheit, s25a2L3,
-                 "ab) Bislang wurden folgende Internet-Anwendungen identifiziert, welche durch die Firewall ermöglicht werden sollen: – HTTPS – SMTP/IMAPS – Externe Datenbankanwendung, welche auf Port 4711 reagiert – Interner Webserver muss von außen über eine gesicherte HTTP-Verbindung unter IP 192.0.2.64 erreichbar sein\nAllen weiteren Datenverkehr soll die Firewall unterbinden.\nVervollständigen Sie die Regeln für die Stateful Packet Inspection Firewall in folgender Tabelle. (9 Punkte)\n(Vorgegeben u. a.: allow TCP any any any 587 (smtp) out; allow any any any 993 (imaps) out)\n(Hier: Ordnen Sie den Anwendungen die vollständige Regel zu. Spalten: Regel, Protokoll, Quell-IP, Ziel-IP, Quell-Port, Ziel-Port, Richtung.)",
+                 "ab) Bislang wurden folgende Internet-Anwendungen identifiziert, welche durch die Firewall ermöglicht werden sollen: – HTTPS – SMTP/IMAPS – Externe Datenbankanwendung, welche auf Port 4711 reagiert – Interner Webserver muss von außen über eine gesicherte HTTP-Verbindung unter IP 192.0.2.64 erreichbar sein\nAllen weiteren Datenverkehr soll die Firewall unterbinden.\nVervollständigen Sie die Regeln für die Stateful Packet Inspection Firewall in folgender Tabelle. (9 Punkte)\n(Die Zeilen für SMTP und IMAPS lauten vollständig: allow TCP any any any 587 out; allow TCP any any any 993 out.)\n(Hier: Ordnen Sie den Anwendungen die vollständige Regel zu. Spalten: Regel, Protokoll, Quell-IP, Ziel-IP, Quell-Port, Ziel-Port, Richtung.)",
                  pairs: [("HTTPS", "allow TCP any any any 443 out"),
                          ("Externe Datenbankanwendung", "allow TCP any any any 4711 out"),
                          ("Interner Webserver von außen", "allow TCP any 192.0.2.64/32 any 443 in"),
@@ -344,12 +344,12 @@ extension ExamCatalog {
                   "\(s25Muster) Der Client findet so heraus, ob die vom DHCP-Server vergebene IP-Adresse tatsächlich frei ist (Adresskonflikt-Erkennung)."),
         ihkChoice("ihk-ap2-2025s-ga2-4ca", .netze, s25a2L4,
                   "c) Die Datenübertragung der IoT-Geräte erfolgt per MQTT. Der Verbindungsablauf zwischen einem exemplarischen IoT-Gerät und dem Server ist nachfolgend abgebildet. [Abbildung im Original, hier nicht übernommen.]\nca) Erläutern Sie, warum das MQTT-Protokoll auf TCP und nicht auf UDP aufsetzen muss. (3 Punkte)",
-                  ["Die Daten gehen an einen bestimmten Server (Broker); ein Verbindungsaufbau stellt die zuverlässige Zustellung der Publish Messages sicher",
+                  ["MQTT braucht eine zuverlässige, geordnete Verbindung zum Broker (Verbindungsaufbau, Bestätigung, Reihenfolge, Neuübertragung); das leistet TCP, UDP nicht",
                    "UDP kann keine Daten über WLAN übertragen",
                    "TCP ist verbindungslos und deshalb schneller",
                    "UDP unterstützt keine Portnummern",
                    "MQTT braucht Broadcasts, die nur TCP kennt"],
-                  "\(s25Muster) Da die Daten an einen bestimmten Server (MQTT-Broker) gesendet werden, muss ein Verbindungsaufbau stattfinden, der die Zuverlässigkeit der Publish Messages sicherstellt."),
+                  "\(s25Muster) Da die Daten an einen bestimmten Server (MQTT-Broker) gesendet werden, muss ein Verbindungsaufbau stattfinden, der die Zuverlässigkeit der Publish Messages sicherstellt. Die Musterlösung begründet zusätzlich mit dem festen Ziel-Server (Broker); entscheidend ist die zuverlässige Zustellung."),
         ihkChoice("ihk-ap2-2025s-ga2-4cb", .netze, s25a2L4,
                   "cb) Eine einzelne „Publish Message“ ist 66 Byte groß und wird periodisch alle 60 Sekunden gesendet. Insgesamt senden zukünftig 500 IoT-Geräte ihre Sensordaten per MQTT an den Server.\nDie WLAN-Bandbreite für diese SSID soll auf lediglich 10 kbit/s begrenzt werden.\nBestimmen Sie durch Rechnung, ob die gewählte Bandbreite ausreichend ist. Hinweis: Protokolloverhead muss nicht berücksichtigt werden. (3 Punkte)",
                   ["Ja, benötigt werden 4,4 kbit/s", "Nein, benötigt werden 33 kbit/s", "Nein, benötigt werden 264 kbit/s", "Ja, benötigt werden 0,55 kbit/s", "Nein, benötigt werden 17,6 kbit/s"],

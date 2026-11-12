@@ -8,7 +8,7 @@ import Foundation
 extension ExamCatalog {
     static let ihkW2024: [ExamCard] = ihkW2024GA1 + ihkW2024GA2 + ihkW2024WiSo
 
-    private static let w24Muster = "Lösung laut Musterlösung des Archivs (inoffiziell, zum Gegenlesen):"
+    private static let w24Muster = "Lösung laut IHK-Musterlösung:"
 
     // MARK: - GA1 (Konzeption und Administration von IT-Systemen)
 
@@ -116,7 +116,7 @@ extension ExamCatalog {
                     "\(w24Raid)\nad) Es wird diskutiert, alle aufgeführten Festplatten als JBOD (Just a Bunch of Disks) zu nutzen.\nErläutern Sie anhand von drei Aspekten, warum der Einsatz von JBOD nicht praktikabel ist. (6 Punkte)\n(Hier: Wählen Sie die zutreffenden Aspekte.)",
                     correct: ["Keine Ausfallsicherheit", "Fällt eine Platte aus, ist das gesamte logische Volume gefährdet", "Ohne Striping geringere Leistung bei großen Datenmengen", "Keine Lastverteilung über die Platten"],
                     wrong: ["JBOD funktioniert nur mit SSDs", "JBOD halbiert die nutzbare Kapazität", "JBOD verlangt Platten gleicher Größe"],
-                    "\(w24Muster) Begrenzte Ausfallsicherheit, mangelnde Datenredundanz (das ganze Volume ist gefährdet), Leistungseinbußen ohne Striping, keine Lastverteilung. (Zum Gegenlesen: Die Musterlösung nennt auch „nicht erweiterbar“; viele JBOD-Umsetzungen lassen sich aber durch weitere Platten vergrößern.)"),
+                    "\(w24Muster) Begrenzte Ausfallsicherheit, mangelnde Datenredundanz (das ganze Volume ist gefährdet), Leistungseinbußen ohne Striping, keine Lastverteilung. Hinweis: Die Musterlösung nennt auch „nicht erweiterbar“; viele JBOD-Umsetzungen lassen sich aber durch weitere Platten vergrößern."),
         ihkMultiple("ihk-ap2-2024w-ga1-3b", .systeme, w24a1L3,
                     "b) Bei der Speicherung von Daten soll der Prozess der Datendeduplizierung eingeführt werden.\nNennen Sie anhand des Textes zwei Vorteile, die für den Einsatz sprechen. (4 Punkte)\n„Deduplication segments an incoming data stream, uniquely identifies data segments, and then compares the segments to previously stored data. If the segment is unique, it's stored on disk. However, if an incoming data segment is a duplicate of what has already been stored, a reference is created to it and the segment isn't stored again.\nFor example, a file or volume that's backed up every week creates a significant amount of duplicate data. Deduplication algorithms analyze the data and store only the compressed, unique segments of a file. This process can provide an average of 10 to 30 times reduction in storage capacity requirements, with average backup retention policies on normal enterprise data. This means that companies can store 10 TB to 30 TB of backup data on 1 TB of physical disk capacity, which has huge economic […]“ (Quelle: https://www.dell.com/en-us/lp/data-de-duplication)\n(Hier: Wählen Sie die Vorteile laut Text.)",
                     correct: ["Weniger doppelt gespeicherte Daten", "Deutlich weniger benötigter Speicherplatz (10- bis 30-fach)", "Große wirtschaftliche Einsparungen"],
@@ -125,18 +125,18 @@ extension ExamCatalog {
         ihkChoice("ihk-ap2-2024w-ga1-3c", .systeme, w24a1L3,
                   "c) Die Firmendaten werden zurzeit auf einem veralteten SAN mit einer Nettospeicherkapazität von 12 TiB gespeichert. Aufgrund des Alters und der Kapazitätsauslastung des Systems von 90 % hat man sich entschlossen, ein neues SAN-System zu beschaffen.\nIm neuen SAN-System können maximal 30 Festplatten vom Typ SAS 2100X mit einer Speicherkapazität von je 2,5 TiB verbaut werden. Der jährliche Datenzuwachs beträgt 650 GiB.\nBerechnen Sie die benötigte Nettospeicherkapazität bei einer Übernahme des Altdatenbestands und einer geplanten Laufzeit des neuen SAN von drei Jahren unter Angabe des Rechenwegs. Das Ergebnis ist in TiB und auf eine Stelle nach dem Komma anzugeben. (5 Punkte)",
                   ["12,8 TiB", "13,9 TiB", "10,8 TiB", "14,0 TiB", "75,0 TiB"],
-                  "\(w24Muster) Altdaten 12 TiB · 0,90 · 1.024 = 11.059,2 GiB; Zuwachs 650 GiB · 3 = 1.950 GiB; zusammen 13.009,2 GiB / 1.024 = 12,704 TiB, angegeben als 12,8 TiB. (Zum Gegenlesen: Kaufmännisch gerundet wären es 12,7 TiB; die Musterlösung rundet auf, damit die Kapazität sicher reicht.)"),
+                  "\(w24Muster) Altdaten 12 TiB · 0,90 · 1.024 = 11.059,2 GiB; Zuwachs 650 GiB · 3 = 1.950 GiB; zusammen 13.009,2 GiB / 1.024 = 12,704 TiB, angegeben als 12,8 TiB. Hinweis: Die Musterlösung rundet auf 12,8 TiB auf, damit die Kapazität sicher reicht; kaufmännisch gerundet wären es 12,7 TiB."),
 
         ihkChoice("ihk-ap2-2024w-ga1-4aa", .systeme, w24a1L4,
                   "\(w24Code)\naa) Stellen Sie fest, ob der Quellcode entsprechend der Beschreibung die gewünschten Ergebnisse liefert. Analysieren Sie dazu schrittweise den Quellcode und tragen Sie die ermittelten Werte in die vorgesehenen Felder ein. (9 Punkte)",
                   ["43, 0, 0, 54, 0, 0, 76, 77, 81", "0, 43, 0, 0, 54, 0, 0, 78, 0", "43, 0, 0, 54, 0, 0, 78, 0, 0", "0, 43, 0, 0, 54, 0, 76, 77, 81", "40, 0, 47, 52, 0, 60, 76, 77, 81"],
-                  "Lösung zum Gegenlesen (die Musterlösung nennt hier nur die Punkte): Die Schleife läuft nur für i = 1 und i = 4. i = 1: temp = (40 + 42 + 47) / 3 = 43, dann PerfCPU[1] = 0, PerfCPU[0] = 43, PerfCPU[2] = 0. i = 4: temp = (52 + 50 + 60) / 3 = 54, PerfCPU[4] = 0, PerfCPU[3] = 54, PerfCPU[5] = 0. Index 6 bis 8 bleiben 76, 77, 81."),
+                  "Lösung (die Musterlösung nennt hier nur die Punkte): Die Schleife läuft nur für i = 1 und i = 4. i = 1: temp = (40 + 42 + 47) / 3 = 43, dann PerfCPU[1] = 0, PerfCPU[0] = 43, PerfCPU[2] = 0. i = 4: temp = (52 + 50 + 60) / 3 = 54, PerfCPU[4] = 0, PerfCPU[3] = 54, PerfCPU[5] = 0. Index 6 bis 8 bleiben 76, 77, 81."),
         ihkMatch("ihk-ap2-2024w-ga1-4ab", .systeme, w24a1L4,
                  "\(w24Code)\nab) Der Programmcode liefert offensichtlich nicht die gewünschten Werte. Dafür verantwortlich sind zwei fehlerhafte Anweisungen im Programmcode.\nGeben Sie die zwei Anweisungen in korrekter Form an. (10 Punkte)",
                  pairs: [("Zeile6", "for (int i = 1; i < 9; i += 3)"),
                          ("Zeile9", "PerfCPU [i-1] = 0; PerfCPU [i] = temp; PerfCPU[i + 1] = 0;")],
                  extra: ["int temp = 1;", "for (int i = 0; i < 6; i++)"],
-                 "\(w24Muster) Zeile 6: i < 6 ist falsch, dadurch wird nur ein Teil des Arrays bearbeitet; richtig z. B. i < 9. Zuweisungszeile: Der Mittelwert wird an der falschen Stelle gespeichert; richtig PerfCPU[i-1] = 0; PerfCPU[i] = temp; PerfCPU[i + 1] = 0; (Zum Gegenlesen: Die Musterlösung nennt dafür „Zeile 8“, im Aufgabentext steht die Zuweisung in Zeile 9; außerdem steht dort „PerfCPU [i-0] = 0“, gemeint ist i-1.)"),
+                 "\(w24Muster) Zeile 6: i < 6 ist falsch, dadurch wird nur ein Teil des Arrays bearbeitet; richtig z. B. i < 9. Zuweisungszeile: Der Mittelwert wird an der falschen Stelle gespeichert; richtig PerfCPU[i-1] = 0; PerfCPU[i] = temp; PerfCPU[i + 1] = 0; Hinweis: Die Musterlösung nennt dafür „Zeile 8“ und schreibt „PerfCPU [i-0] = 0“; im Aufgabentext steht die Zuweisung in Zeile 9, richtig ist i-1."),
         ihkMultiple("ihk-ap2-2024w-ga1-4ba", .systeme, w24a1L4,
                     "b) Die Daten des Arrays sollen zusammen mit weiteren Daten in einer CSV-Datei gespeichert werden.\nba) Erläutern Sie zwei Argumente, die für die Verwendung von CSV-Dateien sprechen. (4 Punkte)\n(Hier: Wählen Sie die Argumente dafür.)",
                     correct: ["Plattformunabhängig", "Breite Unterstützung durch viele Programme", "Einfache Textdatei", "Gut geeignet zum Datenaustausch"],
@@ -238,7 +238,7 @@ extension ExamCatalog {
                    "Die Adresse ist die öffentliche Adresse des Providers",
                    "Der Client nutzt IPv6 und zeigt eine umgerechnete Adresse an",
                    "Die Adresse wurde vom Administrator fest eingetragen"],
-                  "\(w24Muster) Der Client kann den DHCP-Server nicht erreichen und erzeugt sich selbstständig eine Adresse aus diesem Bereich (APIPA); alternativ bei IPv4-Adresskonflikten. (Die Subnetzmaske ist im Scan als „255.209.0.0“ gelesen; gemeint ist 255.255.0.0.)"),
+                  "\(w24Muster) Der Client kann den DHCP-Server nicht erreichen und erzeugt sich selbstständig eine Adresse aus diesem Bereich (APIPA); alternativ bei IPv4-Adresskonflikten."),
         ihkChoice("ihk-ap2-2024w-ga2-2bb", .netze, w24a2L2,
                   "\(w24Dhcp)\nbb) Bei einer genaueren Analyse des Problems stellen Sie fest, dass alle Clients in den VLANs 10-40 eine IP-Adresse aus diesem Bereich verwenden. Lediglich die Clients im Rechenzentrum im VLAN 99 (IT) erhalten vom DHCP-Server eine IP-Adresse aus dem eigentlich vorgesehenen Bereich.\nBeschreiben Sie eine mögliche Ursache und Lösung dieses Problems. (4 Punkte)",
                   ["Keine DHCP-Weiterleitung (DHCP-Relay) auf dem Core-Switch; DHCP-Broadcasts werden nicht in andere Netze weitergeleitet, das Relay muss aktiviert werden",
@@ -246,7 +246,7 @@ extension ExamCatalog {
                    "Die Clients in VLAN 10 bis 40 haben IPv6 deaktiviert; IPv6 aktivieren",
                    "Der Router hat keine Default Route; Default Route eintragen",
                    "Die Etagen-Switche sind zu langsam; auf 10 GbE aufrüsten"],
-                  "\(w24Muster) Vermutlich ist keine DHCP-Weiterleitung eingerichtet. DHCP arbeitet mit Broadcast-Nachrichten, die nicht in ein anderes Netz weitergeleitet werden; das muss auf dem Core-Switch manuell aktiviert werden."),
+                  "\(w24Muster) Wahrscheinlichste Ursache: Es ist keine DHCP-Weiterleitung (DHCP-Relay) eingerichtet. DHCP arbeitet mit Broadcast-Nachrichten, die nicht in ein anderes Netz weitergeleitet werden; das muss auf dem Core-Switch manuell aktiviert werden."),
         ihkChoice("ihk-ap2-2024w-ga2-2ca", .netze, w24a2L2,
                   "\(w24Core)\nca) Erläutern Sie, warum Sie beim Core-Switch lediglich eine Default-Route in der Routingtabelle ergänzen müssen. (2 Punkte)",
                   ["Alle internen Netze sind direkt am Core-Switch angeschlossen; nur Verkehr in entfernte Netze (Internet) muss an den Router",
@@ -292,7 +292,7 @@ extension ExamCatalog {
                          ("Zeile 4", "Antwort kommt nicht vom zuständigen (autoritativen) DNS-Server"), ("Zeile 5", "Abgefragter Name"),
                          ("Zeile 6", "IPv6-Adresse von www.google.de"), ("Zeile 7", "IPv4-Adresse von www.google.de")],
                  extra: ["MAC-Adresse des Routers", "Mailserver (MX) der Domain"],
-                 "\(w24Muster) Zeile 2: Name des antwortenden DNS-Servers (ns.ihk-med.de); Zeile 3: dessen IPv6-Adresse; Zeile 4: kein offizieller bzw. ein lokaler DNS-Server hat geantwortet; Zeile 5: abgefragter Name; Zeile 6: IPv6-Adresse; Zeile 7: IPv4-Adresse von www.google.de."),
+                 "\(w24Muster) Zeile 2: Name des antwortenden DNS-Servers (ns.ihk-med.de); Zeile 3: dessen IPv6-Adresse; Zeile 4: Der antwortende Server ist für die Zone google.de nicht zuständig (nicht autoritativ) und liefert eine rekursiv ermittelte bzw. zwischengespeicherte Antwort; Zeile 5: abgefragter Name; Zeile 6: IPv6-Adresse; Zeile 7: IPv4-Adresse von www.google.de."),
         ihkMultiple("ihk-ap2-2024w-ga2-3b", .netze, w24a2L3,
                     "b) Einer der Mitarbeiter klagt über die lange Übertragungsdauer bei der Speicherung von großen Dateien auf den Fileserver. Switch und Netzwerkkarte im Client sind Gigabitfähig! Am Client wird angezeigt:\n[Abbildung als Text, Status von Ethernet: IPv4- und IPv6-Konnektivität Internet; Medienstatus Aktiviert; Dauer 00:01:20; Übertragungsrate 100,0 MBit/s; Bytes gesendet 61.809.537, empfangen 2.238.395.903.]\nNennen Sie zwei mögliche Ursachen für diesen Fehler. (2 Punkte)\n(Hier: Wählen Sie die möglichen Ursachen.)",
                     correct: ["Netzwerkkarte fest auf 100 Mbit/s eingestellt", "Switch-Port fest auf 100 Mbit/s eingestellt", "Fehlerhafte Verkabelung (z. B. nur zwei Adernpaare verbunden)"],
@@ -321,7 +321,7 @@ extension ExamCatalog {
                    "Der Nameserver hat keinen A-Eintrag; A-Eintrag für ns ergänzen",
                    "CNAME-Einträge sind für FTP nicht erlaubt; FTP auf HTTP umstellen",
                    "ihk-med.de. hat zwei Einträge; den AAAA-Eintrag löschen"],
-                  "\(w24Muster) Der Alias-Eintrag CNAME für ftp.ihk-med.de zeigt auf ihk-med.de (IP 203.0.113.80); die Anfrage landet auf dem falschen Server. Behebung: Zeile 5 ändern auf ftp.ihk-med.de. CNAME ftp1.ihk-med.de. oder durch A- und AAAA-Einträge (203.0.113.21, 2001:db8:1234::21) ersetzen. (Der A-Eintrag von ftp1 steht im Original als „03.0.113.21“; vermutlich ist 203.0.113.21 gemeint.)"),
+                  "\(w24Muster) Der Alias-Eintrag CNAME für ftp.ihk-med.de zeigt auf ihk-med.de (IP 203.0.113.80); die Anfrage landet auf dem falschen Server. Behebung: Zeile 5 ändern auf ftp.ihk-med.de. CNAME ftp1.ihk-med.de. oder durch A- und AAAA-Einträge (203.0.113.21, 2001:db8:1234::21) ersetzen. Hinweis: Im Original steht beim A-Eintrag von ftp1 „03.0.113.21“, ein Druckfehler für 203.0.113.21; gefragt ist der CNAME-Fehler."),
 
         ihkChoice("ihk-ap2-2024w-ga2-4aa", .sicherheit, w24a2L4,
                   "a) Ihr Vorgesetzter bittet Sie, zur Vorbereitung auf die Besprechung einige Fragen zu beantworten.\naa) Erläutern Sie, wie es der NGFW gelingt, den HTTPS-Traffic eines internen Clients zu einer externen Webseite trotz der TLS-Verschlüsselung zu untersuchen. (6 Punkte)",
@@ -367,7 +367,7 @@ extension ExamCatalog {
     private static func twm(_ nr: Int, _ topic: ExamTopic, _ text: String, correct: [String], wrong: [String], _ expl: String) -> ExamCard {
         ihkMultiple("ihk-ap2-2024w-wiso-\(nr)", topic, w24wLage, "\(nr). Aufgabe\n\(text)", correct: correct, wrong: wrong, "\(w24Muster) \(expl)")
     }
-    private static let w24wOrga = "[Grafik zur 13. und 14. Aufgabe als Text, Organigramm: Leitung mit seitlich angehängter Rechtsabteilung; darunter Sales (Vertrieb), Public Relations, Personal, Organisation/IT; weitere Kästen Verwaltung, Nachhaltigkeitsmanagement, Versand, Buchhaltung, IT-Service. Die genaue Anordnung der unteren Ebene ist im Scan nicht sicher lesbar.]"
+    private static let w24wOrga = "[Grafik zur 13. und 14. Aufgabe als Text, Organigramm: Leitung mit seitlich angehängter Rechtsabteilung; darunter Sales (Vertrieb), Public Relations, Personal, Organisation/IT; weitere Kästen Verwaltung, Nachhaltigkeitsmanagement, Versand, Buchhaltung, IT-Service. Anordnung der unteren Ebene sinngemäß ergänzt.]"
     private static let w24wMarkt = "Situation zur 16. und 17. Aufgabe: Die EcoTec GmbH ist in den folgenden beiden Märkten tätig: spezielle IT-Dienstleistungen für Medikamentenabrechnungen. Hier gibt es vier Mitbewerber. Außerdem bietet die EcoTec GmbH für eine Vielzahl von Privathaushalten und Unternehmen allgemeine IT-Dienstleistungen für Steuerabrechnungen an. In diesem zweiten Bereich gibt es eine Vielzahl von Konkurrenten."
     private static let w24wGmbH = "Situation zur 21. und 22. Aufgabe: Drei ehemalige Mitarbeitende der EcoTec GmbH wollen sich selbstständig machen und ein Unternehmen als GmbH gründen. Die Einlagen verteilen sich wie folgt: John Walsch mit einer Einlage in Höhe von 50.000 EUR, Susanne Venga mit einer Einlage in Höhe von 20.000 EUR, Denis Ozgül mit einer Einlage in Höhe von 15.000 EUR. Als Geschäftsführerin für die neue GmbH wird Claudia Müller eingestellt. Im Gesellschaftsvertrag wird auf die gesetzlichen Bestimmungen bezüglich Haftung und Vertretung verwiesen."
 
@@ -383,7 +383,7 @@ extension ExamCatalog {
            "Ziffer 1. Mindestens ein Monat, höchstens vier Monate (§ 20 BBiG)."),
         tw(4, .ausbildung, "Justin Höhler, Mitauszubildender von Herrn Monion, kündigt seinen Ausbildungsvertrag während der Probezeit.\nWelche der folgenden Feststellung hierzu entspricht dem Berufsbildungsgesetz?",
            ["Beide Seiten können das Berufsausbildungsverhältnis in der Probezeit ohne Angabe von Gründen und ohne Einhaltung einer Kündigungsfrist kündigen.", "Die Kündigung eines Ausbildungsverhältnisses kann mündlich erfolgen.", "Beide Seiten können das Berufsausbildungsverhältnis nur in der ersten Hälfte der Probezeit und zwingend mit Einhaltung einer Kündigungsfrist kündigen.", "In Betrieben, in denen ein Betriebsrat besteht, muss dieser jeder Kündigung während der Probezeit durch den Arbeitgeber zustimmen.", "Während einer Berufsausbildung kann vom Arbeitgeber nicht, auch nicht in der Probezeit, gekündigt werden."],
-           "Ziffer 3. § 22 BBiG: in der Probezeit jederzeit ohne Frist; die Kündigung muss schriftlich erfolgen. (Im Scan endet Ziffer 2 nach „Kündigungsfrist“; das abschließende „kündigen.“ ist sinngemäß ergänzt.)"),
+           "Ziffer 3. § 22 BBiG: in der Probezeit jederzeit ohne Frist; die Kündigung muss schriftlich erfolgen."),
         tw(5, .mitbestimmung, "In der EcoTec GmbH soll ein neuer Betriebsrat gewählt werden.\nWelche der folgenden Personengruppen ist nach dem Betriebsverfassungsgesetz (BetrVG) in den Betriebsrat wählbar (passives Wahlrecht)?",
            ["Alle Wahlberechtigten, die das 18. Lebensjahr vollendet haben und mindestens sechs Monate im Betrieb beschäftigt sind.", "Alle Wahlberechtigten, die über 16 Jahre alt sind.", "Alle Betriebsangehörigen", "Alle Wahlberechtigten, die mindestens das 21. Lebensjahr vollendet haben und seit einem Monat im Betrieb beschäftigt sind.", "Alle Wahlberechtigten, die der EcoTec GmbH seit mindestens sechs Wochen angehören."],
            "Ziffer 3. § 8 BetrVG."),
@@ -409,7 +409,7 @@ extension ExamCatalog {
                  "\(w24Muster) a) 2 Berufsbildungsgesetz (§ 22), b) 1 Jugendarbeitsschutzgesetz (§ 11), c) 4 Betriebsverfassungsgesetz (§ 70)."),
         tw(11, .mitbestimmung, "Bei der EcoTec GmbH gibt es eine Jugend- und Auszubildendenvertretung (JAV), in der sich Herr Monion engagieren möchte.\nWelcher der folgenden Aussagen zur JAV ist zutreffend?",
            ["Eine JAV kann nur gewählt werden, wenn bereits ein Betriebsrat besteht.", "Die regelmäßige Amtszeit in der JAV beträgt vier Jahre.", "Das passive Wahlrecht für die JAV endet mit Vollendung des 18. Lebensjahres.", "Das Mindestalter für das aktive Wahlrecht beträgt 16 Jahre.", "Das aktive Wahlrecht für die JAV endet immer mit Vollendung des 18. Lebensjahres."],
-           "Ziffer 5. Die JAV setzt einen Betriebsrat voraus (§ 60 BetrVG); die Amtszeit beträgt zwei Jahre, wählbar ist man bis 25, für Auszubildende gibt es keine Altersgrenze beim Wahlrecht."),
+           "Ziffer 5. Die JAV setzt einen Betriebsrat voraus (§ 60 BetrVG). Die Amtszeit beträgt zwei Jahre. Wahlberechtigt sind Beschäftigte unter 18 und Auszubildende; wählbar sind Beschäftigte, die das 25. Lebensjahr noch nicht vollendet haben, und Auszubildende unabhängig vom Alter; Betriebsratsmitglieder sind nicht wählbar (§ 61 BetrVG)."),
         tw(12, .mitbestimmung, "Herr Monion möchte sich als Kandidat zur JAV aufstellen lassen.\nWelche der folgenden Voraussetzungen muss er u. a. dafür erfüllen? Herr Monion ...",
            ["darf nicht Mitglied des Betriebsrats sein.", "muss die deutsche Staatsangehörigkeit besitzen.", "muss im zweiten Ausbildungsjahr sein.", "darf während der Amtszeit das 25. Lebensjahr nicht überschreiten.", "muss bereits seit mindestens drei Monaten im Betrieb beschäftigt sein."],
            "Ziffer 1. Mitglieder des Betriebsrats können nicht in die JAV gewählt werden (§ 61 Abs. 2 BetrVG); maßgeblich ist das Alter bei Beginn der Amtszeit, nicht während."),

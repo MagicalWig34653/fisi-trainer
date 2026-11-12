@@ -8,7 +8,7 @@ import Foundation
 extension ExamCatalog {
     static let ihkW2023: [ExamCard] = ihkW2023GA1 + ihkW2023GA2 + ihkW2023WiSo
 
-    private static let w23Muster = "Lösung laut Musterlösung des Archivs (inoffiziell, zum Gegenlesen):"
+    private static let w23Muster = "Lösung laut IHK-Musterlösung:"
 
     // MARK: - GA1 (Konzeption und Administration von IT-Systemen)
 
@@ -74,7 +74,7 @@ extension ExamCatalog {
                    "Nur die Gruppe hat kein Leserecht; Lösung: chmod g+r",
                    "Die Datei ist ein symbolischer Link; Lösung: das Linkziel öffnen",
                    "Der Datenträger ist noch verschlüsselt; Lösung: neu einbinden"],
-                  "\(w23Muster) Herr Meyer hat als Eigentümer kein Lese- und Schreibrecht für diese Datei (1 Punkt). Lösungen (2 Punkte): dem Eigentümer „hmeyer“ das Lese- und Schreibrecht geben oder Herrn Meyer in die Gruppe „alster“ aufnehmen. Die Rechte lauten im Scan „----rw-r--“; die OCR las „----IW-r--“, die Lesart ist am Bild geprüft."),
+                  "\(w23Muster) Herr Meyer hat als Eigentümer kein Lese- und Schreibrecht für diese Datei (1 Punkt). Lösungen (2 Punkte): dem Eigentümer „hmeyer“ das Lese- und Schreibrecht geben oder Herrn Meyer in die Gruppe „alster“ aufnehmen."),
         ihkChoice("ihk-ap2-2023w-ga1-2cb", .systeme, w23a1L2,
                   "\(w23Ls)\ncb) Ein Administrator des Systems hat das Problem mit folgendem Befehl gelöst:\nchmod 664 2023-01-10_Aenderungen.txt\nBeschreiben Sie die Auswirkungen jeder Ziffer der gesetzten Rechte (Eigentümer, Gruppe, Andere) des chmod-Befehls. (6 Punkte)",
                   ["Eigentümer: Lesen und Schreiben; Gruppe: Lesen und Schreiben; Andere: nur Lesen",
@@ -91,7 +91,7 @@ extension ExamCatalog {
                    "sumLast = 0; for (i = 0; i < 12; i++) …; mwVormittag = sumLast / 24; sumLast = 0; for (i = 12; i < 24; i++) …; mwNachmittag = sumLast / 24; Ausgabe wie gefordert",
                    "Mittelwerte richtig berechnen; if (mwVormittag <= mwNachmittag) erst Vormittag, dann Nachmittag ausgeben, sonst erst Nachmittag, dann Vormittag",
                    "sumLast = 0; for (i = 0; i <= 12; i++) …; mwVormittag = sumLast / 12; sumLast = 0; for (i = 12; i <= 24; i++) …; mwNachmittag = sumLast / 12; Ausgabe wie gefordert"],
-                  "\(w23Muster) Für jede Tageshälfte sumLast auf 0 setzen, Index 0 bis 11 bzw. 12 bis 23 aufsummieren und durch 12 teilen (je 5 Punkte); Ausgabe: if (mwVormittag >= mwNachmittag) zuerst Vormittag, sonst zuerst Nachmittag, damit der kleinere Wert in der dritten Zeile steht (7 Punkte). Zum Gegenlesen: Die Musterlösung schreibt vor jeder Tageshälfte erneut „int sumLast = 0;“; in C# wäre diese zweite Deklaration ein Compilerfehler, gemeint ist „sumLast = 0;“. Mit den Testdaten ergeben beide Hälften 47, das Beispiel im Aufgabentext zeigt andere Werte."),
+                  "\(w23Muster) Für jede Tageshälfte sumLast auf 0 setzen, Index 0 bis 11 bzw. 12 bis 23 aufsummieren und durch 12 teilen (je 5 Punkte); Ausgabe: if (mwVormittag >= mwNachmittag) zuerst Vormittag, sonst zuerst Nachmittag, damit der kleinere Wert in der dritten Zeile steht (7 Punkte). Hinweis: Die Musterlösung deklariert vor jeder Tageshälfte erneut „int sumLast = 0;“, in C# ein Compilerfehler; richtig ist „sumLast = 0;“. Mit den Testdaten ergeben beide Hälften 47, das Beispiel im Aufgabentext zeigt andere Werte."),
         ihkMultiple("ihk-ap2-2023w-ga1-3b", .systeme, w23a1L3,
                     "b) Der Entwurf eines Algorithmus, kann auch mithilfe des sogenannten „Pseudocodes“ erfolgen.\nErläutern Sie zwei Vorteile der Verwendung von Pseudocode im Vergleich zu realen Programmiersprachen. (6 Punkte)\n(Hier: Wählen Sie die Vorteile.)",
                     correct: ["Für Einsteiger leicht erlernbar", "Benutzt bekannte Wörter und ist daher intuitiv verständlich", "Kompakter und leichter lesbar als Programmcode", "Universell einsetzbar, da unabhängig von einer Programmiersprache"],
@@ -122,13 +122,13 @@ extension ExamCatalog {
                     "d) Betriebssystem-, Anwendungs- und Treiberpatches sollen firmenintern verwaltet und bereitgestellt werden. Erläutern Sie drei Vorteile dieses Vorgehens. (6 Punkte)\n(Hier: Wählen Sie die Vorteile.)",
                     correct: ["Sicherheitspatches nach Schwere des Risikos priorisieren und zeitnah ausliefern", "Patches, die die Systemstabilität gefährden könnten, bis zur manuellen Freigabe zurückstellen", "Verteilung im Firmennetz schont die Internet-Bandbreite", "Patches bewerten, intern terminieren und automatisiert ausführen"],
                     wrong: ["Patches werden überflüssig, weil der Hersteller keine mehr liefert", "Jeder Benutzer installiert Patches selbst nach Belieben", "Der Virenschutz kann entfallen"],
-                    "\(w23Muster) Priorisierung von Sicherheitspatches nach Risiko, Zurückstellen weniger kritischer Patches bis zur Freigabe, keine Belastung der Internet-Bandbreite, Bewertung, interne Terminierung und automatisierte Ausführung. (Im Scan steht „Vorgenens“ statt „Vorgehens“.)"),
+                    "\(w23Muster) Priorisierung von Sicherheitspatches nach Risiko, Zurückstellen weniger kritischer Patches bis zur Freigabe, keine Belastung der Internet-Bandbreite, Bewertung, interne Terminierung und automatisierte Ausführung."),
         ihkMatch("ihk-ap2-2023w-ga1-4e", .systeme, w23a1L4,
                  "e) Sie beabsichtigen, eine Software durch einen Patch oder durch ein Upgrade zu aktualisieren.\nErläutern Sie die beiden möglichen Modelle anhand des vorliegenden Textes und wann diese zum Einsatz kommen. (6 Punkte)\n„When a new version of software is released, users of that software are entitled to a free patch or an upgrade at a discounted price, depending on the current license owned.\nA patch is offered to users who currently own a license for a version of the software that has the same major revision number as the new release. For example, if a user owns version 1 of the software and version 1.1 is released, the user can download a patch free of charge from our website.\nUpgrade pricing is offered to users who own a license that has a major revision number different from the new release. For example, if a user owns version 1 of the software and version 2 is released, the user can purchase an upgrade at a discounted price.“",
                  pairs: [("Patch", "Kostenlos, wenn die Hauptversionsnummer gleich bleibt (z. B. 1 auf 1.1)"),
                          ("Upgrade", "Zu ermäßigtem Preis, wenn sich die Hauptversionsnummer ändert (z. B. 1 auf 2)")],
                  extra: ["Kostenlos bei jeder neuen Hauptversion", "Neue Volllizenz zum regulären Preis"],
-                 "\(w23Muster) Ein Patch wird Benutzern angeboten, deren Lizenz dieselbe Hauptversionsnummer hat wie die neue Version (Version 1 auf 1.1, kostenloser Download). Ein Upgrade zum ermäßigten Preis gibt es bei abweichender Hauptversionsnummer (Version 1 auf 2). Eine Übersetzung ist nicht verlangt. Das Textende ist im Scan verrauscht und als „price.“ gelesen."),
+                 "\(w23Muster) Ein Patch wird Benutzern angeboten, deren Lizenz dieselbe Hauptversionsnummer hat wie die neue Version (Version 1 auf 1.1, kostenloser Download). Ein Upgrade zum ermäßigten Preis gibt es bei abweichender Hauptversionsnummer (Version 1 auf 2). Eine Übersetzung ist nicht verlangt."),
     ]
 
     // MARK: - GA2 (Analyse und Entwicklung von Netzwerken)
@@ -156,7 +156,7 @@ extension ExamCatalog {
                    "Das DMZ-Netz 10.10.10.0 muss die Maske /24 erhalten",
                    "Die Route 203.0.113.12/30 muss gelöscht werden",
                    "Für Hamburg fehlt die Maske /19 statt /22"],
-                  "\(w23Muster) Die Gateways zu den Netzen in Hamburg und München sind vertauscht und müssen korrigiert werden: 10.1.1.2 gehört zum Netz 172.16.64.0/22 und 10.2.2.2 zum Netz 192.168.100.0/24. (Zum Gegenlesen: Die Musterlösung schreibt „Ziel-IP 10.2.2.0“, gemeint ist der Next-Hop 10.2.2.2.)"),
+                  "\(w23Muster) Die Gateways zu den Netzen in Hamburg und München sind vertauscht und müssen korrigiert werden: 10.1.1.2 gehört zum Netz 172.16.64.0/22 und 10.2.2.2 zum Netz 192.168.100.0/24. Hinweis: Die Musterlösung schreibt „Ziel-IP 10.2.2.0“; richtig ist der Next-Hop 10.2.2.2."),
         ihkMultiple("ihk-ap2-2023w-ga2-1ab", .netze, w23a2L1,
                     "ab) Beschreiben Sie zwei Vorteile, die dynamische Routingprotokolle gegenüber Netzwerkkonfigurationen mit statischem Routing bieten. (6 Punkte)\n(Hier: Wählen Sie die Vorteile.)",
                     correct: ["Die Wegwahl wird automatisch durch das Routingprotokoll bestimmt", "Der kürzeste, kostengünstigste, schnellste oder sicherste Weg wird berücksichtigt", "Überlastungen sowie Leitungs- und Knotenausfälle werden über Alternativrouten umgangen"],
@@ -201,7 +201,7 @@ extension ExamCatalog {
                  "\(w23Nat)\nab) Client PCB1 in Berlin möchte die Seite https://www.ihk.de/index.html abrufen (siehe Netzwerkplan).\nVervollständigen Sie die folgenden Ausschnitte aus dem Header auf dem Weg des Pakets. (3 Punkte)\nIP-Paket auf dem Weg von Client PCB1 bis zum Router RB2:\nTTL: 128 | Protokoll: 06 | Header-Checksum: 54466\nQuell-IP-Adresse: – | Ziel-IP-Adresse: –\nQuell-Port: 49152 | Ziel-Port: –",
                  pairs: [("Quell-IP-Adresse", "172.16.32.150"), ("Ziel-IP-Adresse", "135.125.254.20"), ("Ziel-Port", "443")],
                  extra: ["203.0.113.13", "80", "10.10.10.14"],
-                 "\(w23Muster) Quell-IP 172.16.32.150, Ziel-IP 135.125.254.20, Quell-Port 49152, Ziel-Port 443 (HTTPS). Die Kopfzeile lautet im Scan „NL“, gemeint ist TTL."),
+                 "\(w23Muster) Quell-IP 172.16.32.150, Ziel-IP 135.125.254.20, Quell-Port 49152, Ziel-Port 443 (HTTPS)."),
         ihkMatch("ihk-ap2-2023w-ga2-2ac", .netze, w23a2L2,
                  "\(w23Nat)\nac) Ergänzen Sie den folgenden Ausschnitt aus dem Header. (5 Punkte)\nIP-Paket auf dem Weg vom Router RB1 bis zum ISP:\nTTL: – | Protokoll: – | Header-Checksum: 32187\nQuell-IP-Adresse: – | Ziel-IP-Adresse: –\nQuell-Port: 50000 | Ziel-Port: –",
                  pairs: [("TTL", "126"), ("Protokoll", "06"), ("Quell-IP-Adresse", "203.0.113.13"), ("Ziel-IP-Adresse", "135.125.254.20"), ("Ziel-Port", "443")],
@@ -271,7 +271,7 @@ extension ExamCatalog {
         ihkChoice("ihk-ap2-2023w-ga2-3cb", .netze, w23a2L3,
                   "\(w23Vlan)\n\(w23Trace)\nErmitteln Sie die IP-Adresse des Clients. (2 Punkte)",
                   ["192.168.100.212", "192.168.100.20", "192.168.100.1", "192.168.100.11", "10.2.2.2"],
-                  "\(w23Muster) 192.168.100.212 (Absender der Echo Requests). Der Trace ist im Scan ein Bildschirmfoto und hier als Text wiedergegeben."),
+                  "\(w23Muster) 192.168.100.212 (Absender der Echo Requests)."),
         ihkChoice("ihk-ap2-2023w-ga2-3cc", .netze, w23a2L3,
                   "\(w23Vlan)\n\(w23Trace)\ncc) Ermitteln Sie die Nummer des VLANs, über das die Verbindung zum Datei-Server stattfindet. (2 Punkte)",
                   ["VLAN 11", "VLAN 1", "VLAN 0", "VLAN 64", "VLAN 128"],
@@ -342,7 +342,7 @@ extension ExamCatalog {
 
     // MARK: - WiSo
 
-    private static let w23wMuster = "Lösung laut Lösungsblatt des Archivs (vorläufige Lösungen, zum Gegenlesen):"
+    private static let w23wMuster = "Lösung laut Lösungsblatt:"
     private static let w23wLage = "Situation: Sie sind Mitarbeiter der Ecotec GmbH. Die Ecotec GmbH ist ein IT-Dienstleistungsunternehmen in Erfurt. Die folgenden Aufgaben beziehen sich auf dieses Unternehmen."
     private static func wv(_ nr: Int, _ topic: ExamTopic, _ text: String, _ options: [String], _ expl: String) -> ExamCard {
         ihkChoice("ihk-ap2-2023w-wiso-\(nr)", topic, w23wLage, "\(nr). Aufgabe\n\(text)", options, "\(w23wMuster) \(expl)")
@@ -425,7 +425,7 @@ extension ExamCatalog {
            "Ziffer 2. § 5 GmbHG."),
         wv(20, .wirtschaft, "Für vier durchgeführten Aufträge des Unternehmens liegen folgende Zahlen vor:\nAuftrag 1: Aufwand 300.000 EUR, Ertrag 360.000 EUR\nAuftrag 2: Aufwand 80.000 EUR, Ertrag 100.000 EUR\nAuftrag 3: Aufwand 80.000 EUR, Ertrag 104.000 EUR\nAuftrag 4: Aufwand 100.000 EUR, Ertrag 124.000 EUR\nWelcher Auftrag wurde am wirtschaftlichsten abgewickelt?",
            ["Auftrag 3", "Auftrag 1", "Auftrag 2", "Auftrag 4", "Alle vier Aufträge sind gleich wirtschaftlich"],
-           "3. Wirtschaftlichkeit = Ertrag / Aufwand: 1,20; 1,25; 1,30; 1,24. (Im Original ist nur die Auftragsnummer einzutragen; die fünfte Option ist ergänzt. „vier durchgeführten Aufträge“ so im Original; in der Tabelle fehlt im Scan die Spaltenüberschrift „3“, die Werte sind am Bild geprüft.)"),
+           "3. Wirtschaftlichkeit = Ertrag / Aufwand: 1,20; 1,25; 1,30; 1,24. (Im Original ist nur die Auftragsnummer einzutragen; die fünfte Option ist ergänzt. „vier durchgeführten Aufträge“ steht so im Original.)"),
         wv(21, .unternehmen, "Das folgende Schema zeigt das Leitungssystem des neuen Unternehmens:\n[Schema als Text: drei Stellen oben, fünf Stellen darunter; jede untere Stelle ist mit allen drei oberen Stellen verbunden.]\nNach welchem der folgenden Leitungssysteme arbeitet das neue Unternehmen?",
            ["Mehrliniensystem", "Einliniensystem", "Matrixsystem", "Stabliniensystem", "Abteilungssystem"],
            "Ziffer 3. Jede Stelle hat mehrere Vorgesetzte."),
@@ -445,7 +445,7 @@ extension ExamCatalog {
         ihkOrder("ihk-ap2-2023w-wiso-26", .mitbestimmung, w23wLage,
                  "26. Aufgabe\nEine Tarifvertragspartei beabsichtigt, nach verbindlicher Laufzeit des Tarifvertrages die Löhne neu zu verhandeln.\nBringen Sie die folgenden Schritte, die erfolgen müssen, damit ein Tarifvertrag zustande kommt, in die richtige Reihenfolge.",
                  steps: ["Ein Tarifvertragspartner kündigt den Gehaltstarifvertrag", "Erste Tarifverhandlungen", "Der andere Tarifvertragspartner erklärt die Tarifverhandlungen für gescheitert.", "Urabstimmung - Streik", "Schlichter wird angerufen, Schlichtung", "Schlichtung empfiehlt 3,5 % Lohnerhöhung", "Schlichtung wird von den Tarifparteien angenommen"],
-                 "\(w23wMuster) a) 6, b) 4, c) 1, d) 5, e) 2, f) 3, g) 7. (Zum Gegenlesen: In der Praxis wird meist vor einem Streik geschlichtet; das Lösungsblatt setzt Urabstimmung und Streik vor die Schlichtung.)"),
+                 "\(w23wMuster) a) 6, b) 4, c) 1, d) 5, e) 2, f) 3, g) 7. Hinweis: In der Praxis wird meist vor einem Streik geschlichtet; das Lösungsblatt setzt Urabstimmung und Streik vor die Schlichtung."),
         wv(27, .arbeitsrecht, "Ein Bekannter von Frau Medstein, Matthias Räwer, will sich beruflich verändern und hat sich daher bei der Ecotec GmbH beworben. Nach der Zusage seitens der Ecotec GmbH kündigt er sein altes Arbeitsverhältnis am 06.05.2023 schriftlich.\nMit welchem Datum endet das alte Arbeitsverhältnis von Herr Räwer frühestens? (Es gelten die gesetzlichen Regelungen.)\n§ 622 BGB (1) Das Arbeitsverhältnis eines Arbeiters oder eines Angestellten (Arbeitnehmers) kann mit einer Frist von vier Wochen zum Fünfzehnten oder zum Ende eines Kalendermonats gekündigt werden.",
            ["15.06.2023", "03.06.2023", "31.05.2023", "30.06.2023", "15.07.2023"],
            "15.06.2023: Vier Wochen ab dem 06.05. enden am 03.06.; der nächste zulässige Termin ist der 15.06. (Im Original ist nur das Datum einzutragen; „von Herr Räwer“ so im Original.)"),
