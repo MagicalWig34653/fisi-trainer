@@ -21,6 +21,17 @@ extension ExamCatalog {
         "Quelle: \(ExamOrigin(cardID: id)?.sourceText ?? id)."
     }
 
+    /// WiSo-Erklärung „Ziffer N. …“ mit der gewerteten Antwort vorn, weil die App die Optionen mischt:
+    /// „„Antwort“ (im Original Ziffer N). …“. Andere Erklärungen bleiben unverändert.
+    static func ihkZiffer(_ explanation: String, answer: String) -> String {
+        guard explanation.hasPrefix("Ziffer "), let dot = explanation.firstIndex(of: ".") else { return explanation }
+        let number = explanation[explanation.index(explanation.startIndex, offsetBy: 7)..<dot]
+        guard !number.isEmpty, number.allSatisfy(\.isNumber) else { return explanation }
+        let rest = explanation[explanation.index(after: dot)...]
+        let quoted = answer.hasPrefix("„") ? answer : "„\(answer.hasSuffix(".") ? String(answer.dropLast()) : answer)“"
+        return "\(quoted) (im Original Ziffer \(number)).\(rest)"
+    }
+
     private static func ihkPrompt(_ lage: String, _ prompt: String) -> String {
         lage.isEmpty ? prompt : "\(lage)\n\n\(prompt)"
     }
