@@ -148,8 +148,45 @@ final class ExamOriginTests: XCTestCase {
         }
     }
 
+    func testImportedExamsAreCompleteAndCarryTheirOrigin() {
+        let exams: [(String, [ExamCard], String)] = [
+            ("ihk-ap2-2023s-ga1-", ExamCatalog.ihkS2023GA1, "Sommer 2023"),
+            ("ihk-ap2-2023s-ga2-", ExamCatalog.ihkS2023GA2, "Sommer 2023"),
+            ("ihk-ap2-2023s-wiso-", ExamCatalog.ihkS2023WiSo, "Sommer 2023"),
+            ("ihk-ap2-2022w-ga1-", ExamCatalog.ihkW2022GA1, "Winter 2022/23"),
+            ("ihk-ap2-2022w-ga2-", ExamCatalog.ihkW2022GA2, "Winter 2022/23"),
+            ("ihk-ap2-2022w-wiso-", ExamCatalog.ihkW2022WiSo, "Winter 2022/23")
+        ]
+        for (prefix, cards, label) in exams {
+            XCTAssertFalse(cards.isEmpty, prefix)
+            for card in cards {
+                XCTAssertTrue(card.id.hasPrefix(prefix), card.id)
+                XCTAssertNotNil(ExamOrigin(cardID: card.id), card.id)
+            }
+            XCTAssertTrue(cards.allSatisfy { $0.id.hasPrefix(prefix) })
+            _ = label
+        }
+        XCTAssertEqual([ExamCatalog.ihkS2023GA1.count, ExamCatalog.ihkS2023GA2.count, ExamCatalog.ihkS2023WiSo.count], [19, 24, 31])
+        XCTAssertEqual([ExamCatalog.ihkW2022GA1.count, ExamCatalog.ihkW2022GA2.count, ExamCatalog.ihkW2022WiSo.count], [17, 22, 30])
+        XCTAssertEqual(ExamCatalog.ihkS2023.count, ExamCatalog.ihkS2023GA1.count + ExamCatalog.ihkS2023GA2.count + ExamCatalog.ihkS2023WiSo.count)
+        XCTAssertEqual(ExamCatalog.ihkW2022.count, ExamCatalog.ihkW2022GA1.count + ExamCatalog.ihkW2022GA2.count + ExamCatalog.ihkW2022WiSo.count)
+        XCTAssertTrue(ExamCatalog.ihk.contains { $0.id.hasPrefix("ihk-ap2-2023s-") })
+        XCTAssertTrue(ExamCatalog.ihk.contains { $0.id.hasPrefix("ihk-ap2-2022w-") })
+    }
+
     func testOwnCardsHaveNoOrigin() {
         XCTAssertNil(ExamOrigin(cardID: "sys-k01"))
+    }
+
+    /// Bestandskarten, die wortgleich als IHK-Aufgabe vorliegen, behalten ihre ID und nennen die Prüfung als Quelle.
+    func testDuplicateStockCardsNameTheirExam() {
+        var rng = CatalogRNG(seed: 7)
+        for (id, task) in [("sys-k01", "1cb"), ("sys-k17", "3b"), ("sys-k18", "3c")] {
+            guard let card = ExamCatalog.all.first(where: { $0.id == id }),
+                  let made = ExamTaskFactory.task(from: card, using: &rng) else { XCTFail(id); continue }
+            XCTAssertTrue(made.explanation.contains("Quelle: IHK AP2 FiSi Winter 2022/23, GA1, Aufgabe \(task)."), id)
+        }
+        XCTAssertFalse(ExamCatalog.all.contains { ["ihk-ap2-2022w-ga1-1cb", "ihk-ap2-2022w-ga1-3b", "ihk-ap2-2022w-ga1-3c"].contains($0.id) })
     }
 
     func testFilterRecentAndPart() {

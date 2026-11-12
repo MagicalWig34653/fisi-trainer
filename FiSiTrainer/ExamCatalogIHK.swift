@@ -12,13 +12,24 @@ import Foundation
 /// Lösungen „laut Lösungshinweis“ stammen aus den offiziellen Lösungshinweisen des Archivs, alle anderen
 /// aus inoffiziellen Musterlösungen; alle wurden am 12.11.2026 gegengelesen (Regeln: `Documentation/IHK-IMPORT.md`). Die Quelle steht am Ende jeder Erklärung. Fortschritt: `Documentation/IHK-IMPORT.md`.
 extension ExamCatalog {
-    static let ihk: [ExamCard] = ihkS2026 + ihkW2025 + ihkS2025 + ihkW2024 + ihkS2024 + ihkW2023 + ihkW1920GA1 + ihkW1920WiSo
+    static let ihk: [ExamCard] = ihkS2026 + ihkW2025 + ihkS2025 + ihkW2024 + ihkS2024 + ihkW2023 + ihkS2023 + ihkW2022 + ihkW1920GA1 + ihkW1920WiSo
 
     // MARK: - Hilfen für alle IHK-Karten
 
     /// Quellenzeile aus der Karten-ID (`ExamOrigin`).
     static func ihkSource(_ id: String) -> String {
         "Quelle: \(ExamOrigin(cardID: id)?.sourceText ?? id)."
+    }
+
+    /// WiSo-Erklärung „Ziffer N. …“ mit der gewerteten Antwort vorn, weil die App die Optionen mischt:
+    /// „„Antwort“ (im Original Ziffer N). …“. Andere Erklärungen bleiben unverändert.
+    static func ihkZiffer(_ explanation: String, answer: String) -> String {
+        guard explanation.hasPrefix("Ziffer "), let dot = explanation.firstIndex(of: ".") else { return explanation }
+        let number = explanation[explanation.index(explanation.startIndex, offsetBy: 7)..<dot]
+        guard !number.isEmpty, number.allSatisfy(\.isNumber) else { return explanation }
+        let rest = explanation[explanation.index(after: dot)...]
+        let quoted = answer.hasPrefix("„") ? answer : "„\(answer.hasSuffix(".") ? String(answer.dropLast()) : answer)“"
+        return "\(quoted) (im Original Ziffer \(number)).\(rest)"
     }
 
     private static func ihkPrompt(_ lage: String, _ prompt: String) -> String {
