@@ -27,6 +27,8 @@ Teile: GA1 (FISI), GA2 (gemeinsam), WiSo, je mit Lösung. Es gibt keine iCloud-D
 | AP2 Winter 2024/25 | Downloads (Musterlösung inoffiziell, zum Gegenlesen) | GA1 (21), GA2 (29), WiSo (24) | 74 | fertig, committed (`ExamCatalogIHK2024W.swift`); WiSo 23 bis 28 sind Dubletten von Sommer 2026 (WiSo 19 bis 24) |
 | AP2 Sommer 2024 | Downloads (Musterlösung inoffiziell, zum Gegenlesen; WiSo: vorläufiges Lösungsblatt) | GA1 (21), GA2 (28), WiSo (29) | 78 | fertig, committed (`ExamCatalogIHK2024S.swift`); WiSo 10 ist Dublette von Winter 2019/20 WiSo 9 |
 | AP2 Winter 2023/24 | Downloads (Scans; Musterlösung inoffiziell, zum Gegenlesen; WiSo: vorläufiges Lösungsblatt) | GA1 (17), GA2 (28), WiSo (31) | 76 | fertig, committed (`ExamCatalogIHK2023W.swift`); keine Dublette |
+| AP2 Sommer 2023 | Downloads (`AP-2-2023-Sommer`; Musterlösung inoffiziell, zum Gegenlesen; WiSo: Lösungsblatt) | GA1 (19), GA2 (24), WiSo (31) | 74 | fertig (`ExamCatalogIHK2023S.swift`); GA2 1aa (VLAN-Gründe) ist Dublette von Winter 2023/24 GA2 2ba und nicht doppelt angelegt |
+| AP2 Winter 2022/23 | Downloads (`AP-2-2022-Winter`; Musterlösung inoffiziell, zum Gegenlesen; WiSo: Lösungsblatt) | GA1 (20), GA2 (22), WiSo (30) | 72 | fertig (`ExamCatalogIHK2022W.swift`); keine wörtliche Dublette (WiSo 28 ist eine Variante von Winter 2024/25 WiSo 30 mit anderem Wortlaut und angelegt) |
 
 Etappe 1 (Winter 2025/26, Sommer 2025, Winter 2024/25) ist fertig. Etappe 2 (laufend): Sommer 2024, Winter 2023/24, Sommer 2023, Winter 2022/23. Schätzung: je Termin etwa so viel Aufwand wie Winter 2024/25 (komplett OCR). Danach weitere Etappen zu je 4 Termine rückwärts (Sommer 2024, Winter 2023, Sommer 2023, Winter 2022 usw.), alte AO und iCloud zuletzt.
 
@@ -45,6 +47,7 @@ Etappe 1 (Winter 2025/26, Sommer 2025, Winter 2024/25) ist fertig. Etappe 2 (lau
 ## Gegenlesen (12.11.2026)
 
 Die Lösungen aller bis dahin importierten Termine (Winter 2019/20, Winter 2023/24 bis Sommer 2026) und der Übungskarten sys-k01..k23 wurden am 12.11.2026 gegengelesen: zwei unabhängige Prüfberichte (Claude und Codex), danach ein Schiedsspruch, bei dem jeder Befund gegen das Original (Seiten als Bild) geprüft und jede Rechnung nachgerechnet wurde. Ergebnis: 16 Karten korrigiert, 7 bestätigt, eine Entscheidung durch Lino (2025W GA2 4ba: IHK-Lösung gewertet, Hinweis auf 99,99 %).
+- Sommer 2023 und Winter 2022/23: Vorlagen vollständig vorhanden, per Apple-Vision-OCR gelesen; Abbildungen, Tabellen und die WiSo-Lösungsblätter als Seitenbilder geprüft (USV-Skizzen, Diagramm der inkrementellen Sicherung, LC-Stecker, ARP-Mitschnitt, TOM-Tabelle, Gefahrenzeichen). Netzpläne und Mitschnitte stehen als Text in Klammern. Auffälligkeiten im Original: Sommer 2023 WiSo 8 und Winter 2022/23 WiSo 7 lassen laut Lösungsblatt zwei Ziffern zu („1 oder 3“ bzw. „3 oder 5“); angelegt ist je eine Ziffer, die Abweichung steht in der Erklärung. Aufgaben mit mehreren Zielen je Antwort sind auf eindeutige Paare gekürzt (`ihkMatch`). Textähnlich, aber eigenständig und deshalb angelegt: Sommer 2023 GA1 4bc (Hot-Spare-Festplatte, andere Punktzahl) zu Winter 2024/25 GA1 2ac, Sommer 2023 WiSo (AGG-Antworten, Grothe AG) zu Winter 2024/25 und Sommer 2026.
 
 ## Formulierungsregel für Lerntexte (verbindlich für alle künftigen Etappen)
 
