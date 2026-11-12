@@ -631,11 +631,15 @@ struct ContentView: View {
                 }
             }
 
-            LearnPathView { topic in
+            LearnPathView(onStart: { topic in
                 learnPath.startLesson(topic: topic, exam: examStore)
                 openExamMode = .quiz
                 page = .exam
-            }
+            }, onReview: { subject in
+                examStore.startReview(subject: subject)
+                openExamMode = .quiz
+                page = .exam
+            })
 
             Button {
                 page = .rewards

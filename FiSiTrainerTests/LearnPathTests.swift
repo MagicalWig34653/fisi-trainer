@@ -191,4 +191,96 @@ final class LearnPathTests: XCTestCase {
         path.roundFinished(session)
         XCTAssertEqual(path.progress.completedCount(for: .netze), 1)
     }
+
+    // MARK: Welle 3: Wiederholung
+
+    func testReviewIntervalsGrowAndResetOnMistake() {
+        let start = Date(timeIntervalSince1970: 1_793_534_400)
+        var record = LearningRecord()
+        record.record(correct: true, at: start)           // Stufe 1: 3 Tage
+        XCTAssertFalse(record.isDue(at: start.addingTimeInterval(2 * 86_400)))
+        XCTAssertTrue(record.isDue(at: start.addingTimeInterval(3 * 86_400)))
+        record.record(correct: true, at: start)           // Stufe 2: 7 Tage
+        XCTAssertFalse(record.isDue(at: start.addingTimeInterval(6 * 86_400)))
+        XCTAssertTrue(record.isDue(at: start.addingTimeInterval(7 * 86_400)))
+        record.record(correct: true, at: start)           // Stufe 3: 21 Tage
+        record.record(correct: true, at: start)           // bleibt bei 21
+        XCTAssertFalse(record.isDue(at: start.addingTimeInterval(20 * 86_400)))
+        XCTAssertTrue(record.isDue(at: start.addingTimeInterval(21 * 86_400)))
+        record.record(correct: false, at: start)          // Fehler: morgen wieder
+        XCTAssertFalse(record.isDue(at: start.addingTimeInterval(86_000)))
+        XCTAssertTrue(record.isDue(at: start.addingTimeInterval(86_400)))
+        XCTAssertTrue(record.isValid)
+    }
+
+    func testOldSavedRecordWithoutTimestampLoadsAndIsDueOnlyWhenWeak() throws {
+        let weak = try JSONDecoder().decode(LearningRecord.self, from: Data(
+            #"{"attempts":2,"correct":1,"recent":[true,false]}"#.utf8))
+        let strong = try JSONDecoder().decode(LearningRecord.self, from: Data(
+            #"{"attempts":2,"correct":2,"recent":[true,true]}"#.utf8))
+        XCTAssertTrue(weak.isValid && strong.isValid)
+        XCTAssertTrue(weak.isDue(at: Date()))
+        XCTAssertFalse(strong.isDue(at: Date()))
+        XCTAssertFalse(LearningRecord().isDue(at: Date()))
+    }
+
+    /// Echter Katalog, echte Runden, nur die Uhr ist eingespeist.
+    @MainActor
+    func testReviewLessonFromDueCardsEndToEnd() throws {
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: dir) }
+        var clock = Date(timeIntervalSince1970: 1_793_534_400)
+        let url = dir.appendingPathComponent("exam.json")
+        let exam = ExamStore(saveURL: url, now: { clock })
+        let path = LearnPathStore(saveURL: dir.appendingPathComponent("path.json"),
+                                  now: { clock }, calendar: calendar)
+        XCTAssertTrue(exam.dueCards(subject: .it).isEmpty, "Ohne Antworten ist nichts fällig")
+        XCTAssertFalse(exam.startReview(subject: .it))
+
+        // Lektion: erste Aufgabe falsch (auch in der Wiederholung am Ende), Rest richtig.
+        XCTAssertTrue(path.startLesson(topic: .netze, exam: exam))
+        let wrongID = try XCTUnwrap(exam.session(for: .quiz)?.currentTask?.id)
+        var answered = 0
+        while let task = exam.session(for: .quiz)?.currentTask {
+            let isWrong = task.id == wrongID
+            exam.answer(isWrong ? [(task.solution[0] + 1) % task.options.count] : task.solution, mode: .quiz)
+            exam.next(mode: .quiz)
+            answered += 1
+        }
+        path.roundFinished(exam.session(for: .quiz))
+        XCTAssertEqual(path.progress.completedCount(for: .netze), 1)
+        XCTAssertGreaterThanOrEqual(answered, 11)
+        XCTAssertTrue(exam.dueCards(subject: .it).isEmpty, "Direkt nach der Runde ist nichts fällig")
+
+        clock = clock.addingTimeInterval(86_400 + 60)
+        XCTAssertEqual(exam.dueCards(subject: .it).map(\.id), [wrongID], "Nach einem Tag nur die falsche")
+        clock = clock.addingTimeInterval(3 * 86_400)
+        let due = exam.dueCards(subject: .it)
+        XCTAssertEqual(due.count, 10, "Nach vier Tagen sind alle zehn Karten der Lektion fällig")
+        XCTAssertTrue(due.contains { $0.id == wrongID })
+        XCTAssertEqual(due.map(\.id), due.map(\.id).sorted(), "Gleicher Zeitpunkt: stabile Reihenfolge nach ID")
+
+        // Der Zustand überlebt einen Neustart.
+        let reloaded = ExamStore(saveURL: url, now: { clock })
+        XCTAssertEqual(reloaded.dueCards(subject: .it).count, 10)
+
+        XCTAssertTrue(reloaded.startReview(subject: .it))
+        let session = try XCTUnwrap(reloaded.session(for: .quiz))
+        XCTAssertEqual(session.mode, .quiz)
+        XCTAssertNil(session.topic)
+        XCTAssertEqual(session.isLesson, true)
+        XCTAssertEqual(Set(session.tasks.map(\.id)), Set(due.map(\.id)))
+        XCTAssertFalse(reloaded.startReview(subject: .it), "Läuft schon eine Runde, startet keine zweite")
+
+        // Wiederholung beantworten: alles richtig, danach ist nichts mehr fällig und keine Lektion zählt.
+        while let task = reloaded.session(for: .quiz)?.currentTask {
+            reloaded.answer(task.solution, mode: .quiz)
+            reloaded.next(mode: .quiz)
+        }
+        let finished = try XCTUnwrap(reloaded.session(for: .quiz))
+        XCTAssertTrue(finished.isComplete)
+        path.roundFinished(finished)
+        XCTAssertEqual(path.progress.completedCount(for: .netze), 1, "Wiederholung ist keine Lektion")
+        XCTAssertTrue(reloaded.dueCards(subject: .it).isEmpty)
+    }
 }

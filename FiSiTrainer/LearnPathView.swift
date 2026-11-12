@@ -16,8 +16,11 @@ private enum PathStyle {
 /// Lernpfad: Streak und Tagesziel oben, darunter je Fach die Themen mit ihren fünf Lektionen.
 struct LearnPathView: View {
     @EnvironmentObject private var path: LearnPathStore
+    @EnvironmentObject private var exam: ExamStore
     /// Wird mit dem Thema aufgerufen, wenn der Nutzer die nächste Lektion antippt.
     let onStart: (ExamTopic) -> Void
+    /// Wird mit dem Fach aufgerufen, wenn der Nutzer die Wiederholung fälliger Karten startet.
+    var onReview: (ExamSubject) -> Void = { _ in }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 22) {
@@ -28,6 +31,7 @@ struct LearnPathView: View {
                         .font(.system(size: 11, weight: .bold, design: .monospaced))
                         .tracking(1.5)
                         .foregroundStyle(PathStyle.muted)
+                    reviewRow(subject)
                     ForEach(ExamTopic.allCases.filter { $0.subject == subject }) { topic in
                         topicRow(topic)
                     }
@@ -80,6 +84,35 @@ struct LearnPathView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(PathStyle.surface, in: RoundedRectangle(cornerRadius: 18))
         .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(PathStyle.border))
+    }
+
+    @ViewBuilder
+    private func reviewRow(_ subject: ExamSubject) -> some View {
+        let due = exam.dueCards(subject: subject).count
+        if due > 0 {
+            Button { onReview(subject) } label: {
+                HStack(spacing: 10) {
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                        .foregroundStyle(PathStyle.flame)
+                        .frame(width: 24)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Wiederholen")
+                            .font(.system(size: 15, weight: .bold))
+                        Text("\(due) \(due == 1 ? "Aufgabe" : "Aufgaben") fällig")
+                            .font(.system(size: 12))
+                            .foregroundStyle(PathStyle.muted)
+                    }
+                    Spacer(minLength: 0)
+                    Image(systemName: "play.fill").foregroundStyle(PathStyle.accent)
+                }
+                .padding(16)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(PathStyle.surface, in: RoundedRectangle(cornerRadius: 16))
+                .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(PathStyle.flame.opacity(0.6)))
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Wiederholen, \(subject.title), \(due) fällige Aufgaben")
+        }
     }
 
     private func topicRow(_ topic: ExamTopic) -> some View {
