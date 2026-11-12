@@ -14,7 +14,8 @@ enum ExamCatalog {
         mitbestimmung + sozial +
         unternehmen + recht +
         wirtschaft + nachhaltigkeit +
-        netze + sicherheit + systeme
+        netze + sicherheit + systeme +
+        ihk
 
     /// Answer groups for `.fact` cards. Distractors come from facts of the same group and subject.
     enum Group {

@@ -26,6 +26,9 @@
 		47EC1CBB6CB31615D609428C /* AdaptiveLearningTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5575563E57A8B68CA5DE8D25 /* AdaptiveLearningTests.swift */; };
 		566DBBCE8D452184A23FABE0 /* PetIntelligenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2DB5C738374805032902B5 /* PetIntelligenceTests.swift */; };
 		58A0BE590AB51EADD0755798 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48ABCD202D6A9C01B366A3EE /* ContentView.swift */; };
+		A1C0DE0000000000000A0003 /* ExamCatalogIHK2026S.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000B0003 /* ExamCatalogIHK2026S.swift */; };
+		A1C0DE0000000000000A0001 /* ExamCatalogIHK.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000B0001 /* ExamCatalogIHK.swift */; };
+		A1C0DE0000000000000A0002 /* ExamOrigin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000B0002 /* ExamOrigin.swift */; };
 		5B760F437435D6D2D34800E8 /* ExamCatalogWirtschaft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0515098DBB6A62E16526353B /* ExamCatalogWirtschaft.swift */; };
 		5CAB61F430AD37FA7035A2D3 /* PetWardrobeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B6C2E9266F92B742E304DA /* PetWardrobeView.swift */; };
 		61A802BB5B2AE2A45856896E /* PetDetailGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774EEBFBB07BF58E8D352666 /* PetDetailGeometryTests.swift */; };
@@ -77,6 +80,9 @@
 
 /* Begin PBXFileReference section */
 		030E2B318A7211A592421A48 /* SubnetTrainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubnetTrainer.swift; sourceTree = "<group>"; };
+		A1C0DE0000000000000B0003 /* ExamCatalogIHK2026S.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogIHK2026S.swift; sourceTree = "<group>"; };
+		A1C0DE0000000000000B0001 /* ExamCatalogIHK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogIHK.swift; sourceTree = "<group>"; };
+		A1C0DE0000000000000B0002 /* ExamOrigin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamOrigin.swift; sourceTree = "<group>"; };
 		0515098DBB6A62E16526353B /* ExamCatalogWirtschaft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogWirtschaft.swift; sourceTree = "<group>"; };
 		09152EC070BE0BB141D83F85 /* ExamCalculationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCalculationTests.swift; sourceTree = "<group>"; };
 		0CCC1C724DDD94D24F5F6D78 /* ExamCalculation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCalculation.swift; sourceTree = "<group>"; };
@@ -153,6 +159,9 @@
 				A5782464CC2B76E179567271 /* ExamCatalogIT.swift */,
 				BF0B598FDEC0D55BBF2324C5 /* ExamCatalogSozial.swift */,
 				46CFFE7C5E38C316195D0E0A /* ExamCatalogUnternehmen.swift */,
+				A1C0DE0000000000000B0001 /* ExamCatalogIHK.swift */,
+				A1C0DE0000000000000B0003 /* ExamCatalogIHK2026S.swift */,
+				A1C0DE0000000000000B0002 /* ExamOrigin.swift */,
 				0515098DBB6A62E16526353B /* ExamCatalogWirtschaft.swift */,
 				2EAC35B5831FB7BFA00200EE /* ExamModels.swift */,
 				AF36667EFA1288072A729FB4 /* ExamStore.swift */,
@@ -357,6 +366,9 @@
 				CE7C03BC093039DCDC810457 /* ExamCatalogIT.swift in Sources */,
 				F7DAFEE2CE70B535EF87F2E2 /* ExamCatalogSozial.swift in Sources */,
 				DDF6A0D5F937D34DFFAB5DA9 /* ExamCatalogUnternehmen.swift in Sources */,
+				A1C0DE0000000000000A0001 /* ExamCatalogIHK.swift in Sources */,
+				A1C0DE0000000000000A0003 /* ExamCatalogIHK2026S.swift in Sources */,
+				A1C0DE0000000000000A0002 /* ExamOrigin.swift in Sources */,
 				5B760F437435D6D2D34800E8 /* ExamCatalogWirtschaft.swift in Sources */,
 				326A35FD7571BE79508EAD27 /* ExamModels.swift in Sources */,
 				AAAFB90FAFC8211B7A855A29 /* ExamStore.swift in Sources */,
