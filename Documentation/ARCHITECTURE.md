@@ -289,7 +289,7 @@ Die fertige Liste wird gemischt (`shuffled(using:)`). Die Simulation zeigt **kei
 
 ### Urheberrechtsregel
 
-Aus `DEVELOPMENT.md` und `CONTRIBUTING.md`: Alle rund 730 Katalogkarten und 21 Rechengeneratoren sind **eigene Formulierungen** zu Themen früherer IHK-Prüfungen und geben den Rechtsstand 2026 vereinfacht wieder. Original-Prüfungsaufgaben der IHK/ZPA werden aus urheberrechtlichen Gründen nicht übernommen. Neue Aufgaben müssen ebenfalls eigenständig formuliert sein.
+Stand 2026-11-12: Originalaufgaben früherer IHK-Prüfungen sollen im **Originalwortlaut** übernommen werden, damit sich die Formulierungen einprägen (Entscheidung des Inhabers, 2026-11-12). Das ist nur zulässig, weil das Projekt rein privat ist und nicht verbreitet wird. Regeln für übernommene Aufgaben: Aufgabenstellung, Ausgangssituation und Tabellen nicht umformulieren oder kürzen; lange Aufgaben nach Teilaufgaben auf mehrere Karten aufteilen und die gemeinsame Ausgangssituation in jede Karte übernehmen; Lösung und Erklärung selbst erarbeiten und als „zum Gegenlesen“ kennzeichnen; die Quelle am Ende der Erklärung nennen (zum Beispiel „IHK AP2 Sommer 20xx, Aufgabe n“, soweit erkennbar, sonst „Termin und Aufgabe nicht erkennbar“); Hinweise Dritter und handschriftliche Anmerkungen nicht übernehmen. Wird das Repository oder die App je veröffentlicht oder weitergegeben, müssen solche Aufgaben vorher entfernt oder umformuliert werden. Die rund 730 älteren Katalogkarten und die 21 Rechengeneratoren sind eigene Formulierungen; die Karten `sys-k01` bis `sys-k23` sind im Originalwortlaut aus einem Arbeitsblatt mit IHK-Aufgaben übernommen (`sys-k13` und `sys-k22` sind eigene Ergänzungen und so gekennzeichnet).
 
 ### ID-Präfixe je Thema/Datei
 
@@ -320,7 +320,7 @@ Aus `DEVELOPMENT.md` und `CONTRIBUTING.md`: Alle rund 730 Katalogkarten und 21 R
 2. Neuen `ExamCard`-Fall anhängen mit eindeutiger, unveränderlicher ID im etablierten Präfixschema (z. B. nächste freie Nummer `aus-c23`).
 3. Bei `.choice`: sicherstellen, dass `options[0]` die richtige Antwort ist und mindestens 5 eindeutige Optionen vorliegen (`ExamCatalogTests.testChoiceCardsHaveFiveUniqueOptions`).
 4. Bei `.fact`: eine passende `ExamCatalog.Group` wählen, für die im selben Fach (`ExamSubject`) bereits ≥3 andere Antworten existieren.
-5. Eigene, urheberrechtlich unbedenkliche Formulierung wählen (keine Original-IHK/ZPA-Aufgaben).
+5. Prüfungsaufgaben im Originalwortlaut übernehmen (mit Quelle, siehe „Urheberrechtsregel“); eigene Aufgaben frei formulieren.
 6. Tests laufen lassen (`ExamCatalogTests` deckt Struktur-Invarianten über alle Karten automatisch ab, kein manuelles Test-Schreiben pro Karte nötig).
 
 ### Neues Thema hinzufügen

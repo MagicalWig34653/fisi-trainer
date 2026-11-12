@@ -54,6 +54,7 @@ struct ContentView: View {
     @EnvironmentObject private var rewards: RewardStore
     @EnvironmentObject private var subnetStore: SubnetStore
     @EnvironmentObject private var examStore: ExamStore
+    @EnvironmentObject private var learnPath: LearnPathStore
     @State private var page: LabPage = .dashboard
     @State private var showingResetConfirmation = false
     @State private var newLevel: Int?
@@ -628,6 +629,12 @@ struct ContentView: View {
                         .frame(width: 150, height: 150)
                         .accessibilityHidden(true)
                 }
+            }
+
+            LearnPathView { topic in
+                learnPath.startLesson(topic: topic, exam: examStore)
+                openExamMode = .quiz
+                page = .exam
             }
 
             Button {

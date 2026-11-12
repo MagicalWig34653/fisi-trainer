@@ -8,7 +8,7 @@ struct ExamSession: Codable {
     let mode: ExamMode
     let subject: ExamSubject
     let topic: ExamTopic?
-    let tasks: [ExamTask]
+    var tasks: [ExamTask]
     var index = 0
     var answers: [[Int]] = []
     var score = 0
@@ -19,6 +19,9 @@ struct ExamSession: Codable {
     var speedBonusTotal = 0
     let startedAt: Date
     var finishedAt: Date? = nil
+    /// Lektion des Lernpfads: falsch beantwortete Aufgaben werden am Ende einmal wiederholt.
+    var isLesson: Bool? = nil
+    var retryAppended: Bool? = nil
 
     var isComplete: Bool { index >= tasks.count }
     var currentTask: ExamTask? { isComplete ? nil : tasks[index] }
@@ -47,6 +50,10 @@ final class ExamStore: ObservableObject {
     @Published private(set) var learning: [String: LearningRecord] = [:]
     @Published private(set) var examHistory: [ExamResult] = []
     @Published private(set) var saveError: String?
+    /// Auswahl nach Herkunft (nur aktuelle Prüfungen, AP1/AP2); bleibt zwischen Starts erhalten.
+    @Published var originFilter: ExamOriginFilter {
+        didSet { originFilter.save(to: defaults) }
+    }
 
     private struct SavedGame: Codable {
         let progress: PlayerProgress
@@ -60,10 +67,14 @@ final class ExamStore: ObservableObject {
     private let catalog: [ExamCard]
     private let fixedTasks: [ExamTask]?
     private let now: () -> Date
+    private let defaults: UserDefaults
     private var maySave = true
 
     init(saveURL: URL? = nil, now: @escaping () -> Date = Date.init,
-         catalog: [ExamCard] = ExamCatalog.all, fixedTasks: [ExamTask]? = nil) {
+         catalog: [ExamCard] = ExamCatalog.all, fixedTasks: [ExamTask]? = nil,
+         defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        self.originFilter = ExamOriginFilter.load(from: defaults)
         self.catalog = catalog
         self.fixedTasks = fixedTasks
         self.now = now
@@ -81,12 +92,12 @@ final class ExamStore: ObservableObject {
         return !session.isComplete
     }
 
-    func start(mode: ExamMode, subject: ExamSubject, topic: ExamTopic?) {
+    func start(mode: ExamMode, subject: ExamSubject, topic: ExamTopic?, lesson: Bool = false) {
         guard maySave, !hasActiveSession(mode) else { return }
         let effectiveTopic = mode == .exam ? nil : topic
         var generator = SystemRandomNumberGenerator()
         let tasks = fixedTasks ?? ExamTaskFactory.makeRound(
-            mode: mode, subject: subject, topic: effectiveTopic, catalog: catalog,
+            mode: mode, subject: subject, topic: effectiveTopic, catalog: catalog, filter: originFilter,
             using: &generator
         ) { [learning] id in
             learning[Self.learningKey(id)]?.selectionWeight ?? LearningRecord().selectionWeight
@@ -95,6 +106,7 @@ final class ExamStore: ObservableObject {
         var session = ExamSession(mode: mode, subject: subject, topic: effectiveTopic,
                                   tasks: tasks, startedAt: now())
         session.timing = QuestionTiming(startedAt: now())
+        if lesson { session.isLesson = true }
         sessions[mode] = session
         save()
     }
@@ -150,6 +162,12 @@ final class ExamStore: ObservableObject {
         guard maySave, var session = sessions[mode], !session.isComplete,
               session.isCurrentAnswered else { return }
         session.index += 1
+        if session.isComplete, session.isLesson == true, session.retryAppended != true {
+            // Fehlerwiederholung: falsch beantwortete Aufgaben der Lektion kommen noch einmal.
+            let wrong = session.tasks.indices.filter { $0 < session.answers.count && !session.tasks[$0].isCorrect(session.answers[$0]) }
+            session.retryAppended = true
+            if !wrong.isEmpty { session.tasks += wrong.map { session.tasks[$0] } }
+        }
         if session.isComplete {
             session.timing = nil
             session.finishedAt = now()

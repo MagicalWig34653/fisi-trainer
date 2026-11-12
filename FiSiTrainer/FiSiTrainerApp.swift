@@ -9,6 +9,7 @@ struct FiSiTrainerApp: App {
     @StateObject private var subnetStore = SubnetStore()
     @StateObject private var examStore = ExamStore()
     @StateObject private var rewards = RewardStore()
+    @StateObject private var learnPath = LearnPathStore()
     @StateObject private var sync = SyncController()
 
     var body: some Scene {
@@ -18,10 +19,15 @@ struct FiSiTrainerApp: App {
                 .environmentObject(subnetStore)
                 .environmentObject(examStore)
                 .environmentObject(rewards)
+                .environmentObject(learnPath)
                 .environmentObject(sync)
                 .onAppear { sync.attach(game: store, subnet: subnetStore, exam: examStore, rewards: rewards) }
                 .onChange(of: combinedXP, initial: true) { _, xp in
                     rewards.updateXP(xp)
+                    learnPath.observeTotalXP(xp)
+                }
+                .onChange(of: examStore.progress.completedRounds) {
+                    learnPath.roundFinished(examStore.session(for: .quiz))
                 }
                 .preferredColorScheme(.dark)
                 .macMinimumSize(width: 1000, height: 700)

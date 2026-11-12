@@ -10,9 +10,11 @@ enum ExamTaskFactory {
 
     /// Catalog entries that a mode can use. Calculations come from generators instead.
     static func cards(for mode: ExamMode, subject: ExamSubject, topic: ExamTopic?,
-                      catalog: [ExamCard] = ExamCatalog.all) -> [ExamCard] {
+                      catalog: [ExamCard] = ExamCatalog.all,
+                      filter: ExamOriginFilter = .all) -> [ExamCard] {
         catalog.filter { card in
-            guard card.topic.subject == subject, topic == nil || card.topic == topic else { return false }
+            guard card.topic.subject == subject, topic == nil || card.topic == topic,
+                  filter.allows(card.origin) else { return false }
             switch (mode, card) {
             case (.quiz, .choice), (.truefalse, .statement), (.multiple, .multiple),
                  (.match, .match), (.order, .order), (.gap, .gap), (.facts, .fact): return true
@@ -29,17 +31,19 @@ enum ExamTaskFactory {
 
     /// Number of different tasks a mode can offer; zero means the mode is unavailable.
     static func availableCount(for mode: ExamMode, subject: ExamSubject, topic: ExamTopic?,
-                               catalog: [ExamCard] = ExamCatalog.all) -> Int {
+                               catalog: [ExamCard] = ExamCatalog.all,
+                               filter: ExamOriginFilter = .all) -> Int {
         switch mode {
         case .calc: calculations(subject: subject, topic: topic).count
-        case .exam: cards(for: .quiz, subject: subject, topic: nil, catalog: catalog).count
-        default: cards(for: mode, subject: subject, topic: topic, catalog: catalog).count
+        case .exam: cards(for: .quiz, subject: subject, topic: nil, catalog: catalog, filter: filter).count
+        default: cards(for: mode, subject: subject, topic: topic, catalog: catalog, filter: filter).count
         }
     }
 
     static func makeRound<RNG: RandomNumberGenerator>(
         mode: ExamMode, subject: ExamSubject, topic: ExamTopic?,
-        catalog: [ExamCard] = ExamCatalog.all, using generator: inout RNG,
+        catalog: [ExamCard] = ExamCatalog.all, filter: ExamOriginFilter = .all,
+        using generator: inout RNG,
         weight: (String) -> Double
     ) -> [ExamTask] {
         switch mode {
@@ -47,9 +51,9 @@ enum ExamTaskFactory {
             return calculationTasks(count: mode.roundLength, subject: subject, topic: topic,
                                     using: &generator, weight: weight)
         case .exam:
-            return examTasks(subject: subject, catalog: catalog, using: &generator, weight: weight)
+            return examTasks(subject: subject, catalog: catalog, filter: filter, using: &generator, weight: weight)
         default:
-            let pool = cards(for: mode, subject: subject, topic: topic, catalog: catalog)
+            let pool = cards(for: mode, subject: subject, topic: topic, catalog: catalog, filter: filter)
             let selected = AdaptiveLearning.weightedSample(pool, count: mode.roundLength,
                                                            using: &generator) { weight($0.id) }
             return selected.compactMap { task(from: $0, catalog: catalog, using: &generator) }
@@ -57,7 +61,7 @@ enum ExamTaskFactory {
     }
 
     private static func examTasks<RNG: RandomNumberGenerator>(
-        subject: ExamSubject, catalog: [ExamCard], using generator: inout RNG,
+        subject: ExamSubject, catalog: [ExamCard], filter: ExamOriginFilter, using generator: inout RNG,
         weight: (String) -> Double
     ) -> [ExamTask] {
         let plan: [(ExamMode, Int)] = [(.multiple, 3), (.match, 3), (.order, 2), (.calc, 4)]
@@ -67,13 +71,13 @@ enum ExamTaskFactory {
                 tasks += calculationTasks(count: count, subject: subject, topic: nil,
                                           using: &generator, weight: weight)
             } else {
-                let pool = cards(for: mode, subject: subject, topic: nil, catalog: catalog)
+                let pool = cards(for: mode, subject: subject, topic: nil, catalog: catalog, filter: filter)
                 tasks += AdaptiveLearning.weightedSample(pool, count: count, using: &generator) {
                     weight($0.id)
                 }.compactMap { task(from: $0, catalog: catalog, using: &generator) }
             }
         }
-        let choices = cards(for: .quiz, subject: subject, topic: nil, catalog: catalog)
+        let choices = cards(for: .quiz, subject: subject, topic: nil, catalog: catalog, filter: filter)
         tasks += AdaptiveLearning.weightedSample(choices, count: ExamMode.exam.roundLength - tasks.count,
                                                  using: &generator) { weight($0.id) }
             .compactMap { task(from: $0, catalog: catalog, using: &generator) }
