@@ -99,6 +99,8 @@ struct ExamArenaView: View {
                 .padding(.vertical, 2)
             }
 
+            originFilterBar
+
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 140), spacing: 12)], spacing: 12) {
                 statCard("PRÜFUNGS-XP", value: "\(store.progress.totalXP)", symbol: "bolt.fill", accent: true)
                 statCard("RUNDEN", value: "\(store.progress.completedRounds)", symbol: "checkmark.circle")
@@ -162,9 +164,28 @@ struct ExamArenaView: View {
 
     /// Available task counts for every mode at the current subject/topic, computed once per
     /// hub render instead of once per mode card.
+    private var originFilterBar: some View {
+        HStack(spacing: 16) {
+            Toggle("Nur aktuelle Prüfungen (letzte 4 Jahre)", isOn: $store.originFilter.onlyRecent)
+                .toggleStyle(.switch)
+                .font(.system(size: 12, weight: .semibold))
+            Picker("Prüfungsteil", selection: $store.originFilter.part) {
+                Text("AP1 + AP2").tag(ExamOrigin.Part?.none)
+                Text("AP1").tag(ExamOrigin.Part?.some(.ap1))
+                Text("AP2").tag(ExamOrigin.Part?.some(.ap2))
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .frame(maxWidth: 220)
+            .accessibilityLabel("Prüfungsteil wählen")
+        }
+        .accessibilityElement(children: .contain)
+    }
+
     private var availableCounts: [ExamMode: Int] {
         Dictionary(uniqueKeysWithValues: ExamMode.allCases.map { mode in
-            (mode, ExamTaskFactory.availableCount(for: mode, subject: subject, topic: mode == .exam ? nil : topic))
+            (mode, ExamTaskFactory.availableCount(for: mode, subject: subject, topic: mode == .exam ? nil : topic,
+                                                filter: store.originFilter))
         })
     }
 
@@ -367,6 +388,11 @@ struct ExamArenaView: View {
                 .font(.system(size: 10, weight: .bold, design: .monospaced))
                 .tracking(1.5)
                 .foregroundStyle(ExamStyle.muted)
+            if let origin = task.origin {
+                Text("Herkunft: \(origin.label) · \(origin.ordinance.title)")
+                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(ExamStyle.muted)
+            }
             Text(task.prompt)
                 .font(.system(size: 22, weight: .bold))
                 .fixedSize(horizontal: false, vertical: true)

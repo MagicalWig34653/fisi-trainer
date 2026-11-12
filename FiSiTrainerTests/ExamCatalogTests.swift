@@ -136,3 +136,39 @@ final class ExamCatalogTests: XCTestCase {
         }
     }
 }
+
+final class ExamOriginTests: XCTestCase {
+    func testEveryIHKCardHasParseableOriginAndSource() {
+        for card in ExamCatalog.ihk {
+            guard let origin = card.origin else { XCTFail("Keine Herkunft: \(card.id)"); continue }
+            var rng = SystemRandomNumberGenerator()
+            guard let task = ExamTaskFactory.task(from: card, using: &rng) else { XCTFail("Kein Task: \(card.id)"); continue }
+            XCTAssertTrue(task.explanation.contains("Quelle:"), "Keine Quelle: \(card.id)")
+            XCTAssertTrue(task.explanation.contains("\(origin.term.title) \(origin.yearText)"), "Quelle passt nicht zur ID: \(card.id)")
+        }
+    }
+
+    func testOwnCardsHaveNoOrigin() {
+        XCTAssertNil(ExamOrigin(cardID: "sys-k01"))
+    }
+
+    func testFilterRecentAndPart() {
+        let old = ExamOrigin(cardID: "ihk-ap2-2019w-ga1-1")
+        let new = ExamOrigin(cardID: "ihk-ap2-2026s-ga1-1")
+        var filter = ExamOriginFilter.all
+        XCTAssertTrue(filter.allows(old, referenceYear: 2026))
+        filter.onlyRecent = true
+        XCTAssertFalse(filter.allows(old, referenceYear: 2026))
+        XCTAssertTrue(filter.allows(new, referenceYear: 2026))
+        XCTAssertTrue(filter.allows(nil, referenceYear: 2026))
+        filter.part = .ap1
+        XCTAssertFalse(filter.allows(new, referenceYear: 2026))
+    }
+
+    func testFilterIsPersisted() {
+        let defaults = UserDefaults(suiteName: "originfilter-test")!
+        defaults.removePersistentDomain(forName: "originfilter-test")
+        ExamOriginFilter(onlyRecent: true, part: .ap2).save(to: defaults)
+        XCTAssertEqual(ExamOriginFilter.load(from: defaults), ExamOriginFilter(onlyRecent: true, part: .ap2))
+    }
+}

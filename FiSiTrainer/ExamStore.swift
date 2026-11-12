@@ -50,6 +50,10 @@ final class ExamStore: ObservableObject {
     @Published private(set) var learning: [String: LearningRecord] = [:]
     @Published private(set) var examHistory: [ExamResult] = []
     @Published private(set) var saveError: String?
+    /// Auswahl nach Herkunft (nur aktuelle Prüfungen, AP1/AP2); bleibt zwischen Starts erhalten.
+    @Published var originFilter: ExamOriginFilter {
+        didSet { originFilter.save(to: defaults) }
+    }
 
     private struct SavedGame: Codable {
         let progress: PlayerProgress
@@ -63,10 +67,14 @@ final class ExamStore: ObservableObject {
     private let catalog: [ExamCard]
     private let fixedTasks: [ExamTask]?
     private let now: () -> Date
+    private let defaults: UserDefaults
     private var maySave = true
 
     init(saveURL: URL? = nil, now: @escaping () -> Date = Date.init,
-         catalog: [ExamCard] = ExamCatalog.all, fixedTasks: [ExamTask]? = nil) {
+         catalog: [ExamCard] = ExamCatalog.all, fixedTasks: [ExamTask]? = nil,
+         defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        self.originFilter = ExamOriginFilter.load(from: defaults)
         self.catalog = catalog
         self.fixedTasks = fixedTasks
         self.now = now
@@ -89,7 +97,7 @@ final class ExamStore: ObservableObject {
         let effectiveTopic = mode == .exam ? nil : topic
         var generator = SystemRandomNumberGenerator()
         let tasks = fixedTasks ?? ExamTaskFactory.makeRound(
-            mode: mode, subject: subject, topic: effectiveTopic, catalog: catalog,
+            mode: mode, subject: subject, topic: effectiveTopic, catalog: catalog, filter: originFilter,
             using: &generator
         ) { [learning] id in
             learning[Self.learningKey(id)]?.selectionWeight ?? LearningRecord().selectionWeight

@@ -92,3 +92,37 @@ extension ExamCard {
     /// Herkunft aus einer IHK-Prüfung; `nil` bei eigenen Aufgaben.
     var origin: ExamOrigin? { ExamOrigin(cardID: id) }
 }
+
+extension ExamTask {
+    /// Herkunft aus einer IHK-Prüfung; `nil` bei eigenen und generierten Aufgaben.
+    var origin: ExamOrigin? { ExamOrigin(cardID: id) }
+}
+
+/// Einstellung, welche Prüfungsaufgaben ausgewählt werden. Eigene Aufgaben (ohne Herkunft) bleiben immer erlaubt.
+struct ExamOriginFilter: Codable, Equatable {
+    /// Nur Prüfungen der letzten vier Jahre.
+    var onlyRecent = false
+    /// Nur AP1 oder nur AP2; `nil` = beide.
+    var part: ExamOrigin.Part?
+
+    static let all = ExamOriginFilter()
+    static let recentYears = 4
+    static let defaultsKey = "examOriginFilter"
+
+    func allows(_ origin: ExamOrigin?, referenceYear: Int = Calendar.current.component(.year, from: Date())) -> Bool {
+        guard let origin else { return true }
+        if let part, origin.part != part { return false }
+        if onlyRecent, !origin.isRecent(referenceYear: referenceYear, years: Self.recentYears) { return false }
+        return true
+    }
+
+    static func load(from defaults: UserDefaults = .standard) -> ExamOriginFilter {
+        guard let data = defaults.data(forKey: defaultsKey),
+              let filter = try? JSONDecoder().decode(ExamOriginFilter.self, from: data) else { return .all }
+        return filter
+    }
+
+    func save(to defaults: UserDefaults = .standard) {
+        if let data = try? JSONEncoder().encode(self) { defaults.set(data, forKey: Self.defaultsKey) }
+    }
+}
