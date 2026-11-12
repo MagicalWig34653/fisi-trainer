@@ -43,6 +43,7 @@
 		9E226071B8ACA31C76B73867 /* ExamStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92027BFCD3161E9D326B6BE4 /* ExamStoreTests.swift */; };
 		A07E8979EA00FFA045C6574F /* GameStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED2FF0D608FEE792B7DB3F1 /* GameStore.swift */; };
 		A4366DF804AD2DE2992846AD /* ExamCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF965F7699A6C17FB66C131 /* ExamCatalogTests.swift */; };
+		A1C0DE0000000000000A0009 /* ExamTextHygieneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000B0009 /* ExamTextHygieneTests.swift */; };
 		A6FF5A6277B21F30E1BDA273 /* ExamCalculation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCC1C724DDD94D24F5F6D78 /* ExamCalculation.swift */; };
 		A7D907B53A7E631B80AA24F2 /* PetSceneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C586DD8BC0778F23D2EBA50 /* PetSceneTests.swift */; };
 		AAAFB90FAFC8211B7A855A29 /* ExamStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF36667EFA1288072A729FB4 /* ExamStore.swift */; };
@@ -116,6 +117,7 @@
 		5575563E57A8B68CA5DE8D25 /* AdaptiveLearningTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveLearningTests.swift; sourceTree = "<group>"; };
 		5F0690CA446A9243AB2A442F /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		6EF965F7699A6C17FB66C131 /* ExamCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogTests.swift; sourceTree = "<group>"; };
+		A1C0DE0000000000000B0009 /* ExamTextHygieneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamTextHygieneTests.swift; sourceTree = "<group>"; };
 		774EEBFBB07BF58E8D352666 /* PetDetailGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetDetailGeometryTests.swift; sourceTree = "<group>"; };
 		7E2A1B4C6D8F0E3A5B7C9D12 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
 		7E2DB5C738374805032902B5 /* PetIntelligenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetIntelligenceTests.swift; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 				A1B2C3D4E5F60718293A4B13 /* LearnPathTests.swift */,
 				09152EC070BE0BB141D83F85 /* ExamCalculationTests.swift */,
 				6EF965F7699A6C17FB66C131 /* ExamCatalogTests.swift */,
+				A1C0DE0000000000000B0009 /* ExamTextHygieneTests.swift */,
 				92027BFCD3161E9D326B6BE4 /* ExamStoreTests.swift */,
 				1A6DD79D6B25E22E9C0A9602 /* GameStoreTests.swift */,
 				B93295978ED0A3B3854CC290 /* PetAccessoryGeometryTests.swift */,
@@ -353,6 +356,7 @@
 				A1B2C3D4E5F60718293A4B03 /* LearnPathTests.swift in Sources */,
 				1AB36E428D33217BB7BFA4D7 /* ExamCalculationTests.swift in Sources */,
 				A4366DF804AD2DE2992846AD /* ExamCatalogTests.swift in Sources */,
+				A1C0DE0000000000000A0009 /* ExamTextHygieneTests.swift in Sources */,
 				9E226071B8ACA31C76B73867 /* ExamStoreTests.swift in Sources */,
 				CE86A2955412957262996226 /* GameStoreTests.swift in Sources */,
 				F28070EACAE82002E4B4C252 /* PetAccessoryGeometryTests.swift in Sources */,
