@@ -38,6 +38,8 @@
 		A6FF5A6277B21F30E1BDA273 /* ExamCalculation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCC1C724DDD94D24F5F6D78 /* ExamCalculation.swift */; };
 		A7D907B53A7E631B80AA24F2 /* PetSceneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C586DD8BC0778F23D2EBA50 /* PetSceneTests.swift */; };
 		AAAFB90FAFC8211B7A855A29 /* ExamStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF36667EFA1288072A729FB4 /* ExamStore.swift */; };
+		A1B2C3D4E5F60718293A4B02 /* LearnPathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B12 /* LearnPathView.swift */; };
+		A1B2C3D4E5F60718293A4B01 /* LearnPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B11 /* LearnPath.swift */; };
 		AB22D25F2637725DA2994A45 /* TrainingPetContextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6EAED1754C98BBD21789EA /* TrainingPetContextTests.swift */; };
 		ABE89170D2B4F83B0C16A358 /* PetIntelligence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 942C611FF61B7E8D50DD8ACB /* PetIntelligence.swift */; };
 		ACA577D65F6F7B5530A83004 /* QuestionTimingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB222C1BBD3C4136526E1CF5 /* QuestionTimingTests.swift */; };
@@ -59,6 +61,7 @@
 		E5F60718293A4B5C6D7E8F90 /* CloudSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60718293A4B5C6D7E8F9012 /* CloudSync.swift */; };
 		0718293A4B5C6D7E8F901234 /* StoreSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18293A4B5C6D7E8F90123456 /* StoreSyncTests.swift */; };
 		5A6B7C8D9E0F1A2B3C4D5E6F /* RewardSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B7C8D9E0F1A2B3C4D5E6F70 /* RewardSyncTests.swift */; };
+		A1B2C3D4E5F60718293A4B03 /* LearnPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B13 /* LearnPathTests.swift */; };
 		293A4B5C6D7E8F9012345678 /* SyncSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4B5C6D7E8F901234567890 /* SyncSettingsView.swift */; };
 /* End PBXBuildFile section */
 
@@ -110,6 +113,8 @@
 		AC05DFF76625A40E977A1487 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		ACAA2F169DCB3209DBA3E7AC /* ExamCatalogArbeit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogArbeit.swift; sourceTree = "<group>"; };
 		AF36667EFA1288072A729FB4 /* ExamStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamStore.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B12 /* LearnPathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnPathView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B11 /* LearnPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnPath.swift; sourceTree = "<group>"; };
 		B5B6C2E9266F92B742E304DA /* PetWardrobeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetWardrobeView.swift; sourceTree = "<group>"; };
 		B807428B3BE04C9C9AE8431F /* AdaptiveLearning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveLearning.swift; sourceTree = "<group>"; };
 		B93295978ED0A3B3854CC290 /* PetAccessoryGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetAccessoryGeometryTests.swift; sourceTree = "<group>"; };
@@ -128,6 +133,7 @@
 		F60718293A4B5C6D7E8F9012 /* CloudSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSync.swift; sourceTree = "<group>"; };
 		18293A4B5C6D7E8F90123456 /* StoreSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreSyncTests.swift; sourceTree = "<group>"; };
 		6B7C8D9E0F1A2B3C4D5E6F70 /* RewardSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardSyncTests.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B13 /* LearnPathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnPathTests.swift; sourceTree = "<group>"; };
 		3A4B5C6D7E8F901234567890 /* SyncSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncSettingsView.swift; sourceTree = "<group>"; };
 		4B5C6D7E8F90123456789012 /* FiSiTrainer-iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "FiSiTrainer-iOS.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -150,6 +156,8 @@
 				0515098DBB6A62E16526353B /* ExamCatalogWirtschaft.swift */,
 				2EAC35B5831FB7BFA00200EE /* ExamModels.swift */,
 				AF36667EFA1288072A729FB4 /* ExamStore.swift */,
+				A1B2C3D4E5F60718293A4B12 /* LearnPathView.swift */,
+				A1B2C3D4E5F60718293A4B11 /* LearnPath.swift */,
 				F0136BB21B3F15D774B3FA2D /* ExamTaskFactory.swift */,
 				8EC7ED01401BFCB7186BB3D1 /* ExamViews.swift */,
 				38D97AF2724EC91791AED10D /* FiSiTrainer.entitlements */,
@@ -203,6 +211,7 @@
 				D4E5F60718293A4B5C6D7E8F /* SyncMergeTests.swift */,
 				18293A4B5C6D7E8F90123456 /* StoreSyncTests.swift */,
 				6B7C8D9E0F1A2B3C4D5E6F70 /* RewardSyncTests.swift */,
+				A1B2C3D4E5F60718293A4B13 /* LearnPathTests.swift */,
 				09152EC070BE0BB141D83F85 /* ExamCalculationTests.swift */,
 				6EF965F7699A6C17FB66C131 /* ExamCatalogTests.swift */,
 				92027BFCD3161E9D326B6BE4 /* ExamStoreTests.swift */,
@@ -317,6 +326,7 @@
 				C3D4E5F60718293A4B5C6D7E /* SyncMergeTests.swift in Sources */,
 				0718293A4B5C6D7E8F901234 /* StoreSyncTests.swift in Sources */,
 				5A6B7C8D9E0F1A2B3C4D5E6F /* RewardSyncTests.swift in Sources */,
+				A1B2C3D4E5F60718293A4B03 /* LearnPathTests.swift in Sources */,
 				1AB36E428D33217BB7BFA4D7 /* ExamCalculationTests.swift in Sources */,
 				A4366DF804AD2DE2992846AD /* ExamCatalogTests.swift in Sources */,
 				9E226071B8ACA31C76B73867 /* ExamStoreTests.swift in Sources */,
@@ -350,6 +360,8 @@
 				5B760F437435D6D2D34800E8 /* ExamCatalogWirtschaft.swift in Sources */,
 				326A35FD7571BE79508EAD27 /* ExamModels.swift in Sources */,
 				AAAFB90FAFC8211B7A855A29 /* ExamStore.swift in Sources */,
+				A1B2C3D4E5F60718293A4B02 /* LearnPathView.swift in Sources */,
+				A1B2C3D4E5F60718293A4B01 /* LearnPath.swift in Sources */,
 				1E15750429941F7AC88E9557 /* ExamTaskFactory.swift in Sources */,
 				1B3B8FF1E13E8F9852C94D92 /* ExamViews.swift in Sources */,
 				79D416C6268A289C634AA2F9 /* FiSiTrainerApp.swift in Sources */,
