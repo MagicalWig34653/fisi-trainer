@@ -62,8 +62,15 @@ struct LearnPathView: View {
                 Text("\(min(path.todayXP, path.goalXP)) / \(path.goalXP) XP heute")
                     .font(.system(size: 12, design: .monospaced))
                     .foregroundStyle(PathStyle.muted)
+                Picker("Tagesziel", selection: Binding(get: { path.goalXP }, set: { path.setGoal($0) })) {
+                    ForEach(LearnPathProgress.goalChoices, id: \.xp) { choice in
+                        Text("\(choice.title) \(choice.xp)").tag(choice.xp)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
                 if path.progress.streakFreezes > 0 {
-                    Label("\(path.progress.streakFreezes)× Streak-Schutz", systemImage: "shield.fill")
+                    Label("\(path.progress.streakFreezes)× Streak-Schutz: überbrückt einen verpassten Tag", systemImage: "shield.fill")
                         .font(.system(size: 11, weight: .semibold))
                         .foregroundStyle(PathStyle.muted)
                 }

@@ -289,7 +289,7 @@ Die fertige Liste wird gemischt (`shuffled(using:)`). Die Simulation zeigt **kei
 
 ### Urheberrechtsregel
 
-Aus `DEVELOPMENT.md` und `CONTRIBUTING.md`: Alle rund 730 Katalogkarten und 21 Rechengeneratoren sind **eigene Formulierungen** zu Themen früherer IHK-Prüfungen und geben den Rechtsstand 2026 vereinfacht wieder. Original-Prüfungsaufgaben der IHK/ZPA werden aus urheberrechtlichen Gründen nicht übernommen. Neue Aufgaben müssen ebenfalls eigenständig formuliert sein.
+Stand 2026-11-12 (Entscheidung des Inhabers): Original-Prüfungsaufgaben früherer IHK-Prüfungen dürfen und sollen übernommen werden, weil das Projekt rein privat ist und nicht verbreitet wird. Die rund 730 älteren Katalogkarten und die 21 Rechengeneratoren sind eigene Formulierungen; die Karten `sys-k01` bis `sys-k23` sind aus einem Arbeitsblatt mit IHK-Aufgaben umgesetzt. Vor jeder Veröffentlichung oder Weitergabe des Repos oder der App müssen übernommene Originalaufgaben entfernt oder umformuliert werden.
 
 ### ID-Präfixe je Thema/Datei
 
@@ -320,7 +320,7 @@ Aus `DEVELOPMENT.md` und `CONTRIBUTING.md`: Alle rund 730 Katalogkarten und 21 R
 2. Neuen `ExamCard`-Fall anhängen mit eindeutiger, unveränderlicher ID im etablierten Präfixschema (z. B. nächste freie Nummer `aus-c23`).
 3. Bei `.choice`: sicherstellen, dass `options[0]` die richtige Antwort ist und mindestens 5 eindeutige Optionen vorliegen (`ExamCatalogTests.testChoiceCardsHaveFiveUniqueOptions`).
 4. Bei `.fact`: eine passende `ExamCatalog.Group` wählen, für die im selben Fach (`ExamSubject`) bereits ≥3 andere Antworten existieren.
-5. Eigene, urheberrechtlich unbedenkliche Formulierung wählen (keine Original-IHK/ZPA-Aufgaben).
+5. Formulierung frei wählen: eigene Aufgaben oder Original-IHK-Aufgaben (nur solange das Projekt privat bleibt, siehe „Urheberrechtsregel“).
 6. Tests laufen lassen (`ExamCatalogTests` deckt Struktur-Invarianten über alle Karten automatisch ab, kein manuelles Test-Schreiben pro Karte nötig).
 
 ### Neues Thema hinzufügen

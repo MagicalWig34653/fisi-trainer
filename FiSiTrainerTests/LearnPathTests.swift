@@ -120,7 +120,7 @@ final class LearnPathTests: XCTestCase {
         path.roundFinished(exam.session(for: .quiz))
         XCTAssertEqual(path.progress.completedCount(for: .netze), 0, "Noch nicht fertig")
         for _ in 0..<10 {
-            exam.answer([0], mode: .quiz)
+            exam.answer(exam.session(for: .quiz)!.currentTask!.solution, mode: .quiz)
             exam.next(mode: .quiz)
         }
         path.roundFinished(exam.session(for: .quiz))
@@ -140,5 +140,55 @@ final class LearnPathTests: XCTestCase {
         let store = LearnPathStore(saveURL: url, calendar: calendar)
         XCTAssertEqual(store.progress, LearnPathProgress())
         XCTAssertNotNil(store.saveError)
+    }
+
+    func testGoalChangeAppliesToTodayAndKeepsPastDays() {
+        var p = LearnPathProgress()
+        p.addXP(100, now: day(0), calendar: calendar)
+        p.setGoal(200, now: day(1), calendar: calendar)
+        XCTAssertEqual(p.goalXP, 200)
+        XCTAssertTrue(p.isGoalMet(on: day(0), calendar: calendar), "Alter Tag bleibt erreicht")
+        p.addXP(150, now: day(1), calendar: calendar)
+        XCTAssertFalse(p.isGoalMet(on: day(1), calendar: calendar))
+        p.setGoal(100, now: day(1), calendar: calendar)
+        XCTAssertTrue(p.isGoalMet(on: day(1), calendar: calendar), "Niedrigeres Ziel zählt heute sofort")
+        XCTAssertEqual(p.currentStreak(now: day(1), calendar: calendar), 2)
+        p.setGoal(77, now: day(1), calendar: calendar)
+        XCTAssertEqual(p.goalXP, 100, "Nur Locker, Normal, Intensiv erlaubt")
+    }
+
+    @MainActor
+    func testLessonRepeatsWrongTasksOnceAtTheEnd() throws {
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let exam = ExamStore(saveURL: dir.appendingPathComponent("exam.json"))
+        let path = LearnPathStore(saveURL: dir.appendingPathComponent("path.json"), calendar: calendar)
+        XCTAssertTrue(path.startLesson(topic: .netze, exam: exam))
+        // Erste Aufgabe falsch, Rest richtig beantworten.
+        var wrongTask: ExamTask?
+        for i in 0..<10 {
+            let task = exam.session(for: .quiz)!.currentTask!
+            let right = task.solution
+            if i == 0 {
+                wrongTask = task
+                exam.answer([(right[0] + 1) % task.options.count], mode: .quiz)
+            } else {
+                exam.answer(right, mode: .quiz)
+            }
+            exam.next(mode: .quiz)
+        }
+        var session = try XCTUnwrap(exam.session(for: .quiz))
+        XCTAssertFalse(session.isComplete, "Wiederholung der falschen Aufgabe steht noch aus")
+        XCTAssertEqual(session.tasks.count, 11)
+        XCTAssertEqual(session.currentTask?.id, wrongTask?.id)
+        path.roundFinished(session)
+        XCTAssertEqual(path.progress.completedCount(for: .netze), 0)
+        exam.answer([(session.currentTask!.solution[0] + 1) % session.currentTask!.options.count], mode: .quiz)
+        exam.next(mode: .quiz)   // wieder falsch: keine zweite Wiederholung
+        session = try XCTUnwrap(exam.session(for: .quiz))
+        XCTAssertTrue(session.isComplete)
+        XCTAssertEqual(session.tasks.count, 11)
+        path.roundFinished(session)
+        XCTAssertEqual(path.progress.completedCount(for: .netze), 1)
     }
 }

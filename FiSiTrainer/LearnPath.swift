@@ -68,6 +68,21 @@ struct LearnPathProgress: Codable, Equatable {
         metDays.contains(Self.dayKey(date, calendar: calendar))
     }
 
+    // MARK: Tagesziel
+
+    static let goalChoices: [(title: String, xp: Int)] = [("Locker", 50), ("Normal", 100), ("Intensiv", 200)]
+
+    /// Ändert das Tagesziel. Bereits erreichte Tage bleiben erreicht; heute zählt ab sofort das neue Ziel.
+    mutating func setGoal(_ xp: Int, now: Date, calendar: Calendar) {
+        guard Self.goalChoices.contains(where: { $0.xp == xp }), xp != goalXP else { return }
+        goalXP = xp
+        let today = Self.dayKey(now, calendar: calendar)
+        if !metDays.contains(today), (dailyXP[today] ?? 0) >= xp {
+            bridgeGap(before: now, calendar: calendar)
+            metDays.insert(today)
+        }
+    }
+
     // MARK: XP und Streak
 
     /// Gleicht die Summen-XP aller Spiele ab. Der erste Aufruf zählt keine Alt-XP, ein sinkender
@@ -160,6 +175,10 @@ final class LearnPathStore: ObservableObject {
     var streak: Int { progress.currentStreak(now: now(), calendar: calendar) }
     var todayXP: Int { progress.xp(on: now(), calendar: calendar) }
     var goalXP: Int { progress.goalXP }
+    func setGoal(_ xp: Int) {
+        progress.setGoal(xp, now: now(), calendar: calendar)
+        save()
+    }
     var goalMetToday: Bool { progress.isGoalMet(on: now(), calendar: calendar) }
 
     /// Startet die nächste Lektion eines Themas. Läuft schon eine Prüfungsquiz-Runde, wird sie
@@ -167,7 +186,7 @@ final class LearnPathStore: ObservableObject {
     @discardableResult
     func startLesson(topic: ExamTopic, exam: ExamStore) -> Bool {
         guard progress.nextLesson(for: topic) != nil, !exam.hasActiveSession(.quiz) else { return false }
-        exam.start(mode: .quiz, subject: topic.subject, topic: topic)
+        exam.start(mode: .quiz, subject: topic.subject, topic: topic, lesson: true)
         guard let session = exam.session(for: .quiz), !session.isComplete, session.topic == topic else { return false }
         pending = (topic, session.startedAt)
         return true

@@ -8,7 +8,7 @@ struct ExamSession: Codable {
     let mode: ExamMode
     let subject: ExamSubject
     let topic: ExamTopic?
-    let tasks: [ExamTask]
+    var tasks: [ExamTask]
     var index = 0
     var answers: [[Int]] = []
     var score = 0
@@ -19,6 +19,9 @@ struct ExamSession: Codable {
     var speedBonusTotal = 0
     let startedAt: Date
     var finishedAt: Date? = nil
+    /// Lektion des Lernpfads: falsch beantwortete Aufgaben werden am Ende einmal wiederholt.
+    var isLesson: Bool? = nil
+    var retryAppended: Bool? = nil
 
     var isComplete: Bool { index >= tasks.count }
     var currentTask: ExamTask? { isComplete ? nil : tasks[index] }
@@ -81,7 +84,7 @@ final class ExamStore: ObservableObject {
         return !session.isComplete
     }
 
-    func start(mode: ExamMode, subject: ExamSubject, topic: ExamTopic?) {
+    func start(mode: ExamMode, subject: ExamSubject, topic: ExamTopic?, lesson: Bool = false) {
         guard maySave, !hasActiveSession(mode) else { return }
         let effectiveTopic = mode == .exam ? nil : topic
         var generator = SystemRandomNumberGenerator()
@@ -95,6 +98,7 @@ final class ExamStore: ObservableObject {
         var session = ExamSession(mode: mode, subject: subject, topic: effectiveTopic,
                                   tasks: tasks, startedAt: now())
         session.timing = QuestionTiming(startedAt: now())
+        if lesson { session.isLesson = true }
         sessions[mode] = session
         save()
     }
@@ -150,6 +154,12 @@ final class ExamStore: ObservableObject {
         guard maySave, var session = sessions[mode], !session.isComplete,
               session.isCurrentAnswered else { return }
         session.index += 1
+        if session.isComplete, session.isLesson == true, session.retryAppended != true {
+            // Fehlerwiederholung: falsch beantwortete Aufgaben der Lektion kommen noch einmal.
+            let wrong = session.tasks.indices.filter { $0 < session.answers.count && !session.tasks[$0].isCorrect(session.answers[$0]) }
+            session.retryAppended = true
+            if !wrong.isEmpty { session.tasks += wrong.map { session.tasks[$0] } }
+        }
         if session.isComplete {
             session.timing = nil
             session.finishedAt = now()
