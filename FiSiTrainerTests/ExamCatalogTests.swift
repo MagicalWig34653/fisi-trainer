@@ -221,6 +221,39 @@ final class ExamOriginTests: XCTestCase {
         XCTAssertFalse(ExamCatalog.all.contains { ["ihk-ap2-2022w-ga1-1cb", "ihk-ap2-2022w-ga1-3b", "ihk-ap2-2022w-ga1-3c"].contains($0.id) })
     }
 
+    /// sys-k01 wertet wie die IHK-Musterlösung 10 Platten (ein Verbund über beide Arrays).
+    func testSysK01CountsTenDisks() {
+        guard case let .choice(_, _, prompt, options, explanation)? = ExamCatalog.all.first(where: { $0.id == "sys-k01" }) else {
+            return XCTFail("sys-k01 fehlt oder ist keine Auswahl")
+        }
+        XCTAssertEqual(options.first, "10 Platten")
+        XCTAssertFalse(options.dropFirst().contains("10 Platten"))
+        XCTAssertTrue(prompt.contains("über beide Arrays"))
+        XCTAssertTrue(explanation.contains("7 + 2 + 1 = 10 Platten"))
+    }
+
+    /// Nachträge aus dem Gegenlesen von Etappe 3: Präfix der ZPA-Lösungshinweise, Antwortwortlaut statt bloßer Ziffern
+    /// und gekennzeichnete Distraktoren bei Eintragefeldern.
+    func testReviewLeftoversOfEtappe3() {
+        var rng = CatalogRNG(seed: 11)
+        func tasks(_ cards: [ExamCard]) -> [ExamTask] {
+            cards.compactMap { ExamTaskFactory.task(from: $0, using: &rng) }
+        }
+        let zpa = tasks(ExamCatalog.ihkW2022 + ExamCatalog.ihkS2023)
+        XCTAssertFalse(zpa.isEmpty)
+        for task in zpa { XCTAssertFalse(task.explanation.contains("IHK-Musterlösung"), task.id) }
+        XCTAssertTrue(zpa.contains { $0.explanation.hasPrefix("Lösung laut Lösungshinweis:") })
+        for task in tasks(ExamCatalog.ihkS2023WiSo + ExamCatalog.ihkW2023WiSo + ExamCatalog.ihkS2024WiSo) where task.kind == .multiple {
+            XCTAssertFalse(task.explanation.contains("Lösungsblatt: Ziffer"), task.id)
+        }
+        for id in ["ihk-ap2-2023w-wiso-20", "ihk-ap2-2024s-wiso-20"] {
+            guard let card = ExamCatalog.all.first(where: { $0.id == id }),
+                  let task = ExamTaskFactory.task(from: card, using: &rng) else { XCTFail(id); continue }
+            XCTAssertTrue(task.prompt.contains("als Distraktor ergänzt"), id)
+            XCTAssertFalse(task.explanation.contains("fünfte Option"), id)
+        }
+    }
+
     func testFilterRecentAndPart() {
         let old = ExamOrigin(cardID: "ihk-ap2-2019w-ga1-1")
         let new = ExamOrigin(cardID: "ihk-ap2-2026s-ga1-1")

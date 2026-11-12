@@ -8,7 +8,7 @@ import Foundation
 extension ExamCatalog {
     static let ihkW2022: [ExamCard] = ihkW2022GA1 + ihkW2022GA2 + ihkW2022WiSo
 
-    private static let w22Muster = "Lösung laut IHK-Musterlösung:"
+    private static let w22Muster = "Lösung laut Lösungshinweis:"
 
     // MARK: - GA1 (Konzeption und Administration von IT-Systemen)
 

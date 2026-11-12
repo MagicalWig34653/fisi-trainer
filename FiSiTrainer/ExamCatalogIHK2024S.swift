@@ -357,7 +357,7 @@ extension ExamCatalog {
         ihkChoice("ihk-ap2-2024s-wiso-\(nr)", topic, "", "\(nr). Aufgabe\n\(text)", options, "\(s24wMuster) \(expl)")
     }
     private static func svm(_ nr: Int, _ topic: ExamTopic, _ text: String, correct: [String], wrong: [String], _ expl: String) -> ExamCard {
-        ihkMultiple("ihk-ap2-2024s-wiso-\(nr)", topic, "", "\(nr). Aufgabe\n\(text)", correct: correct, wrong: wrong, "\(s24wMuster) \(expl)")
+        ihkMultiple("ihk-ap2-2024s-wiso-\(nr)", topic, "", "\(nr). Aufgabe\n\(text)", correct: correct, wrong: wrong, "\(s24wMuster) \(ihkZiffer(expl, answers: correct))")
     }
     private static let s24wHR = "Situation zur 15. und 16. Aufgabe: Frau Vengeta liegen zur Ecotec GmbH die folgenden Informationen vor:\n[Tabelle als Text: Spalten 1 Nummer der Eintragung, 2 a) Firma b) Ort, 3 Grund- oder Stammkapital, 4 Gesellschafter, 5 Prokura. Eintrag 1: a) Ecotec GmbH, b) Hamburg; 330.000,00 EUR; Peter Müller, Kaufmann, Hamburg und Claudia Simmer, Kauffrau, Hamburg; Prokura leer.]"
 
@@ -425,9 +425,9 @@ extension ExamCatalog {
         sv(19, .unternehmen, "Zwei Mitarbeitende der Ecotec GmbH wollen sich mit einem IT-Service-Unternehmen selbstständig machen. Die finanzierende Bank erwartet von den beiden Existenzgründern die Vorlage eines Businessplanes.\nWelche der folgenden Aussagen über einen Businessplan trifft zu?",
            ["Im Businessplan werden u. a. das Finanzkonzept und die Unternehmensidee vorgestellt.", "Der Businessplan wird von der zuständigen IHK ausgestellt, in dem das Unternehmen gegründet wurde.", "Der Businessplan wird im Handelsregister des zuständigen Amtsgerichtes eingetragen.", "Der Businessplan muss nur bei der Gründung von Kapitalgesellschaften erstellt werden.", "Der Businessplan ist nur bei der Aufnahme von Darlehen notwendig."],
            "Ziffer 5."),
-        sv(20, .wirtschaft, "Frau Vengeta bittet einen Praktikanten, die folgenden vier durchgeführten Aufträge der Ecotec GmbH auf ihre Wirtschaftlichkeit zu prüfen:\nAuftrag 1: Aufwand 600.000 EUR, Ertrag 720.000 EUR\nAuftrag 2: Aufwand 320.000 EUR, Ertrag 400.000 EUR\nAuftrag 3: Aufwand 160.000 EUR, Ertrag 208.000 EUR\nAuftrag 4: Aufwand 200.000 EUR, Ertrag 248.000 EUR\nWelcher Auftrag wurde am wirtschaftlichsten abgewickelt?",
+        sv(20, .wirtschaft, "Frau Vengeta bittet einen Praktikanten, die folgenden vier durchgeführten Aufträge der Ecotec GmbH auf ihre Wirtschaftlichkeit zu prüfen:\nAuftrag 1: Aufwand 600.000 EUR, Ertrag 720.000 EUR\nAuftrag 2: Aufwand 320.000 EUR, Ertrag 400.000 EUR\nAuftrag 3: Aufwand 160.000 EUR, Ertrag 208.000 EUR\nAuftrag 4: Aufwand 200.000 EUR, Ertrag 248.000 EUR\nWelcher Auftrag wurde am wirtschaftlichsten abgewickelt?\n(Hier: Im Original ist die Nummer des Auftrags einzutragen; „Alle vier Aufträge sind gleich wirtschaftlich“ ist als Distraktor ergänzt.)",
            ["Auftrag 3", "Auftrag 1", "Auftrag 2", "Auftrag 4", "Alle vier Aufträge sind gleich wirtschaftlich"],
-           "3. Wirtschaftlichkeit = Ertrag / Aufwand: 1,20; 1,25; 1,30; 1,24. (Im Original ist nur die Auftragsnummer einzutragen; die fünfte Option ist ergänzt.)"),
+           "3. Wirtschaftlichkeit = Ertrag / Aufwand: 1,20; 1,25; 1,30; 1,24."),
         sv(21, .unternehmen, "Die Ecotec GmbH überlegt, ob das Unternehmen neu organisiert werden soll. Hierfür analysiert sie zunächst die bestehende Organisationsstruktur. Das folgende Schema zeigt das bestehende Leitungssystem:\n[Schema als Text: Eine Stelle an der Spitze, darunter drei Stellen, jede davon mit drei untergeordneten Stellen; jede Stelle hat genau eine übergeordnete Stelle, keine Stabsstellen.]\nNach welchem der folgenden Leitungssysteme arbeitet die Ecotec GmbH?",
            ["Einliniensystem", "Matrixsystem", "Mehrliniensystem", "Stabliniensystem", "Abteilungssystem"],
            "Ziffer 1."),

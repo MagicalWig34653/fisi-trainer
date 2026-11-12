@@ -348,7 +348,7 @@ extension ExamCatalog {
         ihkChoice("ihk-ap2-2023w-wiso-\(nr)", topic, w23wLage, "\(nr). Aufgabe\n\(text)", options, "\(w23wMuster) \(expl)")
     }
     private static func wvm(_ nr: Int, _ topic: ExamTopic, _ text: String, correct: [String], wrong: [String], _ expl: String) -> ExamCard {
-        ihkMultiple("ihk-ap2-2023w-wiso-\(nr)", topic, w23wLage, "\(nr). Aufgabe\n\(text)", correct: correct, wrong: wrong, "\(w23wMuster) \(expl)")
+        ihkMultiple("ihk-ap2-2023w-wiso-\(nr)", topic, w23wLage, "\(nr). Aufgabe\n\(text)", correct: correct, wrong: wrong, "\(w23wMuster) \(ihkZiffer(expl, answers: correct))")
     }
     private static let w23wLohn = "4. Aufgabe\nFür den Monat November 2023 erhält Frau Medstein von der Personalabteilung der Ecotec GmbH die folgende Abrechnung:\n- Der Stundenlohn beträgt 15,80 EUR.\n- Im vergangenen Monat hat Frau Medstein 170 Stunden gearbeitet, davon zwölf Stunden an Samstagen.\n- Für Samstagsarbeit erhält Frau Medstein zusätzliche 30 % auf den Stundenlohn.\n- Zusätzlich erhält Frau Medstein eine freiwillige Sonderzahlung als Urlaubsgeld in Höhe von 250,00 EUR brutto.\nBerechnen Sie ..."
     private static let w23wGruender = "Situation zur 15. und 16. Aufgabe: Die Freunde Robert Meyer und Julia Dango wollen ein IT-Serviceunternehmen gründen.\n- Beide wollen gleichberechtigte Geschäftsführer sein.\n- Die Haftung soll sich auf das Gesellschaftsvermögen beschränken.\n- Beide haben jeweils 20.000,00 EUR Eigenkapital, das sie in das Unternehmen einbringen können."
@@ -423,9 +423,9 @@ extension ExamCatalog {
         wv(19, .unternehmen, "Bei der Gründung des Unternehmens wurde von Herrn Meyer und Frau Dango die Rechtsform GmbH gewählt.\nWelche der folgenden Aussagen trifft auf eine GmbH zu?",
            ["Das Stammkapital der GmbH muss bei Gründung mindestens 25.000 EUR betragen.", "GmbH-Anteile werden an der Börse gehandelt.", "Alle Gesellschafter der GmbH sind jederzeit zur Geschäftsführung berechtigt.", "Die Gesellschafter der GmbH haften für Verbindlichkeiten mit ihrem Privatvermögen.", "Der Aufsichtsrat leitet die GmbH."],
            "Ziffer 2. § 5 GmbHG."),
-        wv(20, .wirtschaft, "Für vier durchgeführten Aufträge des Unternehmens liegen folgende Zahlen vor:\nAuftrag 1: Aufwand 300.000 EUR, Ertrag 360.000 EUR\nAuftrag 2: Aufwand 80.000 EUR, Ertrag 100.000 EUR\nAuftrag 3: Aufwand 80.000 EUR, Ertrag 104.000 EUR\nAuftrag 4: Aufwand 100.000 EUR, Ertrag 124.000 EUR\nWelcher Auftrag wurde am wirtschaftlichsten abgewickelt?",
+        wv(20, .wirtschaft, "Für vier durchgeführten Aufträge des Unternehmens liegen folgende Zahlen vor:\nAuftrag 1: Aufwand 300.000 EUR, Ertrag 360.000 EUR\nAuftrag 2: Aufwand 80.000 EUR, Ertrag 100.000 EUR\nAuftrag 3: Aufwand 80.000 EUR, Ertrag 104.000 EUR\nAuftrag 4: Aufwand 100.000 EUR, Ertrag 124.000 EUR\nWelcher Auftrag wurde am wirtschaftlichsten abgewickelt?\n(Hier: Im Original ist die Nummer des Auftrags einzutragen; „Alle vier Aufträge sind gleich wirtschaftlich“ ist als Distraktor ergänzt.)",
            ["Auftrag 3", "Auftrag 1", "Auftrag 2", "Auftrag 4", "Alle vier Aufträge sind gleich wirtschaftlich"],
-           "3. Wirtschaftlichkeit = Ertrag / Aufwand: 1,20; 1,25; 1,30; 1,24. (Im Original ist nur die Auftragsnummer einzutragen; die fünfte Option ist ergänzt. „vier durchgeführten Aufträge“ steht so im Original.)"),
+           "3. Wirtschaftlichkeit = Ertrag / Aufwand: 1,20; 1,25; 1,30; 1,24. („vier durchgeführten Aufträge“ steht so im Original.)"),
         wv(21, .unternehmen, "Das folgende Schema zeigt das Leitungssystem des neuen Unternehmens:\n[Schema als Text: drei Stellen oben, fünf Stellen darunter; jede untere Stelle ist mit allen drei oberen Stellen verbunden.]\nNach welchem der folgenden Leitungssysteme arbeitet das neue Unternehmen?",
            ["Mehrliniensystem", "Einliniensystem", "Matrixsystem", "Stabliniensystem", "Abteilungssystem"],
            "Ziffer 3. Jede Stelle hat mehrere Vorgesetzte."),
