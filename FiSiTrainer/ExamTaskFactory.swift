@@ -189,3 +189,81 @@ enum ExamNumber {
         (value > 0 ? "+" : value < 0 ? "−" : "±") + format(abs(value), decimals: decimals) + " %"
     }
 }
+
+/// Zahleneingabe statt Auswahl bei Rechenaufgaben: liest Wert und Einheit der richtigen Option
+/// ("1.234,56 €", "12,5 %", "4,8 TB") und prüft eine getippte Antwort mit Rundungstoleranz und Einheit.
+struct ExamNumericAnswer: Equatable {
+    enum Verdict: Equatable { case correct, wrong, invalid }
+
+    let value: Double
+    let unit: String
+    private(set) var decimals: Int
+
+    /// Halber Schritt der letzten angezeigten Stelle: Wer exakt rechnet und rundet, trifft die Lösung.
+    var tolerance: Double { 0.5 * pow(10, -Double(decimals)) + 1e-9 }
+
+    /// Nur Optionen, die ausschließlich aus Zahl und kurzer Einheit bestehen, sind eintippbar.
+    init?(option text: String) {
+        let trimmed = text.trimmingCharacters(in: .whitespaces)
+        let (number, rest) = Self.splitNumber(trimmed)
+        let unit = rest.trimmingCharacters(in: .whitespaces)
+        guard let value = Self.parse(number), unit.count <= 8, !unit.contains(" "),
+              !unit.contains(where: \.isNumber) else { return nil }
+        self.value = value
+        self.unit = unit
+        let normalized = number.replacingOccurrences(of: ".", with: "")
+        if let comma = normalized.firstIndex(of: ",") {
+            decimals = normalized.distance(from: comma, to: normalized.endIndex) - 1
+        } else {
+            decimals = 0
+        }
+    }
+
+    /// Trennt führende Zahl (mit Vorzeichen, Tausenderpunkt und Dezimalkomma) vom Rest.
+    private static func splitNumber(_ text: String) -> (String, String) {
+        let allowed = Set("0123456789.,+-−")
+        let number = String(text.prefix { allowed.contains($0) })
+        return (number, String(text.dropFirst(number.count)))
+    }
+
+    /// Liest deutsche und englische Schreibweise: "1.234,5", "1234,5", "1234.5", "1.234".
+    static func parse(_ text: String) -> Double? {
+        var t = text.replacingOccurrences(of: "−", with: "-").replacingOccurrences(of: " ", with: "")
+        if t.hasPrefix("+") { t.removeFirst() }
+        guard !t.isEmpty, t.contains(where: \.isNumber) else { return nil }
+        if t.contains(",") {
+            t = t.replacingOccurrences(of: ".", with: "").replacingOccurrences(of: ",", with: ".")
+        } else if t.range(of: #"^-?\d{1,3}(\.\d{3})+$"#, options: .regularExpression) != nil {
+            t = t.replacingOccurrences(of: ".", with: "")
+        }
+        return Double(t)
+    }
+
+    /// Eine getippte Antwort, optional mit Einheit. Eine andere als die erwartete Einheit ist falsch.
+    func verdict(for input: String) -> Verdict {
+        let (number, rest) = Self.splitNumber(input.trimmingCharacters(in: .whitespaces))
+        guard let typed = Self.parse(number) else { return .invalid }
+        let typedUnit = rest.trimmingCharacters(in: .whitespaces).lowercased()
+        if !typedUnit.isEmpty, typedUnit != unit.lowercased() { return .wrong }
+        return abs(typed - value) <= tolerance ? .correct : .wrong
+    }
+
+    /// Antwortindex für den `ExamStore`: die richtige Option, die passende falsche oder die erste falsche.
+    static func answerIndex(for input: String, task: ExamTask) -> Int? {
+        guard task.kind == .single, let solution = task.solution.first,
+              task.options.indices.contains(solution),
+              var expected = ExamNumericAnswer(option: task.options[solution]) else { return nil }
+        // Die Toleranz richtet sich nach der feinsten Angabe aller Optionen, damit nahe Ablenker falsch bleiben.
+        expected.decimals = task.options.compactMap { ExamNumericAnswer(option: $0)?.decimals }.max() ?? expected.decimals
+        switch expected.verdict(for: input) {
+        case .invalid: return nil
+        case .correct: return solution
+        case .wrong:
+            let typed = input.trimmingCharacters(in: .whitespaces)
+            let match = task.options.indices.first { index in
+                index != solution && ExamNumericAnswer(option: task.options[index])?.verdict(for: typed) == .correct
+            }
+            return match ?? task.options.indices.first { $0 != solution }
+        }
+    }
+}
