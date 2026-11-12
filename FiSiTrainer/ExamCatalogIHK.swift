@@ -12,7 +12,7 @@ import Foundation
 /// Lösungen „laut Lösungshinweis“ stammen aus den offiziellen Lösungshinweisen des Archivs, alle anderen
 /// sind „zum Gegenlesen“. Die Quelle steht am Ende jeder Erklärung. Fortschritt: `Documentation/IHK-IMPORT.md`.
 extension ExamCatalog {
-    static let ihk: [ExamCard] = ihkS2026 + ihkW1920GA1 + ihkW1920WiSo
+    static let ihk: [ExamCard] = ihkS2026 + ihkW2025 + ihkW1920GA1 + ihkW1920WiSo
 
     // MARK: - Hilfen für alle IHK-Karten
 

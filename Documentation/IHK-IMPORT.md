@@ -22,15 +22,17 @@ Teile: GA1 (FISI), GA2 (gemeinsam), WiSo, je mit Lösung. Es gibt keine iCloud-D
 |---|---|---|---|---|
 | AP2 Sommer 2026 | Downloads | GA1 (21), GA2 (ca. 31), WiSo (30) | ca. 82 | fertig, committed |
 | AP2 Winter 2019/20 | iCloud (Lösungshinweise amtlich) | GA1 (27), WiSo (30) | 57 | fertig, committed (nicht Teil der Etappe 1, aber bereits erfasst) |
-| AP2 Winter 2025/26 | Downloads | GA1, GA2, WiSo | 0 | offen, OCR liegt vor |
+| AP2 Winter 2025/26 | Downloads (Musterlösung inoffiziell, zum Gegenlesen) | GA1 (21), GA2 (26), WiSo (28) | 75 | fertig, committed (`ExamCatalogIHK2025W.swift`); WiSo 29 und 30 sind Dubletten von Sommer 2026 WiSo 21 und 24 und nicht doppelt angelegt |
 | AP2 Sommer 2025 | Downloads | GA1, GA2, WiSo | 0 | offen, OCR liegt vor |
 | AP2 Winter 2024/25 | Downloads | GA1, GA2, WiSo | 0 | offen, Lösungen von GA1/GA2 brauchen OCR |
 
-Rest von Etappe 1: 3 Termine à ca. 80 Karten. Schätzung: je Termin etwa so viel Aufwand wie Sommer 2026. Danach Etappen zu je 4 Termine rückwärts (Sommer 2024, Winter 2023, Sommer 2023, Winter 2022 usw.), alte AO und iCloud zuletzt.
+Rest von Etappe 1: Sommer 2025 und Winter 2024/25 à ca. 80 Karten. Schätzung: je Termin etwa so viel Aufwand wie Sommer 2026. Danach Etappen zu je 4 Termine rückwärts (Sommer 2024, Winter 2023, Sommer 2023, Winter 2022 usw.), alte AO und iCloud zuletzt.
 
 ## Abgleich mit dem Bestand
 
 - sys-k01..k23 (`ExamCatalogIT.swift`) tragen nur "Termin und Aufgabe nicht erkennbar". Neue Karten wurden bei Themengleichheit (RAID, USV, Akku) nicht als Dublette gewertet, weil kein identischer Prüfungstext gefunden wurde. Offen: systematischer Textabgleich mit allen Terminen; bei Treffer die Bestandskarte auf Originalwortlaut umstellen und Quelle ergänzen (ID bleibt).
+- Systematischer Textabgleich (seit Winter 2025/26): Jede neue Termindatei wird vor dem Commit per 4-Wort-Shingles gegen alle Karten aller `ExamCatalog*.swift` (eigene Karten, sys-k01..k23, alle IHK-Termine) geprüft; Treffer ab 20 % Überdeckung werden von Hand gesichtet. Winter 2025/26: keine Treffer bei GA1/GA2 und sys-k; WiSo 29 (Emissionen im Lager) und 30 („Blauer Engel“) wörtlich wie Sommer 2026 WiSo 21 und 24, daher nicht angelegt.
+- Unsichere OCR-Stellen Winter 2025/26 (in der Erklärung der Karte gekennzeichnet): GA1 1aa Spalten der Systemtabelle, 1ac/1c Abbildungen nur als Text, 3aa Zeilennummern 7 bis 11, 3ab Symbole && und || ergänzt; GA2 Netzwerkplan (Schnittstellennamen Router Reisebüro, Latenzspalte der Anbietertabelle); WiSo 6 Ende von Ziffer 4. Sachliche Unstimmigkeiten der Musterlösung (GA2 4ba: Formel ergibt für alle vier Anbieter über 99,9 %; WiSo 3 Zeugnis „auf Wunsch“) sind in der Erklärung vermerkt. GA1 2b: Musterlösung nennt nur Punkte, Lösung selbst erstellt.
 - Zwischen Downloads und iCloud überschneiden sich die Termine nicht (iCloud endet 2020/21, Downloads beginnt Winter 2021).
 
 ## Themenraster neuer AP2-Katalog (ab 2025)

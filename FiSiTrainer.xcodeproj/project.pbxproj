@@ -27,6 +27,7 @@
 		566DBBCE8D452184A23FABE0 /* PetIntelligenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2DB5C738374805032902B5 /* PetIntelligenceTests.swift */; };
 		58A0BE590AB51EADD0755798 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48ABCD202D6A9C01B366A3EE /* ContentView.swift */; };
 		A1C0DE0000000000000A0003 /* ExamCatalogIHK2026S.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000B0003 /* ExamCatalogIHK2026S.swift */; };
+		A1C0DE0000000000000A0004 /* ExamCatalogIHK2025W.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000B0004 /* ExamCatalogIHK2025W.swift */; };
 		A1C0DE0000000000000A0001 /* ExamCatalogIHK.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000B0001 /* ExamCatalogIHK.swift */; };
 		A1C0DE0000000000000A0002 /* ExamOrigin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000B0002 /* ExamOrigin.swift */; };
 		5B760F437435D6D2D34800E8 /* ExamCatalogWirtschaft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0515098DBB6A62E16526353B /* ExamCatalogWirtschaft.swift */; };
@@ -81,6 +82,7 @@
 /* Begin PBXFileReference section */
 		030E2B318A7211A592421A48 /* SubnetTrainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubnetTrainer.swift; sourceTree = "<group>"; };
 		A1C0DE0000000000000B0003 /* ExamCatalogIHK2026S.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogIHK2026S.swift; sourceTree = "<group>"; };
+		A1C0DE0000000000000B0004 /* ExamCatalogIHK2025W.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogIHK2025W.swift; sourceTree = "<group>"; };
 		A1C0DE0000000000000B0001 /* ExamCatalogIHK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogIHK.swift; sourceTree = "<group>"; };
 		A1C0DE0000000000000B0002 /* ExamOrigin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamOrigin.swift; sourceTree = "<group>"; };
 		0515098DBB6A62E16526353B /* ExamCatalogWirtschaft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogWirtschaft.swift; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 				46CFFE7C5E38C316195D0E0A /* ExamCatalogUnternehmen.swift */,
 				A1C0DE0000000000000B0001 /* ExamCatalogIHK.swift */,
 				A1C0DE0000000000000B0003 /* ExamCatalogIHK2026S.swift */,
+				A1C0DE0000000000000B0004 /* ExamCatalogIHK2025W.swift */,
 				A1C0DE0000000000000B0002 /* ExamOrigin.swift */,
 				0515098DBB6A62E16526353B /* ExamCatalogWirtschaft.swift */,
 				2EAC35B5831FB7BFA00200EE /* ExamModels.swift */,
@@ -368,6 +371,7 @@
 				DDF6A0D5F937D34DFFAB5DA9 /* ExamCatalogUnternehmen.swift in Sources */,
 				A1C0DE0000000000000A0001 /* ExamCatalogIHK.swift in Sources */,
 				A1C0DE0000000000000A0003 /* ExamCatalogIHK2026S.swift in Sources */,
+				A1C0DE0000000000000A0004 /* ExamCatalogIHK2025W.swift in Sources */,
 				A1C0DE0000000000000A0002 /* ExamOrigin.swift in Sources */,
 				5B760F437435D6D2D34800E8 /* ExamCatalogWirtschaft.swift in Sources */,
 				326A35FD7571BE79508EAD27 /* ExamModels.swift in Sources */,
