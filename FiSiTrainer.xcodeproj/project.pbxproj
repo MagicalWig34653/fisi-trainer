@@ -28,6 +28,7 @@
 		58A0BE590AB51EADD0755798 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48ABCD202D6A9C01B366A3EE /* ContentView.swift */; };
 		A1C0DE0000000000000A0003 /* ExamCatalogIHK2026S.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000B0003 /* ExamCatalogIHK2026S.swift */; };
 		A1C0DE0000000000000A0006 /* ExamCatalogIHK2024W.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000B0006 /* ExamCatalogIHK2024W.swift */; };
+		A1C0DE0000000000000A0007 /* ExamCatalogIHK2024S.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000B0007 /* ExamCatalogIHK2024S.swift */; };
 		A1C0DE0000000000000A0005 /* ExamCatalogIHK2025S.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000B0005 /* ExamCatalogIHK2025S.swift */; };
 		A1C0DE0000000000000A0004 /* ExamCatalogIHK2025W.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000B0004 /* ExamCatalogIHK2025W.swift */; };
 		A1C0DE0000000000000A0001 /* ExamCatalogIHK.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000B0001 /* ExamCatalogIHK.swift */; };
@@ -85,6 +86,7 @@
 		030E2B318A7211A592421A48 /* SubnetTrainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubnetTrainer.swift; sourceTree = "<group>"; };
 		A1C0DE0000000000000B0003 /* ExamCatalogIHK2026S.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogIHK2026S.swift; sourceTree = "<group>"; };
 		A1C0DE0000000000000B0006 /* ExamCatalogIHK2024W.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogIHK2024W.swift; sourceTree = "<group>"; };
+		A1C0DE0000000000000B0007 /* ExamCatalogIHK2024S.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogIHK2024S.swift; sourceTree = "<group>"; };
 		A1C0DE0000000000000B0005 /* ExamCatalogIHK2025S.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogIHK2025S.swift; sourceTree = "<group>"; };
 		A1C0DE0000000000000B0004 /* ExamCatalogIHK2025W.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogIHK2025W.swift; sourceTree = "<group>"; };
 		A1C0DE0000000000000B0001 /* ExamCatalogIHK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamCatalogIHK.swift; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 				A1C0DE0000000000000B0001 /* ExamCatalogIHK.swift */,
 				A1C0DE0000000000000B0003 /* ExamCatalogIHK2026S.swift */,
 				A1C0DE0000000000000B0006 /* ExamCatalogIHK2024W.swift */,
+				A1C0DE0000000000000B0007 /* ExamCatalogIHK2024S.swift */,
 				A1C0DE0000000000000B0005 /* ExamCatalogIHK2025S.swift */,
 				A1C0DE0000000000000B0004 /* ExamCatalogIHK2025W.swift */,
 				A1C0DE0000000000000B0002 /* ExamOrigin.swift */,
@@ -378,6 +381,7 @@
 				A1C0DE0000000000000A0001 /* ExamCatalogIHK.swift in Sources */,
 				A1C0DE0000000000000A0003 /* ExamCatalogIHK2026S.swift in Sources */,
 				A1C0DE0000000000000A0006 /* ExamCatalogIHK2024W.swift in Sources */,
+				A1C0DE0000000000000A0007 /* ExamCatalogIHK2024S.swift in Sources */,
 				A1C0DE0000000000000A0005 /* ExamCatalogIHK2025S.swift in Sources */,
 				A1C0DE0000000000000A0004 /* ExamCatalogIHK2025W.swift in Sources */,
 				A1C0DE0000000000000A0002 /* ExamOrigin.swift in Sources */,
