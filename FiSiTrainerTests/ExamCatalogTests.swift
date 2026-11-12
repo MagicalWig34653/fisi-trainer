@@ -221,6 +221,17 @@ final class ExamOriginTests: XCTestCase {
         XCTAssertFalse(ExamCatalog.all.contains { ["ihk-ap2-2022w-ga1-1cb", "ihk-ap2-2022w-ga1-3b", "ihk-ap2-2022w-ga1-3c"].contains($0.id) })
     }
 
+    /// sys-k01 wertet wie die IHK-Musterlösung 10 Platten (ein Verbund über beide Arrays).
+    func testSysK01CountsTenDisks() {
+        guard case let .choice(_, _, prompt, options, explanation)? = ExamCatalog.all.first(where: { $0.id == "sys-k01" }) else {
+            return XCTFail("sys-k01 fehlt oder ist keine Auswahl")
+        }
+        XCTAssertEqual(options.first, "10 Platten")
+        XCTAssertFalse(options.dropFirst().contains("10 Platten"))
+        XCTAssertTrue(prompt.contains("über beide Arrays"))
+        XCTAssertTrue(explanation.contains("7 + 2 + 1 = 10 Platten"))
+    }
+
     func testFilterRecentAndPart() {
         let old = ExamOrigin(cardID: "ihk-ap2-2019w-ga1-1")
         let new = ExamOrigin(cardID: "ihk-ap2-2026s-ga1-1")
