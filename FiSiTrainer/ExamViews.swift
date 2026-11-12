@@ -595,10 +595,81 @@ private struct SingleTaskView: View {
     let mode: ExamMode
     @EnvironmentObject private var store: ExamStore
 
+    @AppStorage("exam.numericInput") private var typeNumbers = true
+    @State private var input = ""
+
     private var answered: Bool { session.showsResolution }
     private var isTrueFalse: Bool { task.options == [ExamTaskFactory.trueLabel, ExamTaskFactory.falseLabel] }
+    /// Rechenaufgabe, deren richtige Antwort eine Zahl mit kurzer Einheit ist.
+    private var numeric: ExamNumericAnswer? {
+        guard mode == .calc, let solution = task.solution.first, task.options.indices.contains(solution) else { return nil }
+        return ExamNumericAnswer(option: task.options[solution])
+    }
 
     var body: some View {
+        if let numeric {
+            VStack(alignment: .leading, spacing: 12) {
+                if !answered {
+                    Toggle("Zahl selbst eintippen", isOn: $typeNumbers)
+                        .font(.system(size: 12, weight: .semibold))
+                        .toggleStyle(.switch)
+                }
+                if typeNumbers { numberEntry(numeric) } else { choiceList }
+            }
+        } else {
+            choiceList
+        }
+    }
+
+    private func numberEntry(_ numeric: ExamNumericAnswer) -> some View {
+        let correct = answered ? session.currentAnswer.map { task.isCorrect($0) } : nil
+        let invalid = !input.isEmpty && numeric.verdict(for: input) == .invalid
+        return VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 10) {
+                TextField("Ergebnis", text: $input)
+                    .textFieldStyle(.plain)
+                    .font(.system(size: 20, weight: .bold, design: .monospaced))
+                    .padding(.horizontal, 16)
+                    .frame(height: 58)
+                    .background(ExamStyle.raised, in: RoundedRectangle(cornerRadius: 11))
+                    .overlay(RoundedRectangle(cornerRadius: 11).strokeBorder(
+                        (correct == nil ? ExamStyle.primary : correct == true ? ExamStyle.accent : ExamStyle.red).opacity(0.4)))
+                    .disabled(answered)
+                    .onSubmit(submit)
+                    #if os(iOS)
+                    .keyboardType(.numbersAndPunctuation)
+                    #endif
+                    .accessibilityLabel("Ergebnis eintippen")
+                if !numeric.unit.isEmpty {
+                    Text(numeric.unit)
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(ExamStyle.muted)
+                }
+            }
+            if invalid {
+                Text("Bitte eine Zahl eingeben, zum Beispiel 1.234,5")
+                    .font(.system(size: 12)).foregroundStyle(ExamStyle.red)
+            }
+            if answered {
+                Text("Richtig: \(task.options[task.solution[0]])")
+                    .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(correct == true ? ExamStyle.accent : ExamStyle.muted)
+            } else {
+                FlowButton(title: "Prüfen\(returnKeyHint)", isDisabled: input.isEmpty || invalid,
+                           style: ExamPrimaryButtonStyle(), action: submit)
+                Text("Gerundet wie angezeigt wird akzeptiert; eine andere Einheit zählt als falsch.")
+                    .font(.system(size: 11)).foregroundStyle(ExamStyle.muted)
+            }
+        }
+    }
+
+    private func submit() {
+        guard !answered, let index = ExamNumericAnswer.answerIndex(for: input, task: task) else { return }
+        store.answer([index], mode: mode)
+    }
+
+    @ViewBuilder
+    private var choiceList: some View {
         if isTrueFalse {
             HStack(spacing: 14) {
                 ForEach(Array(task.options.enumerated()), id: \.offset) { index, label in
@@ -764,23 +835,15 @@ private struct MatchTaskView: View {
         let label = chosenIndex.flatMap { task.options.indices.contains($0) ? task.options[$0] : nil }
         return HStack(alignment: .center, spacing: 12) {
             if isGap {
-                gapText(item, chosenLabel: label)
+                gapSentence(item, label: label, index: index, correct: answered ? isCorrect : nil)
             } else {
                 Text(item)
                     .font(.system(size: 14, weight: .medium))
                     .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 8)
+                optionMenu(index: index, label: label)
+                    .frame(minWidth: 160)
             }
-            Spacer(minLength: 8)
-            Menu {
-                ForEach(Array(task.options.enumerated()), id: \.offset) { optionIndex, optionLabel in
-                    Button(optionLabel) { selections[index] = optionIndex }
-                }
-            } label: {
-                Text(label ?? "Wählen …")
-                    .font(.system(size: 13, weight: .semibold))
-            }
-            .disabled(answered)
-            .frame(minWidth: 160)
             if answered {
                 Image(systemName: isCorrect ? "checkmark.circle.fill" : "xmark.circle.fill")
                     .foregroundStyle(isCorrect ? ExamStyle.accent : ExamStyle.red)
@@ -791,13 +854,41 @@ private struct MatchTaskView: View {
         .accessibilityElement(children: .combine)
     }
 
-    private func gapText(_ sentence: String, chosenLabel: String?) -> some View {
+    private func optionMenu(index: Int, label: String?) -> some View {
+        Menu {
+            ForEach(Array(task.options.enumerated()), id: \.offset) { optionIndex, optionLabel in
+                Button(optionLabel) { selections[index] = optionIndex }
+            }
+        } label: {
+            Text(label ?? "Wählen …")
+                .font(.system(size: 13, weight: .semibold))
+        }
+        .disabled(answered)
+    }
+
+    /// Lückentext: Die Lücke steht im Satz; der Satz antippen öffnet die Wortbank.
+    private func gapSentence(_ sentence: String, label: String?, index: Int, correct: Bool?) -> some View {
         let parts = sentence.components(separatedBy: "___")
-        return (Text(parts.first ?? "")
-            + Text(chosenLabel ?? "＿＿＿＿").foregroundColor(chosenLabel == nil ? ExamStyle.muted : ExamStyle.accent)
-            + Text(parts.count > 1 ? parts[1] : ""))
-            .font(.system(size: 14, weight: .medium))
-            .fixedSize(horizontal: false, vertical: true)
+        let color: Color = correct == false ? ExamStyle.red : ExamStyle.accent
+        let blank = Text(label ?? "＿＿＿＿＿＿").bold().underline()
+            .foregroundColor(label == nil ? ExamStyle.muted : color)
+        let text = Text(parts.first ?? "") + Text(" ") + blank + Text(" ") + Text(parts.count > 1 ? parts[1] : "")
+        return Menu {
+            ForEach(Array(task.options.enumerated()), id: \.offset) { optionIndex, optionLabel in
+                Button(optionLabel) { selections[index] = optionIndex }
+            }
+        } label: {
+            text
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(ExamStyle.primary)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .menuStyle(.borderlessButton)
+        .menuIndicator(.hidden)
+        .disabled(answered)
+        .accessibilityLabel("Lücke im Satz: \(sentence.replacingOccurrences(of: "___", with: label ?? "leer")). Wort wählen")
     }
 }
 

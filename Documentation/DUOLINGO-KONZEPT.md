@@ -68,6 +68,8 @@ Umgesetzt (12.11.): `LearningRecord` trägt `box` (0 bis 3) und `lastSeen` (opti
 
 Numerische Eingabe bei Rechenaufgaben (Toleranz, Einheit), Lückentext mit Wortbank im Satz.
 
+Umgesetzt (12.11.): Rechentraining mit Zahleneingabe. `ExamNumericAnswer` liest Wert und Einheit der richtigen Option und prüft die Eingabe mit Rundungstoleranz (halbe letzte Stelle der feinsten Option, damit nahe Ablenker falsch bleiben) und Einheit; die Eingabe wird auf den bisherigen Antwortindex abgebildet, Speicherformat, XP und Lernstand bleiben unverändert. Nur Optionen aus Zahl plus kurzer Einheit sind eintippbar (Fristen, Zeiten wie „3 h 12 min“ und Adressen bleiben Auswahl); Schalter „Zahl selbst eintippen“ (AppStorage `exam.numericInput`, Standard an). Lückentext: Die Lücke steht im Satz, der Satz selbst öffnet die Wortbank.
+
 ### Welle 5: Haustier und Belohnungen
 
 Haustier reagiert auf Tagesziel und Streak-Meilensteine, Wochenkalender, Meilensteine 7/30/100 Tage, Bindungspunkte.

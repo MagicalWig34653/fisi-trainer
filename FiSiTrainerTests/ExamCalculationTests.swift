@@ -136,4 +136,54 @@ final class ExamCalculationTests: XCTestCase {
             }
         }
     }
+
+    // MARK: Zahleneingabe
+
+    func testNumericAnswerParsesValueUnitAndPrecision() throws {
+        let euro = try XCTUnwrap(ExamNumericAnswer(option: "1.234,56 €"))
+        XCTAssertEqual(euro.value, 1234.56, accuracy: 1e-9)
+        XCTAssertEqual(euro.unit, "€")
+        XCTAssertEqual(euro.decimals, 2)
+        let percent = try XCTUnwrap(ExamNumericAnswer(option: "−3,5 %"))
+        XCTAssertEqual(percent.value, -3.5, accuracy: 1e-9)
+        XCTAssertNil(ExamNumericAnswer(option: "4 Wochen zum Monatsende"))
+        XCTAssertNil(ExamNumericAnswer(option: "3 h 12 min"))
+        XCTAssertNil(ExamNumericAnswer(option: "10.0.0.0/24"))
+        XCTAssertNil(ExamNumericAnswer(option: "Richtig"))
+    }
+
+    func testNumericVerdictChecksToleranceAndUnit() throws {
+        let answer = try XCTUnwrap(ExamNumericAnswer(option: "12,5 %"))
+        XCTAssertEqual(answer.verdict(for: "12,5"), .correct)
+        XCTAssertEqual(answer.verdict(for: "12.5 %"), .correct, "englische Schreibweise und Einheit")
+        XCTAssertEqual(answer.verdict(for: "12,54"), .correct, "innerhalb der Rundung")
+        XCTAssertEqual(answer.verdict(for: "12,6"), .wrong)
+        XCTAssertEqual(answer.verdict(for: "12,5 TB"), .wrong, "falsche Einheit")
+        XCTAssertEqual(answer.verdict(for: "abc"), .invalid)
+        let thousands = try XCTUnwrap(ExamNumericAnswer(option: "1.250 GB"))
+        XCTAssertEqual(thousands.verdict(for: "1250"), .correct)
+        XCTAssertEqual(thousands.verdict(for: "1.250"), .correct, "Tausenderpunkt")
+    }
+
+    /// Alle Generatoren, viele Startwerte: Die getippte richtige Option ist richtig, jede falsche Option falsch.
+    func testTypingEveryOptionTextGradesLikeChoosingIt() {
+        var eligible = Set<String>()
+        for seed in UInt64(1)...40 {
+            var generator = CalcSplitMix64(seed: seed)
+            for calc in ExamCalculation.allCases {
+                let task = calc.makeTask(using: &generator)
+                guard let solution = task.solution.first,
+                      ExamNumericAnswer(option: task.options[solution]) != nil else { continue }
+                eligible.insert(calc.rawValue)
+                XCTAssertEqual(ExamNumericAnswer.answerIndex(for: task.options[solution], task: task), solution,
+                               "\(calc.rawValue) seed \(seed)")
+                for (index, option) in task.options.enumerated() where index != solution {
+                    if let typed = ExamNumericAnswer.answerIndex(for: option, task: task) {
+                        XCTAssertNotEqual(typed, solution, "\(calc.rawValue): \(option) darf nicht richtig sein")
+                    }
+                }
+            }
+        }
+        XCTAssertGreaterThanOrEqual(eligible.count, 10, "Mindestens die Hälfte der Generatoren erlaubt Zahleneingabe: \(eligible.sorted())")
+    }
 }
