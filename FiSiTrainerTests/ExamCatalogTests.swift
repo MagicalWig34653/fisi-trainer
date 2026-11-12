@@ -155,7 +155,13 @@ final class ExamOriginTests: XCTestCase {
             ("ihk-ap2-2023s-wiso-", ExamCatalog.ihkS2023WiSo, "Sommer 2023"),
             ("ihk-ap2-2022w-ga1-", ExamCatalog.ihkW2022GA1, "Winter 2022/23"),
             ("ihk-ap2-2022w-ga2-", ExamCatalog.ihkW2022GA2, "Winter 2022/23"),
-            ("ihk-ap2-2022w-wiso-", ExamCatalog.ihkW2022WiSo, "Winter 2022/23")
+            ("ihk-ap2-2022w-wiso-", ExamCatalog.ihkW2022WiSo, "Winter 2022/23"),
+            ("ihk-ap2-2022s-ga1-", ExamCatalog.ihkS2022GA1, "Sommer 2022"),
+            ("ihk-ap2-2022s-ga2-", ExamCatalog.ihkS2022GA2, "Sommer 2022"),
+            ("ihk-ap2-2022s-wiso-", ExamCatalog.ihkS2022WiSo, "Sommer 2022"),
+            ("ihk-ap2-2021w-ga1-", ExamCatalog.ihkW2021GA1, "Winter 2021/22"),
+            ("ihk-ap2-2021w-ga2-", ExamCatalog.ihkW2021GA2, "Winter 2021/22"),
+            ("ihk-ap2-2021w-wiso-", ExamCatalog.ihkW2021WiSo, "Winter 2021/22")
         ]
         for (prefix, cards, label) in exams {
             XCTAssertFalse(cards.isEmpty, prefix)
@@ -168,6 +174,12 @@ final class ExamOriginTests: XCTestCase {
         }
         XCTAssertEqual([ExamCatalog.ihkS2023GA1.count, ExamCatalog.ihkS2023GA2.count, ExamCatalog.ihkS2023WiSo.count], [19, 24, 31])
         XCTAssertEqual([ExamCatalog.ihkW2022GA1.count, ExamCatalog.ihkW2022GA2.count, ExamCatalog.ihkW2022WiSo.count], [17, 22, 30])
+        XCTAssertEqual([ExamCatalog.ihkS2022GA1.count, ExamCatalog.ihkS2022GA2.count, ExamCatalog.ihkS2022WiSo.count], [20, 26, 30])
+        XCTAssertEqual([ExamCatalog.ihkW2021GA1.count, ExamCatalog.ihkW2021GA2.count, ExamCatalog.ihkW2021WiSo.count], [24, 21, 30])
+        XCTAssertEqual(ExamCatalog.ihkS2022.count, ExamCatalog.ihkS2022GA1.count + ExamCatalog.ihkS2022GA2.count + ExamCatalog.ihkS2022WiSo.count)
+        XCTAssertEqual(ExamCatalog.ihkW2021.count, ExamCatalog.ihkW2021GA1.count + ExamCatalog.ihkW2021GA2.count + ExamCatalog.ihkW2021WiSo.count)
+        XCTAssertTrue(ExamCatalog.ihk.contains { $0.id.hasPrefix("ihk-ap2-2022s-") })
+        XCTAssertTrue(ExamCatalog.ihk.contains { $0.id.hasPrefix("ihk-ap2-2021w-") })
         XCTAssertEqual(ExamCatalog.ihkS2023.count, ExamCatalog.ihkS2023GA1.count + ExamCatalog.ihkS2023GA2.count + ExamCatalog.ihkS2023WiSo.count)
         XCTAssertEqual(ExamCatalog.ihkW2022.count, ExamCatalog.ihkW2022GA1.count + ExamCatalog.ihkW2022GA2.count + ExamCatalog.ihkW2022WiSo.count)
         XCTAssertTrue(ExamCatalog.ihk.contains { $0.id.hasPrefix("ihk-ap2-2023s-") })
