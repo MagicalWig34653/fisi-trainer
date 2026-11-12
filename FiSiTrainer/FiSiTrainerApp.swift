@@ -26,6 +26,12 @@ struct FiSiTrainerApp: App {
                     rewards.updateXP(xp)
                     learnPath.observeTotalXP(xp)
                 }
+                .onChange(of: learnPath.progress.pendingBond, initial: true) { _, _ in
+                    learnPath.settleBond(into: rewards)
+                }
+                .onChange(of: rewards.selectedPet) { _, _ in
+                    learnPath.settleBond(into: rewards)
+                }
                 .onChange(of: examStore.progress.completedRounds) {
                     learnPath.roundFinished(examStore.session(for: .quiz))
                 }

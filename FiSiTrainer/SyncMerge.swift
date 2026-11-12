@@ -257,7 +257,7 @@ struct RewardSyncData: Codable, Equatable, SyncValidatable {
             toys.allSatisfy { isPet($0.key) && $0.value.isValid { PetToy(rawValue: $0) != nil } } &&
             interactions.allSatisfy { pet, counts in
                 isPet(pet) && counts.allSatisfy {
-                    PetInteraction(rawValue: $0.key) != nil && (0...ProgressCounters.limit).contains($0.value)
+                    ($0.key == RewardStore.bonusBondKey || PetInteraction(rawValue: $0.key) != nil) && (0...ProgressCounters.limit).contains($0.value)
                 }
             }
     }

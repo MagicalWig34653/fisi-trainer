@@ -73,6 +73,8 @@ struct LearnPathView: View {
                 }
                 .pickerStyle(.segmented)
                 .labelsHidden()
+                weekRow
+                milestoneRow
                 if path.progress.streakFreezes > 0 {
                     Label("\(path.progress.streakFreezes)× Streak-Schutz: überbrückt einen verpassten Tag", systemImage: "shield.fill")
                         .font(.system(size: 11, weight: .semibold))
@@ -84,6 +86,41 @@ struct LearnPathView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(PathStyle.surface, in: RoundedRectangle(cornerRadius: 18))
         .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(PathStyle.border))
+    }
+
+    private var weekRow: some View {
+        HStack(spacing: 8) {
+            ForEach(path.week, id: \.key) { day in
+                VStack(spacing: 4) {
+                    Text(day.label)
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(day.isToday ? PathStyle.primary : PathStyle.muted)
+                    Image(systemName: day.state == .met ? "checkmark.circle.fill"
+                          : day.state == .frozen ? "shield.fill" : "circle")
+                        .font(.system(size: 17))
+                        .foregroundStyle(day.state == .met ? PathStyle.accent
+                                         : day.state == .frozen ? PathStyle.flame
+                                         : PathStyle.muted.opacity(day.state == .future ? 0.35 : 0.8))
+                }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("\(day.label): \(day.state == .met ? "Ziel erreicht" : day.state == .frozen ? "durch Streak-Schutz überbrückt" : day.state == .future ? "noch offen" : "Ziel verpasst")")
+            }
+        }
+        .padding(.top, 2)
+    }
+
+    private var milestoneRow: some View {
+        HStack(spacing: 8) {
+            ForEach(LearnPathProgress.milestones, id: \.days) { milestone in
+                let reached = path.progress.reachedMilestones.contains(milestone.days)
+                Label("\(milestone.days) Tage", systemImage: reached ? "rosette" : "lock.fill")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(reached ? PathStyle.accent : PathStyle.muted)
+                    .padding(.horizontal, 9).padding(.vertical, 4)
+                    .background(PathStyle.raised, in: Capsule())
+                    .accessibilityLabel("Meilenstein \(milestone.days) Tage, \(reached ? "erreicht" : "offen"), \(milestone.bond) Bindungspunkte")
+            }
+        }
     }
 
     @ViewBuilder

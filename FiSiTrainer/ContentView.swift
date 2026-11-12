@@ -190,7 +190,8 @@ struct ContentView: View {
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 if showsCompanion && !isTouchDevice {
                     if let pet = rewards.selectedPet {
-                        PetCompanionView(pet: pet, context: petContext)
+                        PetCompanionView(pet: pet, context: petContext,
+                                         goalMet: learnPath.goalMetToday, streak: learnPath.streak)
                             .padding(.horizontal, 20)
                             .padding(.vertical, 10)
                             .background(LabStyle.sidebar)
@@ -228,7 +229,8 @@ struct ContentView: View {
         }
         .sheet(isPresented: $showingCompanion) {
             if let pet = rewards.selectedPet {
-                PetCompanionView(pet: pet, context: petContext)
+                PetCompanionView(pet: pet, context: petContext,
+                                         goalMet: learnPath.goalMetToday, streak: learnPath.streak)
                     // Passed on explicitly: the sheet content must not depend on environment inheritance.
                     .environmentObject(rewards)
                     .padding(12)

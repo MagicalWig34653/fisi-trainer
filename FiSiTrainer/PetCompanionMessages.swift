@@ -5,7 +5,22 @@ import Foundation
 
 /// Prepared copy rotates by an explicit turn, so SwiftUI redraws never change a message.
 enum PetCompanionMessages {
-    static func greeting(after result: Bool?, turn: Int) -> String {
+    /// Freude über das Tagesziel; `streak` nennt die Serie, wenn sie schon länger läuft.
+    static func dayGoal(streak: Int, turn: Int) -> String {
+        if streak >= 100 { return "\(streak) Tage in Folge! Das ist eine echte Gewohnheit." }
+        if streak >= 30 { return "\(streak) Tage am Stück. Ich bin richtig stolz auf dich." }
+        if streak >= 7 { return "\(streak) Tage in Folge, das Tagesziel steht auch heute." }
+        let choices = [
+            "Tagesziel geschafft. Jede weitere Aufgabe ist Bonus.",
+            "Das Tagesziel steht. Dein Streak lebt, ich freue mich mit dir.",
+            "Geschafft für heute. Morgen machen wir weiter."
+        ]
+        return choices[positiveIndex(turn, count: choices.count)]
+    }
+
+    static func greeting(after result: Bool?, turn: Int, goalMet: Bool = false, streak: Int = 0) -> String {
+        // Am erreichten Tagesziel wechselt der Gruß zwischen Aufgabenbezug und Freude über das Ziel.
+        if goalMet, result != false, turn % 2 == 1 { return dayGoal(streak: streak, turn: turn / 2) }
         let choices: [String]
         switch result {
         case .some(true):
