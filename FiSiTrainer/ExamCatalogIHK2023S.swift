@@ -8,7 +8,7 @@ import Foundation
 extension ExamCatalog {
     static let ihkS2023: [ExamCard] = ihkS2023GA1 + ihkS2023GA2 + ihkS2023WiSo
 
-    private static let s23Muster = "Lösung laut IHK-Musterlösung:"
+    private static let s23Muster = "Lösung laut Lösungshinweis:"
 
     // MARK: - GA1 (Konzeption und Administration von IT-Systemen)
 
@@ -342,7 +342,7 @@ extension ExamCatalog {
         ihkChoice("ihk-ap2-2023s-wiso-\(nr)", topic, s23wLage, "\(nr). Aufgabe\n\(text)", options, "\(s23wMuster) \(ihkZiffer(expl, answer: options[0]))")
     }
     private static func wvm(_ nr: Int, _ topic: ExamTopic, _ text: String, correct: [String], wrong: [String], _ expl: String) -> ExamCard {
-        ihkMultiple("ihk-ap2-2023s-wiso-\(nr)", topic, s23wLage, "\(nr). Aufgabe\n\(text)", correct: correct, wrong: wrong, "\(s23wMuster) \(expl)")
+        ihkMultiple("ihk-ap2-2023s-wiso-\(nr)", topic, s23wLage, "\(nr). Aufgabe\n\(text)", correct: correct, wrong: wrong, "\(s23wMuster) \(ihkZiffer(expl, answers: correct))")
     }
     private static let s23wParagraph622 = "Bürgerliches Gesetzbuch (BGB) – § 622 Kündigungsfristen bei Arbeitsverhältnissen\n(1) Das Arbeitsverhältnis eines Arbeiters oder eines Angestellten (Arbeitnehmers) kann mit einer Frist von vier Wochen zum Fünfzehnten oder zum Ende eines Kalendermonats gekündigt werden.\n(2) Für eine Kündigung durch den Arbeitgeber beträgt die Kündigungsfrist, wenn das Arbeitsverhältnis in dem Betrieb oder Unternehmen 1. zwei Jahre bestanden hat, einen Monat zum Ende eines Kalendermonats, 2. fünf Jahre bestanden hat, zwei Monate zum Ende eines Kalendermonats, 3. acht Jahre bestanden hat, drei Monate zum Ende eines Kalendermonats, 4. zehn Jahre bestanden hat, vier Monate zum Ende eines Kalendermonats, 5. zwölf Jahre bestanden hat, fünf Monate zum Ende eines Kalendermonats, 6. 15 Jahre bestanden hat, sechs Monate zum Ende eines Kalendermonats, 7. 20 Jahre bestanden hat, sieben Monate zum Ende eines Kalendermonats. […]"
 
@@ -372,7 +372,7 @@ extension ExamCatalog {
         wvm(8, .sozial, "Herr Davidson liest in den Mitteilungen seiner Krankenkasse, dass im Jahr 2023 in der gesetzlichen Krankenversicherung (GKV) die Versicherungspflichtgrenze auf monatlich 5.550,00 EUR bzw. jährlich 66.600,00 EUR angehoben wurde.\nWelche der folgenden Aussagen über die Versicherungspflichtgrenze trifft zu?\n(Hier: Wählen Sie alle Aussagen, die das Lösungsblatt gelten lässt.)",
             correct: ["Versicherte, deren Bruttolohn über der Versicherungspflichtgrenze liegt, können sich als freiwilliges Mitglied weiter in der GKV versichern.", "Auf den Teil des Bruttolohns, der über der Versicherungspflichtgrenze liegt, wird kein Beitrag erhoben."],
             wrong: ["Versicherte, deren Bruttolohn über der Versicherungspflichtgrenze liegt, müssen die GKV verlassen und in die private Krankenversicherung wechseln.", "Bei einem Bruttolohn über der Versicherungspflichtgrenze sind Kinder nicht mehr in der GKV mitversichert.", "Bei einem Verdienst über der Versicherungspflichtgrenze muss der Arbeitnehmer die Beiträge zur GKV zu 100 % selbst tragen."],
-            "Ziffer 1 oder 3: Wer über der Versicherungspflichtgrenze verdient, kann sich freiwillig in der GKV weiterversichern; Beiträge werden nur bis zur Beitragsbemessungsgrenze erhoben, die 2023 mit 4.987,50 EUR monatlich unter der Versicherungspflichtgrenze lag. Hinweis: In der Prüfung genügte eine der beiden Ziffern."),
+            "„Versicherte, deren Bruttolohn über der Versicherungspflichtgrenze liegt, können sich als freiwilliges Mitglied weiter in der GKV versichern“ und „Auf den Teil des Bruttolohns, der über der Versicherungspflichtgrenze liegt, wird kein Beitrag erhoben“ (im Original Ziffer 1 oder 3). Wer über der Versicherungspflichtgrenze verdient, kann sich freiwillig in der GKV weiterversichern; Beiträge werden nur bis zur Beitragsbemessungsgrenze erhoben, die 2023 mit 4.987,50 EUR monatlich unter der Versicherungspflichtgrenze lag. Hinweis: In der Prüfung genügte eine der beiden Ziffern."),
         wv(9, .wirtschaft, "Herr Davidson erhält eine Entgelterhöhung von monatlich 50,00 EUR. Obwohl sich sein Konsumverhalten nicht geändert hat, hat er am Monatsende weniger Geld zur Verfügung, weil die Preise gestiegen sind.\nWelches der folgenden Einkommen ist gesunken?",
            ["Realeinkommen", "Bruttoeinkommen", "Zu versteuerndes Einkommen", "Nettoeinkommen", "Nominaleinkommen"],
            "Ziffer 3. Das Realeinkommen beschreibt die Kaufkraft und sinkt, wenn die Preise stärker steigen als das Einkommen."),

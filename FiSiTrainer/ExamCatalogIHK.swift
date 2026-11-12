@@ -30,22 +30,26 @@ extension ExamCatalog {
     }
 
     /// Mehrfachauswahl: „Ziffern 1 und 5. …“ wird zu „„Antwort A“ und „Antwort B“ (im Original Ziffern 1 und 5). …“.
+    /// Auch „Ziffern 1 und 3: …“ und „Ziffern 1 und 3 (§ …). …“ werden erkannt.
     /// Die Antworten stehen in derselben Reihenfolge wie die Ziffern. Passt die Zahl der Ziffern nicht zur Zahl der
     /// Antworten, bleibt die Erklärung unverändert.
     static func ihkZiffer(_ explanation: String, answers: [String]) -> String {
         let label = explanation.hasPrefix("Ziffern ") ? "Ziffern" : explanation.hasPrefix("Ziffer ") ? "Ziffer" : nil
-        guard let label, let dot = explanation.firstIndex(of: ".") else { return explanation }
-        let numberText = explanation[explanation.index(explanation.startIndex, offsetBy: label.count + 1)..<dot]
+        guard let label else { return explanation }
+        // Ziffern: „1“, „1 und 5“, „1, 2 und 5“; danach folgt ein Punkt, Doppelpunkt oder eine Klammer.
+        let afterLabel = explanation.dropFirst(label.count + 1)
+        guard let match = afterLabel.range(of: #"^\d+(?:(?:, | und )\d+)*"#, options: .regularExpression) else { return explanation }
+        let numberText = String(afterLabel[match])
+        let end = match.upperBound
         let numbers = numberText.replacingOccurrences(of: " und ", with: ",")
             .split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
-        guard !numbers.isEmpty, numbers.count == answers.count,
-              numbers.allSatisfy({ !$0.isEmpty && $0.allSatisfy(\.isNumber) }) else { return explanation }
+        guard numbers.count == answers.count, numbers.allSatisfy({ !$0.isEmpty && $0.allSatisfy(\.isNumber) }) else { return explanation }
         let quoted = answers.map { answer in
             answer.hasPrefix("„") ? answer : "„\(answer.hasSuffix(".") ? String(answer.dropLast()) : answer)“"
         }
         let joined = quoted.count > 1 ? quoted.dropLast().joined(separator: ", ") + " und " + quoted.last! : quoted[0]
-        let rest = explanation[explanation.index(after: dot)...]
-        return "\(joined) (im Original \(label) \(numberText)).\(rest)"
+        let rest = afterLabel[end...]
+        return "\(joined) (im Original \(label) \(numberText))\(rest)"
     }
 
     private static func ihkPrompt(_ lage: String, _ prompt: String) -> String {

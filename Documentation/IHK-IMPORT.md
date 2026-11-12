@@ -81,3 +81,5 @@ Markierung "alter Katalog": Aufgaben vor Winter 2021 (alte AO) sind über `ExamO
 ## Metadaten und Filter
 
 Herkunft steckt in der Karten-ID `ihk-<ap1|ap2>-<jahr><s|w>-<ga1|ga2|wiso>-<aufgabe>` (`ExamOrigin`); eigene Aufgaben haben keine. Filter (`ExamOriginFilter`): nur aktuelle (4 Jahre), AP1/AP2, gespeichert in UserDefaults; Herkunftszeile über jeder Frage (Quiz und Lernpfad nutzen dieselbe Ansicht).
+
+Nachträge zum Gegenlesen Etappe 3 (12.11.2026): Winter 2022/23 und Sommer 2023 tragen als ZPA-Lösungshinweise (Original geprüft) das Präfix „Lösung laut Lösungshinweis:“; `wvm`/`svm` in Sommer 2023, Winter 2023/24 und Sommer 2024 nennen den Antwortwortlaut statt bloßer Ziffern (`ihkZiffer` erkennt auch „Ziffern 1 und 3: …“ und „… (§ …)“); bei Eintragefeldern steht der ergänzte Distraktor (Winter 2023/24 und Sommer 2024 WiSo 20) im Aufgabentext. Test `testReviewLeftoversOfEtappe3`.
