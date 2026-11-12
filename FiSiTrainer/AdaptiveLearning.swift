@@ -8,8 +8,16 @@ struct LearningRecord: Codable, Equatable {
     private(set) var attempts = 0
     private(set) var correct = 0
     private(set) var recent: [Bool] = []
+    /// Wiederholungsstufe (0 bis 3): 0 nach einem Fehler, sonst die Zahl der richtigen Antworten in Folge (höchstens 3).
+    private(set) var box: Int?
+    /// Zeitpunkt der letzten Antwort; fehlt bei Spielständen vor der Wiederholungsfunktion.
+    private(set) var lastSeen: Date?
+
+    /// Abstand bis zur nächsten Wiederholung je Stufe in Tagen: 1, 3, 7, 21.
+    static let reviewIntervalDays = [1, 3, 7, 21]
 
     var isValid: Bool {
+        (box ?? 0) >= 0 && (box ?? 0) < Self.reviewIntervalDays.count &&
         attempts >= 0 && attempts < Int.max && correct >= 0 && correct <= attempts &&
         recent.count <= min(attempts, 5) &&
         recent.filter { $0 }.count <= correct &&
@@ -28,6 +36,20 @@ struct LearningRecord: Codable, Equatable {
         let recentErrorRate = recent.isEmpty ? 0 :
             Double(recent.filter { !$0 }.count) / Double(recent.count)
         return 1 + 3 * errorRate + 2 * recentErrorRate
+    }
+
+    /// Fälligkeit der Wiederholung. Ohne Zeitstempel (alter Spielstand) gilt sie nur bei Übungsbedarf.
+    func isDue(at now: Date) -> Bool {
+        guard let lastSeen else { return attempts > 0 && needsPractice }
+        let level = min(max(box ?? 0, 0), Self.reviewIntervalDays.count - 1)
+        return now >= lastSeen.addingTimeInterval(Double(Self.reviewIntervalDays[level]) * 86_400)
+    }
+
+    /// Antwort mit Zeitpunkt: richtig steigert die Stufe, falsch setzt sie auf 0 zurück.
+    mutating func record(correct answerWasCorrect: Bool, at date: Date) {
+        record(correct: answerWasCorrect)
+        lastSeen = date
+        box = answerWasCorrect ? min((box ?? 0) + 1, Self.reviewIntervalDays.count - 1) : 0
     }
 
     mutating func record(correct answerWasCorrect: Bool) {

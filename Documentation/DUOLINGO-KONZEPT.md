@@ -62,6 +62,8 @@ Einstellung des Tagesziels, Erklärtext zum Schutz, lokale Erinnerung (Opt-in, U
 
 Fällige Karten nach Intervallen (1, 3, 7, 21 Tage) aus `AdaptiveLearning`/`LearningRecord`, eigener „Wiederholen“-Knoten im Pfad, Fehler am Lektionsende nochmal stellen.
 
+Umgesetzt (12.11.): `LearningRecord` trägt `box` (0 bis 3) und `lastSeen` (optional, alte Spielstände bleiben lesbar). Richtig steigert die Stufe (Abstand 3, 7, 21 Tage), falsch setzt sie auf 0 (1 Tag). `ExamStore.dueCards(subject:)` liefert fällige Quiz-Karten (ohne Zeitstempel nur bei Übungsbedarf), `startReview(subject:)` startet daraus eine Runde (bis 10 Aufgaben, Fehler am Ende nochmal, zählt nicht als Lektion). Im Pfad erscheint je Fach eine Zeile „Wiederholen“ nur, wenn etwas fällig ist. Die Fehlerwiederholung am Lektionsende stammt aus Welle 1. Nur Auswahlkarten (Prüfungsquiz); andere Kartentypen folgen bei Bedarf.
+
 ### Welle 4: Aufgabentypen
 
 Numerische Eingabe bei Rechenaufgaben (Toleranz, Einheit), Lückentext mit Wortbank im Satz.

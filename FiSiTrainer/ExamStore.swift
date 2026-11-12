@@ -111,6 +111,38 @@ final class ExamStore: ObservableObject {
         save()
     }
 
+    /// Karten eines Fachs, deren Wiederholung fällig ist (1, 3, 7, 21 Tage), die am längsten Überfälligen zuerst.
+    /// Gilt nur für Karten, die im Prüfungsquiz vorkommen und zum Herkunftsfilter passen.
+    func dueCards(subject: ExamSubject) -> [ExamCard] {
+        let date = now()
+        let pool = ExamTaskFactory.cards(for: .quiz, subject: subject, topic: nil,
+                                         catalog: catalog, filter: originFilter)
+        let due: [(card: ExamCard, since: Date)] = pool.compactMap { card in
+            guard let record = learning[Self.learningKey(card.id)], record.isDue(at: date) else { return nil }
+            return (card, record.lastSeen ?? .distantPast)
+        }
+        return due.sorted { $0.since == $1.since ? $0.card.id < $1.card.id : $0.since < $1.since }
+            .map(\.card)
+    }
+
+    /// Startet eine Wiederholungs-Lektion aus fälligen Karten (höchstens eine Runde lang).
+    /// Sie läuft als Prüfungsquiz-Runde ohne Thema; Fehler kommen am Ende nochmal.
+    @discardableResult
+    func startReview(subject: ExamSubject) -> Bool {
+        guard maySave, !hasActiveSession(.quiz) else { return false }
+        var generator = SystemRandomNumberGenerator()
+        let tasks = dueCards(subject: subject).prefix(ExamMode.quiz.roundLength).compactMap {
+            ExamTaskFactory.task(from: $0, catalog: catalog, using: &generator)
+        }
+        guard !tasks.isEmpty else { return false }
+        var session = ExamSession(mode: .quiz, subject: subject, topic: nil, tasks: tasks, startedAt: now())
+        session.timing = QuestionTiming(startedAt: now())
+        session.isLesson = true
+        sessions[.quiz] = session
+        save()
+        return true
+    }
+
     func answer(_ answer: [Int], mode: ExamMode) {
         guard maySave, var session = sessions[mode], !session.isComplete,
               !session.isCurrentAnswered, let task = session.currentTask,
@@ -119,10 +151,10 @@ final class ExamStore: ObservableObject {
         let correct = task.isCorrect(answer)
         let key = Self.learningKey(task.id)
         var record = learning[key, default: LearningRecord()]
-        record.record(correct: correct)
+        let answerDate = now()
+        record.record(correct: correct, at: answerDate)
         learning[key] = record
 
-        let answerDate = now()
         var timing = session.timing ?? QuestionTiming(startedAt: answerDate)
         let answeredAt = max(answerDate, timing.startedAt)
         timing.answeredAt = answeredAt
