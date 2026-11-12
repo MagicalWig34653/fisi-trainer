@@ -98,19 +98,38 @@ extension ExamTask {
     var origin: ExamOrigin? { ExamOrigin(cardID: id) }
 }
 
-/// Einstellung, welche Prüfungsaufgaben ausgewählt werden. Eigene Aufgaben (ohne Herkunft) bleiben immer erlaubt.
+/// Einstellung, welche Aufgaben ausgewählt werden: Prüfungsaufgaben nach Alter und Prüfungsteil,
+/// eigene Aufgaben (ohne Herkunft) über einen eigenen Schalter.
 struct ExamOriginFilter: Codable, Equatable {
     /// Nur Prüfungen der letzten vier Jahre.
     var onlyRecent = false
     /// Nur AP1 oder nur AP2; `nil` = beide.
     var part: ExamOrigin.Part?
+    /// Eigene Aufgaben ohne Prüfungsherkunft (`ExamOrigin` ist `nil`) anzeigen.
+    var showOwn = true
+
+    init(onlyRecent: Bool = false, part: ExamOrigin.Part? = nil, showOwn: Bool = true) {
+        self.onlyRecent = onlyRecent
+        self.part = part
+        self.showOwn = showOwn
+    }
+
+    private enum CodingKeys: String, CodingKey { case onlyRecent, part, showOwn }
+
+    /// Ältere gespeicherte Filter ohne `showOwn` bleiben lesbar (eigene Aufgaben dann sichtbar).
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        onlyRecent = try container.decodeIfPresent(Bool.self, forKey: .onlyRecent) ?? false
+        part = try container.decodeIfPresent(ExamOrigin.Part.self, forKey: .part)
+        showOwn = try container.decodeIfPresent(Bool.self, forKey: .showOwn) ?? true
+    }
 
     static let all = ExamOriginFilter()
     static let recentYears = 4
     static let defaultsKey = "examOriginFilter"
 
     func allows(_ origin: ExamOrigin?, referenceYear: Int = Calendar.current.component(.year, from: Date())) -> Bool {
-        guard let origin else { return true }
+        guard let origin else { return showOwn }
         if let part, origin.part != part { return false }
         if onlyRecent, !origin.isRecent(referenceYear: referenceYear, years: Self.recentYears) { return false }
         return true

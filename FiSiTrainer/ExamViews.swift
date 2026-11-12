@@ -165,8 +165,18 @@ struct ExamArenaView: View {
     /// Available task counts for every mode at the current subject/topic, computed once per
     /// hub render instead of once per mode card.
     private var originFilterBar: some View {
-        HStack(spacing: 16) {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 16) { originFilterControls }
+            VStack(alignment: .leading, spacing: 8) { originFilterControls }
+        }
+        .accessibilityElement(children: .contain)
+    }
+
+    @ViewBuilder private var originFilterControls: some View {
             Toggle("Nur aktuelle Prüfungen (letzte 4 Jahre)", isOn: $store.originFilter.onlyRecent)
+                .toggleStyle(.switch)
+                .font(.system(size: 12, weight: .semibold))
+            Toggle("Eigene Aufgaben zeigen", isOn: $store.originFilter.showOwn)
                 .toggleStyle(.switch)
                 .font(.system(size: 12, weight: .semibold))
             Picker("Prüfungsteil", selection: $store.originFilter.part) {
@@ -178,8 +188,6 @@ struct ExamArenaView: View {
             .labelsHidden()
             .frame(maxWidth: 220)
             .accessibilityLabel("Prüfungsteil wählen")
-        }
-        .accessibilityElement(children: .contain)
     }
 
     private var availableCounts: [ExamMode: Int] {

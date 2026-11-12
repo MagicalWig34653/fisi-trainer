@@ -165,6 +165,27 @@ final class ExamOriginTests: XCTestCase {
         XCTAssertFalse(filter.allows(new, referenceYear: 2026))
     }
 
+    func testFilterCanHideOwnCards() {
+        var filter = ExamOriginFilter.all
+        XCTAssertTrue(filter.showOwn)
+        XCTAssertTrue(filter.allows(nil, referenceYear: 2026))
+        filter.showOwn = false
+        XCTAssertFalse(filter.allows(nil, referenceYear: 2026))
+        XCTAssertTrue(filter.allows(ExamOrigin(cardID: "ihk-ap2-2026s-ga1-1"), referenceYear: 2026))
+        let cards = ExamTaskFactory.cards(for: .quiz, subject: .it, topic: nil, catalog: ExamCatalog.all, filter: filter)
+        XCTAssertFalse(cards.isEmpty)
+        XCTAssertTrue(cards.allSatisfy { $0.origin != nil })
+    }
+
+    func testOwnCardSwitchIsPersistedAndOldDataStaysReadable() {
+        let defaults = UserDefaults(suiteName: "originfilter-own-test")!
+        defaults.removePersistentDomain(forName: "originfilter-own-test")
+        ExamOriginFilter(onlyRecent: false, part: nil, showOwn: false).save(to: defaults)
+        XCTAssertFalse(ExamOriginFilter.load(from: defaults).showOwn)
+        defaults.set(Data(#"{"onlyRecent":true}"#.utf8), forKey: ExamOriginFilter.defaultsKey)
+        XCTAssertEqual(ExamOriginFilter.load(from: defaults), ExamOriginFilter(onlyRecent: true, part: nil, showOwn: true))
+    }
+
     func testFilterIsPersisted() {
         let defaults = UserDefaults(suiteName: "originfilter-test")!
         defaults.removePersistentDomain(forName: "originfilter-test")
